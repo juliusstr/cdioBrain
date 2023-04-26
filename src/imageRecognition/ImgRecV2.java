@@ -22,7 +22,7 @@ public class ImgRecV2 {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         // Create a new VideoCapture object to get frames from the webcam
-        VideoCapture capture = new VideoCapture(2);
+        VideoCapture capture = new VideoCapture(0);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         // Check if the VideoCapture object was successfully initialized
@@ -48,6 +48,9 @@ public class ImgRecV2 {
         params.set_minConvexity(0.93F);
         params.set_maxConvexity(1);
         params.set_minThreshold(0.3F);
+        params.set_collectContours(false);
+        params.set_minCircularity(0.95F);
+        params.set_minInertiaRatio(0.80F);
 
 
         //params.set
