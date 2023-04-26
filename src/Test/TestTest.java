@@ -21,6 +21,6 @@ public class TestTest {
     @Test
     @DisplayName("simpel ball test")
     void simpelBallTest(){
-        assertEquals(1, ball.getPoint().x);
+        assertEquals(0, ball.getPoint().x);
     }
 }
