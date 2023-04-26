@@ -1,0 +1,22 @@
+Generelt for v1: ingen bolde
+v1.0:   lige kryds, ingen skygge
+v1.1:   skævt kryds, ingen skygge
+v1.2:   lige kryds, person som skygge
+
+Generelt for v2: 3 bolde
+v2.0:   ingen op af bander, normal skygge
+v2.1:   1 bold oppe af bande, 1 bold op af forhindring, normal skygge
+v2.2:   1 bold der ligger stille, så triller og så ligger stille
+v2.2.1: 1 bold ligger stille, bevæger sig meget, og så stille
+v2.3:   person der går frem og tilbage som skygge
+
+Generelt for v3: alle bolde med orange bold
+v3.0    ingen op af bander, normal skygge
+v3.1    1 op af hver bande, og 1 i kryds
+v3.2    1 op af hver bande, og 1 i kryds med 1 der bevæger sig
+
+
+Generelt for v4: alle bolde og orange, med robot
+v4.0:   alle ting står stille
+v4.1:   1 bold der bevæger sig, og støder ind i en anden
+v4.2:   skift af skygger og lys - LANG
