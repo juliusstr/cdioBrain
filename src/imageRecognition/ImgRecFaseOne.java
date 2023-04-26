@@ -2,6 +2,7 @@ package imageRecognition;
 
 import misc.Ball;
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
