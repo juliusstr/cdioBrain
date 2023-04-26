@@ -6,6 +6,7 @@ public class Lines {
     private Point p1;
     private Point p2;
 
+
     public boolean hit(Vector2Dv1 pos, Vector2Dv1 dir) {
 
         // Calculate the slope and y-intercept of the line
@@ -19,14 +20,14 @@ public class Lines {
         if ((p1.x <= xIntersection && xIntersection <= p2.x) || (p2.x <= xIntersection && xIntersection <= p1.x)) {
             return true;
         } else {
-           return false;
+            return false;
         }
     }
 
-        public Lines(Point p1, Point p2){
-            this.p1=p1;
-            this.p2=p2;
-        }
+    public Lines(Point p1, Point p2){
+        this.p1=p1;
+        this.p2=p2;
+    }
 
 }
 

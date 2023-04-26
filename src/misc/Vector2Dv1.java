@@ -1,4 +1,7 @@
 package misc;
+
+import java.awt.*;
+
 public class Vector2Dv1 {
 
     public double x;
@@ -23,6 +26,10 @@ public class Vector2Dv1 {
     public void set(Vector2Dv1 v) {
         this.x = v.x;
         this.y = v.y;
+    }
+
+    public Point getPoint(){
+        return new Point((int) Math.round(this.x), (int)Math.round(this.y));
     }
 
     public void setZero() {
