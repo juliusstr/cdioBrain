@@ -50,6 +50,9 @@ public class ImgRecFaseTwo {
         params.set_minConvexity(0.93F);
         params.set_maxConvexity(1);
         params.set_minThreshold(0.3F);
+        params.set_collectContours(false);
+        params.set_minCircularity(0.95F);
+        params.set_minInertiaRatio(0.80F);
 
 
         //params.set
