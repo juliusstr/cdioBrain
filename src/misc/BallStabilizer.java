@@ -1,13 +1,14 @@
 package misc;
 
 import exceptions.NoGoodCircleData;
+import misc.ball.Ball;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BallStabilizer {
 
-    private static final int BUFFERsIZE = 20;
+    private static final int BUFFERsIZE = 10;
 
     private ArrayList<Ball> blackCircle;
     private ArrayList<Ball> redCircle;

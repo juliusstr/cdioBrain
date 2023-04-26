@@ -1,5 +1,7 @@
 package misc;
 
+import misc.ball.Ball;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class BallClassifier {
     }
 
     private Color colorCorection(Color color){
-        if (color.getRed() < 130 && color.getBlue() < 130 && color.getGreen() < 130){
+        if (color.getRed() < 110 && color.getBlue() < 110 && color.getGreen() < 110){
             return BALCK;
         }
         if(color.getRed() > 200 && color.getBlue() < 150 && color.getGreen() < 150){

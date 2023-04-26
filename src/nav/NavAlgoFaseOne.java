@@ -1,27 +1,27 @@
 package nav;
 
-import misc.Ball;
-import misc.Robot;
-import misc.Vector2D;
+import misc.ball.Ball;
+import misc.Robotv1;
+import misc.Vector2Dv1;
 
 public class NavAlgoFaseOne {
     public static final double ANGLE_ERROR = 0.04;
-    public static final double DISTANCE_ERROR = 3;
+    public static final double DISTANCE_ERROR = 50;
     public static final boolean SIMULATE = false;
 
 
 
     private Ball nextBall;
-    private Robot robot;
+    private Robotv1 robotv1;
     //---------------------------
     //constructor
     //---------------------------
     public NavAlgoFaseOne() {
     }
 
-    public NavAlgoFaseOne(Ball nextBall, Robot robot) {
+    public NavAlgoFaseOne(Ball nextBall, Robotv1 robotv1) {
         this.nextBall = nextBall;
-        this.robot = robot;
+        this.robotv1 = robotv1;
     }
 
     //---------------------------
@@ -35,11 +35,11 @@ public class NavAlgoFaseOne {
 
 
         //*** cal dist and angle ***
-        double distDelta = Math.sqrt(Math.pow((nextBall.getxPos()- robot.getxPos()), 2)+Math.pow((nextBall.getyPos()- robot.getyPos()), 2));
+        double distDelta = Math.sqrt(Math.pow((nextBall.getxPos()- robotv1.getxPos()), 2)+Math.pow((nextBall.getyPos()- robotv1.getyPos()), 2));
 
-        Vector2D rp = new Vector2D(nextBall.getxPos() - robot.getxPos(), nextBall.getyPos() - robot.getyPos());
-        double dot = rp.dot(robot.getDirection());
-        double cross = rp.cross(robot.getDirection());
+        Vector2Dv1 rp = new Vector2Dv1(nextBall.getxPos() - robotv1.getxPos(), nextBall.getyPos() - robotv1.getyPos());
+        double dot = rp.dot(robotv1.getDirection());
+        double cross = rp.cross(robotv1.getDirection());
         double angleDelta;
 
         //*** Close enough ***
@@ -70,7 +70,7 @@ public class NavAlgoFaseOne {
         //***drive***
         if(Math.abs(angleDelta) > ANGLE_ERROR*2){
             if(SIMULATE){
-                robot.setDirection( Vector2D.toCartesian(1,robot.getDirection().getAngle()- angleDelta/2));
+                robotv1.setDirection( Vector2Dv1.toCartesian(1, robotv1.getDirection().getAngle()- angleDelta/2));
             }
             return command + ";stop -d";
         }
@@ -83,9 +83,9 @@ public class NavAlgoFaseOne {
             command += ";stop -d";
         }
         if(SIMULATE){
-            robot.setDirection( Vector2D.toCartesian(1,robot.getDirection().getAngle() - angleDelta/2));
-            robot.setxPos(robot.getxPos()+Math.cos(robot.getDirection().getAngle())*distDelta/2);
-            robot.setyPos(robot.getyPos()+Math.sin(robot.getDirection().getAngle())*distDelta/2);
+            robotv1.setDirection( Vector2Dv1.toCartesian(1, robotv1.getDirection().getAngle() - angleDelta/2));
+            robotv1.setxPos(robotv1.getxPos()+Math.cos(robotv1.getDirection().getAngle())*distDelta/2);
+            robotv1.setyPos(robotv1.getyPos()+Math.sin(robotv1.getDirection().getAngle())*distDelta/2);
         }
         return command;
     }
@@ -93,11 +93,11 @@ public class NavAlgoFaseOne {
     //---------------------------
     //getter setter
     //---------------------------
-    public Robot getRobot() {
-        return robot;
+    public Robotv1 getRobot() {
+        return robotv1;
     }
-    public void setRobot(Robot robot) {
-        this.robot = robot;
+    public void setRobot(Robotv1 robotv1) {
+        this.robotv1 = robotv1;
     }
     public Ball getNextBall() {
         return nextBall;

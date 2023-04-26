@@ -1,6 +1,7 @@
 package imageRecognition;
 
-import misc.Ball;
+import misc.ball.Ball;
+import misc.ball.PrimitiveBall;
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
@@ -25,7 +26,9 @@ public class ImgRecFaseTwo {
 
 
         // Create a new VideoCapture object to get frames from the webcam
-        capture = new VideoCapture(1);
+        System.err.println("loading webcam");
+        capture = new VideoCapture(2);
+        System.err.println("changing frame size");
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         System.err.println("Webcam loaded");
@@ -54,7 +57,7 @@ public class ImgRecFaseTwo {
         keypoints = new MatOfKeyPoint();
 
     }
-    public List<Ball> captureBalls(){
+    public ArrayList<Ball> captureBalls(){
         // Continuously capture frames from the webcam and display them on the screen
         frame = new Mat();
         // Read a new frame from the webcam
@@ -70,7 +73,7 @@ public class ImgRecFaseTwo {
         //Detect the balls, and but them into MatOfKeyPoints keypoints
         blobDetec.detect(frame, keypoints);
         //List of balls
-        List<Ball> balls = new ArrayList<>();
+        ArrayList<Ball> balls = new ArrayList<>();
         List<KeyPoint> keypointList = new ArrayList<>();
         if(keypoints.get(0,0) != null) {
             //making keypoints into a list
@@ -81,9 +84,10 @@ public class ImgRecFaseTwo {
                 int b = (int) colorDoubleArray[0]; // blue value
                 int g = (int) colorDoubleArray[1]; // green value
                 int r = (int) colorDoubleArray[2]; // red value
-                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true));
+                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UKNOWN));
             }
         }
+
         return balls;
     }
 
