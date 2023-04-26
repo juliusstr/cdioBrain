@@ -126,7 +126,7 @@ public class BallStabilizerPhaseTwo {
     }
 
     //gets only robot circles
-    public ArrayList<Ball> getStabelRobotCirce() throws NoDataException {
+    public ArrayList<Ball> getStabelRobotCirce() throws BadDataException {
         ArrayList<Ball> ballsToReturn = new ArrayList<>();
 
         for (int i = 0; i < balls.size(); i++) {
@@ -142,8 +142,8 @@ public class BallStabilizerPhaseTwo {
             ballsToReturn.add(balls.get(i));
         }
 
-        if (ballsToReturn.isEmpty())
-            throw new NoDataException("No stabel balls");
+        if (ballsToReturn.size() != 2)
+            throw new BadDataException("No stabel balls");
 
         return ballsToReturn;
     }
