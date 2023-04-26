@@ -1,6 +1,7 @@
 package Client;
 
 
+import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
@@ -96,8 +97,9 @@ public class MainClient {
                     respons = "stop -d -t";
                 } catch (IndexOutOfBoundsException e){
                     respons = "turn -r -s0.02";
+                } catch (BadDataException e) {
+                    respons = "stop -d -t";
                 }
-
 
 
                 out.println(respons);
