@@ -19,7 +19,6 @@ public class ImgRecFaseTwo {
     private VideoCapture capture;
     private Mat frame;
     private SimpleBlobDetector blobDetec;
-    private SimpleBlobDetector_Params params;
     private MatOfKeyPoint keypoints;
 
     public ImgRecFaseTwo() {
@@ -39,20 +38,8 @@ public class ImgRecFaseTwo {
             System.exit(-1);
         }
         System.err.println("Webcam opened");
-        params = new SimpleBlobDetector_Params();
-        params.set_filterByColor(false);
-        params.set_minArea(60);
-        params.set_maxArea(170);
-        //min distance
-        //params.set_minDistBetweenBlobs(10);
-
-        //params.set_minConvexity();
-        params.set_minConvexity(0.93F);
-        params.set_maxConvexity(1);
-        params.set_minThreshold(0.3F);
-        params.set_collectContours(false);
-        params.set_minCircularity(0.95F);
-        params.set_minInertiaRatio(0.80F);
+        ImgRecParams parameters = new ImgRecParams();
+        SimpleBlobDetector_Params params = parameters.getParams();
 
 
         //params.set
