@@ -36,23 +36,8 @@ public class ImgRecV2 {
         // Create a new window to display the webcam feed
         HighGui.namedWindow("Webcam Feed");
         //HighGui.namedWindow("Procesed Feed");
-
-        SimpleBlobDetector_Params params = new SimpleBlobDetector_Params();
-        params.set_filterByColor(false);
-        params.set_minArea(60);
-        params.set_maxArea(170);
-        //min distance
-        //params.set_minDistBetweenBlobs(10);
-
-        //params.set_minConvexity();
-        params.set_minConvexity(0.93F);
-        params.set_maxConvexity(1);
-        params.set_minThreshold(0.3F);
-        params.set_collectContours(false);
-        params.set_minCircularity(0.95F);
-        params.set_minInertiaRatio(0.80F);
-
-
+        ImgRecParams parameters = new ImgRecParams();
+        SimpleBlobDetector_Params params = parameters.getParams();
         //params.set
         SimpleBlobDetector blobDetec = SimpleBlobDetector.create(params);
 
