@@ -36,7 +36,7 @@ public class main {
         while(true){
 
             // Load the input image
-            Mat input = Imgcodecs.imread("C:\\Users\\juliu\\Downloads\\WIN_20230315_10_32_53_Pro.jpg");
+            Mat input = Imgcodecs.imread("C:\\Users\\juliu\\Downloads\\20230503_110435.jpg");
             //Imgproc.resize(input, input, new Size(640, 360));
             Mat print = input.clone();
             // Convert the image to HSV color space
@@ -101,6 +101,23 @@ public class main {
             for (int i = 0; i < centers.size(); i++) {
                 if(i == j){
                     System.out.println("center x:" + centers.get(i).x + " y:" + centers.get(i).y);
+
+                    MatOfPoint2f contour = new MatOfPoint2f();
+                    MatOfPoint2f approxCurve = new MatOfPoint2f();
+                    contour.fromList(contours.get(i).toList());
+                    double peri = Imgproc.arcLength(contour, true);
+                    Imgproc.approxPolyDP(contour, approxCurve, 0.02 * peri, true);
+                    RotatedRect rect = Imgproc.minAreaRect(approxCurve);
+                    double angle = rect.angle;
+                    if (angle < -45) {
+                        angle += 90;
+                    }
+                    angle -= 45;
+                    if (angle < -45) {
+                        angle += 90;
+                    }
+                    angle = (Math.PI/180)*angle;
+                    System.out.println("angel: " + angle + "rad");
                 } else {
                     System.out.println("bande: x:" + centers.get(i).x + " y:" + centers.get(i).y);
                 }
