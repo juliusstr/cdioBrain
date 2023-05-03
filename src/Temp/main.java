@@ -1,5 +1,6 @@
 package Temp;
 
+import misc.Vector2Dv1;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -29,13 +30,15 @@ import java.util.List;
 public class main {
     public static void main(String[] args) throws IOException {
         HighGui.namedWindow("Webcam Feed");
+        HighGui.namedWindow("input");
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         while(true){
 
             // Load the input image
-            Mat input = Imgcodecs.imread("C:\\Users\\juliu\\Desktop\\WIN_20230315_10_32_09_Pro.jpg");
-            Imgproc.resize(input, input, new Size(512, 384));;
+            Mat input = Imgcodecs.imread("C:\\Users\\juliu\\Downloads\\WIN_20230315_10_32_53_Pro.jpg");
+            //Imgproc.resize(input, input, new Size(640, 360));
+            Mat print = input.clone();
             // Convert the image to HSV color space
             Mat hsv = new Mat();
             Imgproc.GaussianBlur(input, input, new Size(9, 9), 0, 0);
@@ -71,16 +74,48 @@ public class main {
             List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
             Imgproc.findContours(input, contours, dots, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
 
-            System.out.println("Test");
+            //System.out.println("Test");
+            ArrayList<Vector2Dv1> centers = new ArrayList<>();
             for (MatOfPoint contour : contours) {
                 Rect rect = Imgproc.boundingRect(contour);
-                System.out.println("x: " + (rect.x + rect.width/2) + ", y: " + (rect.y + rect.height/2));
+                //System.out.println("x: " + (rect.x + rect.width/2) + ", y: " + (rect.y + rect.height/2));
+                centers.add(new Vector2Dv1((rect.x + rect.width/2),(rect.y + rect.height/2)));
                 Imgproc.rectangle(input, rect, new Scalar(255, 255, 0), 2);
             }
             //Imgproc.GaussianBlur(input, input, new Size(21, 21), 0, 0);
+            int j = 0;
+            double score = Double.MAX_VALUE;
+            for (int i = 0; i < centers.size(); i++) {
+                double temp  = 0;
+                for (int k = 0; k < centers.size(); k++) {
+                    if (i!=k){
+                        temp += centers.get(i).distance(centers.get(k));
+                    }
+                }
+                if (temp < score){
+                    j = i;
+                    score = temp;
+                }
+            }
+            System.out.println("\n\n");
+            for (int i = 0; i < centers.size(); i++) {
+                if(i == j){
+                    System.out.println("center x:" + centers.get(i).x + " y:" + centers.get(i).y);
+                } else {
+                    System.out.println("bande: x:" + centers.get(i).x + " y:" + centers.get(i).y);
+                }
+                Imgproc.circle (
+                        print,                 //Matrix obj of the image
+                        centers.get(i).PointOpenCV(),    //Center of the circle
+                        2,                    //Radius
+                        new Scalar(255, 255, 255),  //Scalar object for color
+                        1                      //Thickness of the circle
+                );
+            }
 
             // Display the current frame on the screen
-            HighGui.imshow("Webcam Feed", input);
+            HighGui.imshow("Webcam Feed", print);
+            HighGui.imshow("input" , input);
 
             // Wait for a key press to exit the program
             if (HighGui.waitKey(1) == 27) {

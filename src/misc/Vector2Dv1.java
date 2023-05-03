@@ -31,6 +31,9 @@ public class Vector2Dv1 {
     public Point getPoint(){
         return new Point((int) Math.round(this.x), (int)Math.round(this.y));
     }
+    public org.opencv.core.Point PointOpenCV(){
+        return new org.opencv.core.Point(this.x, this.y);
+    }
 
     public void setZero() {
         x = 0;
