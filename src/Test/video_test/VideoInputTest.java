@@ -6,9 +6,11 @@ import misc.ball.PrimitiveBall;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.features2d.SimpleBlobDetector_Params;
 import org.opencv.highgui.HighGui;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
@@ -138,7 +140,6 @@ public class VideoInputTest {
         capture.release();
         HighGui.destroyAllWindows();
     }
-
 }
 
 
