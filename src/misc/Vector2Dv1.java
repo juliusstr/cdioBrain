@@ -18,6 +18,11 @@ public class Vector2Dv1 {
         set(v);
     }
 
+    public Vector2Dv1(double angle){
+        x = Math.cos(angle);
+        y = Math.sin(angle);
+    }
+
     public void set(double x, double y) {
         this.x = x;
         this.y = y;

@@ -8,15 +8,14 @@ import java.util.ArrayList;
 
 public class Cross {
 
-    public static final int CROSS_LENGTH = 10;
-    public static final int OFFSET_LENGTH = 2;
-    public static final int SHORT_SIDE_LENGTH = 4;
-    public static final double PI = 3.141592653589793;
+    public static final int CROSS_LENGTH = 100;
+    public static final int OFFSET_LENGTH = 15;
+    public static final int SHORT_SIDE_LENGTH = 85;
 
     public ArrayList<Point> crossPoint;
     public ArrayList<Lines> crossLines;
-    private Vector2Dv1 vec;
-    private Vector2Dv1 pos;
+    public Vector2Dv1 vec;
+    public Vector2Dv1 pos;
 
     public Cross(Vector2Dv1 pos, Vector2Dv1 vec){
         this.vec = vec;
@@ -29,18 +28,19 @@ public class Cross {
             Vector2Dv1 offsetvec = new Vector2Dv1(vec);
             vec.multiply(CROSS_LENGTH);
             offsetvec.multiply(OFFSET_LENGTH);
-            offsetvec.rotateBy(-PI/2);
+            offsetvec.rotateBy(- Math.PI/2);
             Vector2Dv1 point = Vector2Dv1.add(offsetvec, Vector2Dv1.add(pos, vec));
             crossPoint.add(point.getPoint());
-            offsetvec.rotateBy(PI);
+            offsetvec.rotateBy(Math.PI);
             point = Vector2Dv1.add(offsetvec, Vector2Dv1.add(pos, vec));
             crossPoint.add(point.getPoint());
             Vector2Dv1 cornervec = new Vector2Dv1(offsetvec);
+            cornervec.normalize();
             cornervec.multiply(SHORT_SIDE_LENGTH);
-            cornervec.rotateBy(PI/2);
+            cornervec.rotateBy(Math.PI/2);
             point = Vector2Dv1.add(cornervec, point);
             crossPoint.add(point.getPoint());
-            vec.rotateBy(PI/2);
+            vec.rotateBy(Math.PI/2);
         }
 
         crossLines = new ArrayList<>();
