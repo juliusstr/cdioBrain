@@ -18,6 +18,11 @@ public class Vector2Dv1 {
         set(v);
     }
 
+    public Vector2Dv1(double angle){
+        x = Math.cos(angle);
+        y = Math.sin(angle);
+    }
+
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
@@ -30,6 +35,9 @@ public class Vector2Dv1 {
 
     public Point getPoint(){
         return new Point((int) Math.round(this.x), (int)Math.round(this.y));
+    }
+    public org.opencv.core.Point PointOpenCV(){
+        return new org.opencv.core.Point(this.x, this.y);
     }
 
     public void setZero() {
