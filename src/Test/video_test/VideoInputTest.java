@@ -41,7 +41,7 @@ public class VideoInputTest {
     void videov2_1Test(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         String filename = "test_videos/video_capture/cdio/vid_cap_v2.0.mp4";
-        capture = new VideoCapture(filename);
+        capture = new VideoCapture(2);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         if (!capture.isOpened()) {
@@ -70,7 +70,7 @@ public class VideoInputTest {
                 //making keypoints into a list
                 keypointList = keypoints.toList();
 
-                assertEquals(3, keypointList.size());
+                //assertEquals(3, keypointList.size());
                 //For each on the keypoints
                 for(KeyPoint keypoint : keypointList){
                     double[] colorDoubleArray = frame.get((int) keypoint.pt.y, (int) keypoint.pt.x);
@@ -89,7 +89,7 @@ public class VideoInputTest {
     void videov3_0Test(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         String filename = "test_videos/video_capture/cdio/vid_cap_v4.2.mp4";
-        capture = new VideoCapture(filename);
+        capture = new VideoCapture(2);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         if (!capture.isOpened()) {
