@@ -43,6 +43,10 @@ public class Robotv1 {
         return directionVector;
     }
 
+    public Vector2Dv1 getPosVector(){
+        return new Vector2Dv1(xPos,yPos);
+    }
+
     public void setDirection(Vector2Dv1 directionVector) {
         this.directionVector = directionVector;
     }

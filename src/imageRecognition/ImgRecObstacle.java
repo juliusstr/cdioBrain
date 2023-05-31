@@ -18,6 +18,7 @@ public class ImgRecObstacle {
     public static final int arg3 = 130;
     public static final int arg4 = 130;
     public static final int arg5 = 255;
+
     public static final int arg6 = 4;
     public static final int arg7 = 20;
     public static final int arg8 = 20;
@@ -73,13 +74,14 @@ public class ImgRecObstacle {
                 index = i;
                 score = temp;
             }
+            System.out.println("center x:" + centers.get(i).x + " y:" + centers.get(i).y);
         }
 
         if(centers.size() != 5){
             throw new BadDataException("could not finde all the obstacles");
         }
 
-        //System.out.println("center x:" + centers.get(i).x + " y:" + centers.get(i).y);
+
 
         MatOfPoint2f contour = new MatOfPoint2f();
         MatOfPoint2f approxCurve = new MatOfPoint2f();
