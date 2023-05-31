@@ -80,8 +80,5 @@ public class Robotv1 {
         dir.subtract(new Vector2Dv1(back.getxPos(), back.getyPos()));
         setDirection(dir);
     }
-    public void updatePos(double x, double y){
-        this.xPos = x;
-        this.yPos = y;
-    }
+
 }

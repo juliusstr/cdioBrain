@@ -10,6 +10,8 @@ import org.opencv.highgui.HighGui;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.core.CvType;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 import java.awt.*;
 import java.io.IOException;
@@ -18,8 +20,15 @@ import java.util.ArrayList;
 public class ImgRecObstacleRunnable {
     public static void main(String[] args) throws IOException, BadDataException {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        Mat input = Imgcodecs.imread("test_img/WIN_20230315_10_32_53_Pro.jpg");
+        Mat input = new Mat(); //Imgcodecs.imread("test_img/WIN_20230315_10_32_53_Pro.jpg");
+
+        VideoCapture capture;
+        capture = new VideoCapture(2);
+        capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
+        capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
+
         ImgRecObstacle imgRecObstacle = new ImgRecObstacle();
+        capture.read(input);
         imgRecObstacle.findeObstacle(input);
 
 

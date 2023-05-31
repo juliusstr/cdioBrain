@@ -7,6 +7,7 @@ import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
+import misc.simulation.simulator;
 import nav.NavAlgoPhaseTwo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,9 +27,7 @@ public class NavAlgoPhaseTwoTest {
     String nextCommand;
     public static final double ANGLE_ERROR = 0.04;
     public static final double DISTANCE_ERROR = 20;
-    double currentSpeed;
-    double currentTurnSpeed;
-    String currentTurnDirection;
+
 
     @BeforeEach
     void setUp(){
@@ -58,90 +57,14 @@ public class NavAlgoPhaseTwoTest {
 
     @Test
     @DisplayName("simulate one ball")
-    void simpelCollectTest(){
+    void simpelCollectTest() throws NoHitException {
+        simulator simulator = new simulator();
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        double distanceToBall = Math.sqrt(Math.pow((target.getxPos()- simulationRobot.getxPos()), 2)+Math.pow((target.getyPos()- simulationRobot.getyPos()), 2));
-        while(distanceToBall > DISTANCE_ERROR){
-            try {
-                nextCommand = navPlanner.nextCommand();
-            } catch (NoHitException e) {
-                throw new RuntimeException(e);
-            }
-            currentSpeed = extractSpeed(nextCommand);
-            currentTurnSpeed = extractTurnSpeed(nextCommand);
-            currentTurnDirection = extractTurnDirection(nextCommand);
-            //simulationRobot.updatePos();
-            // TODO @Ulleren lav noget matematik så du får opdateret position ud fra turnspeed speed osv..
-        }
+        while(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()));
+        assertEquals(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()), false);
     }
-
-    public static double extractSpeed(String command) {
-        String[] parts = command.split(";");
-        String driveCommand = "";
-
-        for (String part : parts) {
-            if (part.startsWith("drive")) {
-                driveCommand = part;
-                break;
-            }
-        }
-
-        String[] driveTokens = driveCommand.split(" ");
-        for (String token : driveTokens) {
-            if (token.startsWith("-s")) {
-                String speedString = token.substring(2);
-                return Double.parseDouble(speedString);
-            }
-        }
-
-        return 0.0; // Default speed if not found
-    }
-
-    public static double extractTurnSpeed(String command) {
-        String[] parts = command.split(";");
-        String turnCommand = "";
-
-        for (String part : parts) {
-            if (part.startsWith("turn")) {
-                turnCommand = part;
-                break;
-            }
-        }
-
-        String[] turnTokens = turnCommand.split(" ");
-        for (String token : turnTokens) {
-            if (token.startsWith("-s")) {
-                String turnSpeedString = token.substring(2);
-                return Double.parseDouble(turnSpeedString);
-            }
-        }
-
-        return 0.0; // Default turn speed if not found
-    }
-    public static String extractTurnDirection(String command) {
-        String[] parts = command.split(";");
-        String turnCommand = "";
-
-        for (String part : parts) {
-            if (part.startsWith("turn")) {
-                turnCommand = part;
-                break;
-            }
-        }
-
-        String[] turnTokens = turnCommand.split(" ");
-        for (String token : turnTokens) {
-            if (token.equals("l")) {
-                return "Left";
-            } else if (token.equals("r")) {
-                return "Right";
-            }
-        }
-
-        return ""; // Default turn direction if not found
-    }
-
 }
+
 
 
