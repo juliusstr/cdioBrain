@@ -79,6 +79,3 @@ public class NavAlgoPhaseTwoTest {
         assertEquals(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()), false);
     }
 }
-
-
-
