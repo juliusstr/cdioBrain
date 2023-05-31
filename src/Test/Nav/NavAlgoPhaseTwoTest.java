@@ -66,6 +66,26 @@ public class NavAlgoPhaseTwoTest {
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         Lines line = navPlanner.hitOnCrossToTarget();
         assertTrue(line == null);
+
+
+    }
+
+    @Test
+    @DisplayName("Hit on critical circle")
+    void simpelHitOnCritCircleTest(){
+
+        Vector2Dv1 Corner = new Vector2Dv1(200,360/2);
+        Vector2Dv1 Path = new Vector2Dv1(target.getxPos()-simulationRobot.getxPos(),target.getyPos()-simulationRobot.getyPos());
+        SafetyCircle circle = new SafetyCircle(Corner, 20);
+        simulationRobot.setDirection(Path);
+        boolean crithit = circle.willHitCircle(simulationRobot);
+        if (crithit == true)
+            System.out.println("Circle is hit");
+        else
+            System.out.println("Circle is not hit");
+        
+
+
     }
 
     @Test
