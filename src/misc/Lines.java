@@ -5,57 +5,61 @@ import java.awt.*;
 
 public class Lines {
 
-    private Vector2Dv1 p1;
-    private Vector2Dv1 p2;
+    public Vector2Dv1 p1;
+    public Vector2Dv1 p2;
 
-    private Point hitPoint;
+    private Vector2Dv1 hitPoint;
 
 
-    public boolean hit(Vector2Dv1 pos, Vector2Dv1 dir) {
+    public boolean hit(Vector2Dv1 pos, Vector2Dv1 dir1) {
 
+        Vector2Dv1 dir = new Vector2Dv1(dir1);
         dir.normalize();
 
-        // Calculate the slope and y-intercept of the line
-        double slope = (p2.y - p1.y) / (p2.x - p1.x);
-        double intercept = p1.x - slope * p1.x;
+        double x1 = p1.x;
+        double y1 = p1.y;
+        double x2 = p2.x;
+        double y2 = p2.y;
 
-        double dx = p2.x - p1.x;
-        double dy = p2.y - p1.y;
+        // Define the position and direction vectors of the robot
+        double x_robot = pos.x;
+        double y_robot = pos.y;
+        double direction_x = dir.x;
+        double direction_y = dir.y;
 
-        // Step 3: Calculate the cross product of the direction vector and the vector perpendicular to the line
-        double cross = dx * dir.y - dy * dir.x;
+        // Calculate the intersection point between the line segment and the infinite line
+        double t;
+        double x_intersect, y_intersect;
 
-        // Step 4: Find the intersection point between the line and the vector of the robot
-        double t = (intercept - pos.y + slope * pos.x) / (slope * dir.y - dir.x);
-        double x_intersect = pos.x + t * dir.y;
-        double y_intersect = pos.y + t * dir.y;
-
-        // Check if the robot hits the line
-        if (cross == 0.0) {
-            System.err.println("The robot's direction is parallel to the line and will not hit it.");
-            return false;
-        } else if (t >= 0.0 && t <= 1.0) {
-            System.err.println("The robot will hit the line at (" + x_intersect + ", " + y_intersect + ").");
-            hitPoint = new Point((int) x_intersect, (int) y_intersect);
-            return true;
+        if (x1 == x2) {
+            // Handle vertical line segment
+            t = (x1 - x_robot) / direction_x;
+            y_intersect = y_robot + t * direction_y;
+            x_intersect = x1;
         } else {
-            System.err.println("The robot will not hit the line.");
-            return false;
+            // Calculate the intersection point
+            t = ((x1 - x_robot) * (y1 - y2) - (y1 - y_robot) * (x1 - x2)) /
+                    (direction_x * (y1 - y2) - direction_y * (x1 - x2));
+            x_intersect = x_robot + t * direction_x;
+            y_intersect = y_robot + t * direction_y;
         }
 
-        /*
-        // Calculate the x-coordinate of the point where the vector intersects the line
-        double xIntersection = (yIntercept - pos.y) / dir.y * dir.x + pos.x;
+        // Check if the intersection point lies within the line segment
+        boolean intersectsLineSegment = isBetween(x_intersect, x1, x2) && isBetween(y_intersect, y1, y2);
 
-        // Determine if the x-coordinate of the intersection point is between the x-coordinates of the two points
-        if ((p1.x <= xIntersection && xIntersection <= p2.x) || (p2.x <= xIntersection && xIntersection <= p1.x)) {
-            double yIntersection = slope * xIntersection + yIntercept;
-            hitPoint = new Point((int) xIntersection, (int) yIntersection);
+        if (intersectsLineSegment) {
+            //System.out.println("The robot will hit the line segment at (" + x_intersect + ", " + y_intersect + ").");
+            hitPoint = new Vector2Dv1( x_intersect, y_intersect);
             return true;
         } else {
+            //System.out.println("The robot will not hit the line segment.");
             return false;
-        }*/
+        }
+    }
 
+    // Helper method to check if a value is between two other values
+    private static boolean isBetween(double value, double min, double max) {
+        return value >= Math.min(min, max) && value <= Math.max(min, max);
     }
 
     @Override
@@ -73,12 +77,6 @@ public class Lines {
         hitPoint = null;
     }
 
-    public Point getHitPoint() throws NoDataException {
-        if (hitPoint == null){
-            throw new NoDataException("No hit on line!");
-        }
-        return hitPoint;
-    }
     public Vector2Dv1 getHitVector() throws NoDataException{
         if (hitPoint == null){
             throw new NoDataException("No hit on line!");

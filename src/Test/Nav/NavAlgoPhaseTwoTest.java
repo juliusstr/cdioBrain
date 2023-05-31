@@ -1,10 +1,7 @@
 package Test.Nav;
 
 import exceptions.NoHitException;
-import misc.Boundry;
-import misc.Cross;
-import misc.Robotv1;
-import misc.Vector2Dv1;
+import misc.*;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import misc.simulation.simulator;
@@ -17,6 +14,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NavAlgoPhaseTwoTest {
     Robotv1 simulationRobot;
@@ -43,16 +41,31 @@ public class NavAlgoPhaseTwoTest {
     }
 
     @Test
-    @DisplayName("Hit on cross")
+    @DisplayName("Simpel hit on cross")
     void simpelHitOnCrossTest(){
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        try {
-            navPlanner.nextCommand();
-        } catch (NoHitException e) {
-            throw new RuntimeException(e);
-        }
+        Lines line = navPlanner.hitOnCrossToTarget();
+        assertTrue(line.toString().equals("Lines{p1=Vector2d[295.0, 184.0], p2=Vector2d[295.0, 176.0], hitPoint=Vector2d[295.0, 180.0]}"));
+    }
+    @Test
+    @DisplayName("hit on cross")
+    void hitOnCrossTest(){
+        simulationRobot.setPos(100,250);
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        Lines line = navPlanner.hitOnCrossToTarget();
+        assertTrue(line.toString().equals("Lines{p1=Vector2d[316.0, 205.0], p2=Vector2d[316.0, 184.0], hitPoint=Vector2d[316.0, 199.6]}"));
+    }
 
+    @Test
+    @DisplayName("No hit on cross")
+    void noitOnCrossTest(){
+        simulationRobot.setPos(130,300);
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        Lines line = navPlanner.hitOnCrossToTarget();
+        assertTrue(line == null);
     }
 
     @Test

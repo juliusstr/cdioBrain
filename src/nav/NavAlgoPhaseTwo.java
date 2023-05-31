@@ -2,10 +2,7 @@ package nav;
 
 
 import exceptions.NoHitException;
-import misc.Boundry;
-import misc.Cross;
-import misc.Robotv1;
-import misc.Vector2Dv1;
+import misc.*;
 import misc.ball.Ball;
 
 import javax.sound.sampled.Line;
@@ -34,6 +31,15 @@ public class NavAlgoPhaseTwo {
         System.out.println(cross.hit(robot, dir));
         return "";
     };
+
+    public Lines hitOnCrossToTarget(){
+        Vector2Dv1 dir = target.getPosVector().getSubtracted(robot.getPosVector());
+        try {
+            return cross.hit(robot, dir);
+        } catch (NoHitException e) {
+            return null;
+        }
+    }
 
 
 }

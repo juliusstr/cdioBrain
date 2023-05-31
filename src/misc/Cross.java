@@ -64,12 +64,14 @@ public class Cross {
         ArrayList<Vector2Dv1> hits = new ArrayList<>();
 
 
-
-        for (int i = 0; i < lines.size(); i++) {
+        int size = lines.size();
+        for (int i = 0; i < size; i++) {
             try {
                 hits.add(lines.get(i).getHitVector());
             } catch (NoDataException e) { // no line so do not add to hit list
-                hits.remove(i--);
+                lines.remove(i);
+                i--;
+                size--;
             }
         }
 
@@ -79,6 +81,7 @@ public class Cross {
             double localDist = robot.getPosVector().getSubtracted(hits.get(j)).getLength();
             if (localDist < dist)
                 index = j;
+                dist = localDist;
         }
 
         return lines.get(index);
@@ -92,13 +95,5 @@ public class Cross {
         }
         return lines;
     }
-    public Lines avoid(Robotv1 robot, Vector2Dv1 dir){
-        Vector2Dv1 avoid_dir = new Vector2Dv1();
-/*
-        while(lines != 0) {
-            avoid_dir.getRotatedBy(Math.PI / 2);
-            hit(robot, avoid_dir);
-        }*/
-        return null;
-    }
+
 }
