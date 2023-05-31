@@ -3,6 +3,12 @@ package misc.simulation;
 public class commandExtractor {
     commandExtractor() {
     }
+
+    /**
+     * Extract turn direction from the command string.
+     * @param command The command send to robot
+     * @return String with the turn direction. Either "l" for left or "r" for right
+     */
     public String extractTurnDirection(String command) {
         String[] parts = command.split(";");
         String turnCommand = "";

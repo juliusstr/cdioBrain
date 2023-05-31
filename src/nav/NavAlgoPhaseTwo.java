@@ -15,6 +15,7 @@ public class NavAlgoPhaseTwo {
     private Cross cross;
     private Boundry boundry;
     private ArrayList<Ball> ballsToAvoid;
+    private ArrayList<Vector2Dv1> waypoints;
 
     public NavAlgoPhaseTwo(){}
 
@@ -66,5 +67,7 @@ public class NavAlgoPhaseTwo {
         return false;
     }
 
+    public void wayPointGenerator(){
 
+    }
 }

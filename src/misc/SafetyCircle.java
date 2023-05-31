@@ -1,5 +1,10 @@
 package misc;
 
+import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Vector;
+
 public class SafetyCircle {
 
     public static final int SAFE_ROBOT_WITH = 30;//todo fine tune meeeeeee
@@ -29,16 +34,18 @@ public class SafetyCircle {
 
         if (discriminant < 0) {
             // no real solutions, line does not intersect circle
-            return false;
+            return returnList;
         } else if (discriminant == 0) {
             // one real solution, line is tangent to circle
             double t = -b / (2*a);
             if (t < 0) {
                 // tangent point is behind robot, circle is not hit
-                return false;
+                return returnList;
             } else {
                 // tangent point is in front of robot, circle is grazed
-                return true;
+                Vector2Dv1 vector2D = new Vector2Dv1( t, calY(robot.getPosVector(), directionToTarget, t));
+                returnList.add(vector2D);
+                return returnList;
             }
         } else {
             // two real solutions, line intersects circle
@@ -46,25 +53,53 @@ public class SafetyCircle {
             double t2 = (-b - Math.sqrt(discriminant)) / (2*a);
             if (t1 < 0 && t2 < 0) {
                 // both intersection points are behind robot, circle is not hit
-                return false;
+                return returnList;
             } else if (t1 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t2 > 0) {
-                    return true;
+                    Vector2Dv1 vector2D = new Vector2Dv1( t2, calY(robot.getPosVector(), directionToTarget, t2));
+                    returnList.add(vector2D);
+                    return returnList;
                 } else {
-                    return false;
+                    return returnList;
                 }
             } else if (t2 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t1 > 0) {
-                    return true;
+                    Vector2Dv1 vector2D = new Vector2Dv1( t1, calY(robot.getPosVector(), directionToTarget, t1));
+                    returnList.add(vector2D);
+                    return returnList;
                 } else {
-                    return false;
+                    return returnList;
                 }
             } else {
                 // both intersection points are in front of robot, circle is hit
-                return true;
+                Vector2Dv1 vector2D = new Vector2Dv1( t1, calY(robot.getPosVector(), directionToTarget, t1));
+                returnList.add(vector2D);
+                vector2D = new Vector2Dv1( t2, calY(robot.getPosVector(), directionToTarget, t2));
+                returnList.add(vector2D);
+                return returnList;
             }
+        }
+    }
+
+
+    private double calY(Vector2Dv1 pos, Vector2Dv1 dir , double t){
+        if (dir.x != 0){
+            double step = (t- pos.x)/dir.x;
+            return pos.y + step * dir.y;
+        } else{
+            double x = pos.x;
+            double y1 = this.pos.y + Math.sqrt(Math.pow(radius, 2) - Math.pow(x - this.pos.x, 2));
+            double y2 = this.pos.y - Math.sqrt(Math.pow(radius, 2) - Math.pow(x - this.pos.x, 2));
+            double distY1 = pos.y - y1;
+            double distY2 = pos.y - y2;
+            if(distY1>distY2){
+                return y2;
+            } else {
+                return y1;
+            }
+
         }
     }
 
