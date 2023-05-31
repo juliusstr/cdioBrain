@@ -60,7 +60,7 @@ public class NavAlgoPhaseTwoTest {
 
     @Test
     @DisplayName("No hit on cross")
-    void noitOnCrossTest(){
+    void nohitOnCrossTest(){
         simulationRobot.setPos(130,300);
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
@@ -79,13 +79,7 @@ public class NavAlgoPhaseTwoTest {
         SafetyCircle circle = new SafetyCircle(Corner, 20);
         simulationRobot.setDirection(Path);
         boolean crithit = circle.willHitCircle(simulationRobot);
-        if (crithit == true)
-            System.out.println("Circle is hit");
-        else
-            System.out.println("Circle is not hit");
-        
-
-
+        assertTrue(crithit);
     }
 
     @Test
