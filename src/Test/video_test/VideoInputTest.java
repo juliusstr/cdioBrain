@@ -41,7 +41,7 @@ public class VideoInputTest {
     void videov2_1Test(){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         String filename = "test_videos/video_capture/cdio/vid_cap_v2.0.mp4";
-        capture = new VideoCapture(2);
+        capture = new VideoCapture(filename);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         if (!capture.isOpened()) {
