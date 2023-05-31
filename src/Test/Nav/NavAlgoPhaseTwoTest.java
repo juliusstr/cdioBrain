@@ -74,7 +74,8 @@ public class NavAlgoPhaseTwoTest {
         simulator simulator = new simulator();
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        while(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()));
+        int iterationCount = 10000;
+        while(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
         assertEquals(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()), false);
     }
 }
