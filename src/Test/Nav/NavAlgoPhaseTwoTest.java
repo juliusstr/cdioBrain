@@ -26,7 +26,9 @@ public class NavAlgoPhaseTwoTest {
     public static final double ANGLE_ERROR = 0.04;
     public static final double DISTANCE_ERROR = 20;
 
-
+    /**
+     * setUp for all the tests. Makes boundarys, a robot and a ball.
+     */
     @BeforeEach
     void setUp(){
         simulationRobot = new Robotv1(100, 360/2, new Vector2Dv1(1, 1));
@@ -82,6 +84,10 @@ public class NavAlgoPhaseTwoTest {
         assertTrue(crithit);
     }
 
+    /**
+     * Test to check if nav can navigate with simulating a ball and a robot.
+     * @throws NoHitException
+     */
     @Test
     @DisplayName("simulate one ball")
     void simpelCollectTest() throws NoHitException {

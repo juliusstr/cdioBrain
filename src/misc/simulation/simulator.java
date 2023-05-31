@@ -19,7 +19,8 @@ public class simulator {
      * @param target The target ball
      * @param simulationRobot The robot object to simulate a command on
      * @param nextCommand The command that was to be send to the robot
-     * @return true if a command has been run. false if the robot is on the ball.
+     * @return  true if a command has been run.
+     *          false if the robot is on the ball.
      */
     public Boolean updatePos(Ball target, Robotv1 simulationRobot, String nextCommand) {
         double distanceToBall = Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2));
