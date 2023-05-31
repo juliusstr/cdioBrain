@@ -1,11 +1,7 @@
 package misc;
 
-import exceptions.NoDataException;
-import exceptions.NoHitException;
-import misc.Lines;
-import misc.Vector2Dv1;
+import exceptions.*;
 
-import javax.sound.sampled.Line;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -16,7 +12,7 @@ public class Cross {
     public static final int SHORT_SIDE_LENGTH = CROSS_LENGTH - OFFSET_LENGTH;
 
     public ArrayList<Point> crossPoint;
-    public ArrayList<Lines> crossLines;
+    public ArrayList<Line> crossLines;
     public Vector2Dv1 vec;
     public Vector2Dv1 pos;
 
@@ -52,49 +48,73 @@ public class Cross {
         crossLines = new ArrayList<>();
         for (i = 0; i < crossPoint.size(); i++) {
             if (i < crossPoint.size() - 1) {
-                crossLines.add(new Lines(crossPoint.get(i), crossPoint.get(i + 1)));
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(i + 1)));
             } else {
-                crossLines.add(new Lines(crossPoint.get(i), crossPoint.get(0)));
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(0)));
             }
         }
 
     }
 
-    public Lines hit(Robotv1 robot, Vector2Dv1 dir) throws NoHitException {
-        ArrayList<Lines> lines = hits(robot, dir);
-        if (lines.size() == 0){
+    /**
+     * Checks if there is a hit against the cross, or any safety circles in the cross.
+     * @param robot
+     * @param directionToTarget
+     * @return  True if there is a hit
+     *          False if there is no hit
+     */
+    public void hit(Robotv1 robot, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
+
+        ArrayList<Line> lines = hits(robot, directionToTarget);//hits in line
+        if (lines.size() != 0){
             hitreg = Boolean.FALSE;
-            throw new NoHitException("No lines in the cross was hit!");
-        }
-        ArrayList<Vector2Dv1> hits = new ArrayList<>();
-
-
-        int size = lines.size();
-        for (int i = 0; i < size; i++) {
-            try {
-                hits.add(lines.get(i).getHitVector());
-            } catch (NoDataException e) { // no line so do not add to hit list
-                lines.remove(i);
-                i--;
-                size--;
+            ArrayList<Vector2Dv1> hits = new ArrayList<>();
+            int size = lines.size();
+            for (int i = 0; i < size; i++) {
+                try {
+                    hits.add(lines.get(i).getHitVector());
+                } catch (NoDataException e) { // no line so do not add to hit list
+                    lines.remove(i);
+                    i--;
+                    size--;
+                }
             }
-        }
 
-        int index = -1;
-        double dist = Double.MAX_VALUE;
-        for (int j = 0; j < lines.size(); j++) {
-            double localDist = robot.getPosVector().getSubtracted(hits.get(j)).getLength();
-            if (localDist < dist)
-                index = j;
+            int index = -1;
+            double dist = Double.MAX_VALUE;
+            for (int j = 0; j < lines.size(); j++) {
+                double localDist = robot.getPosVector().getSubtracted(hits.get(j)).getLength();
+                if (localDist < dist)
+                    index = j;
                 dist = localDist;
+            }
+            Line closestLine = lines.get(index);
+            throw new LineReturnException(closestLine);
         }
 
-        return lines.get(index);
+        for (Point point : crossPoint) { // hits in zones
+            SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ROBOT_WITH);
+            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(robot, directionToTarget);
+            if(intercepts.size() != 0){
+                int index = -1;
+                double dist = Double.MAX_VALUE;
+                for (int i = 0; i < intercepts.size(); i++) {
+                    double temp = robot.getPosVector().distance(intercepts.get(i));
+                    if(dist>temp){
+                        index = i;
+                        dist = temp;
+                    }
+                }
+                throw new Vector2Dv1ReturnException(intercepts.get(index));
+            }
+
+        }
+        throw new NoHitException();
     }
 
-    public ArrayList<Lines> hits(Robotv1 robot, Vector2Dv1 dir) {
-        ArrayList<Lines> lines = new ArrayList<>();
-        for (Lines line : crossLines) {
+    public ArrayList<Line> hits(Robotv1 robot, Vector2Dv1 dir) {
+        ArrayList<Line> lines = new ArrayList<>();
+        for (Line line : crossLines) {
             if (line.hit(robot.getPosVector(), dir)) {
                 lines.add(line);
             }
@@ -102,7 +122,9 @@ public class Cross {
         return lines;
     }
 
-    public double avoid(Robotv1 robot, Vector2Dv1 dir) throws NoHitException {
+
+    //todo finde usages
+    /*public double avoid(Robotv1 robot, Vector2Dv1 dir) throws NoHitException {
         Vector2Dv1 avoid_dir = new Vector2Dv1(dir);
 
         while(hitreg == Boolean.TRUE) {
@@ -110,5 +132,5 @@ public class Cross {
             hit(robot, avoid_dir);
         }
         return rotate_angle;
-    }
+    }*/
 }

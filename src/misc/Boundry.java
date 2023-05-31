@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Boundry {
 
-    public ArrayList<Lines> bound;
+    public ArrayList<Line> bound;
     public ArrayList<Point> points;
     public double scale;
 
@@ -66,10 +66,10 @@ public class Boundry {
         points.add(d);
 
 
-        Lines ab = new Lines (a, b);
-        Lines bc = new Lines (b, c);
-        Lines cd = new Lines (c, d);
-        Lines da = new Lines (d, a);
+        Line ab = new Line(a, b);
+        Line bc = new Line(b, c);
+        Line cd = new Line(c, d);
+        Line da = new Line(d, a);
         bound = new ArrayList<>();
         bound.add(ab);
         bound.add(bc);

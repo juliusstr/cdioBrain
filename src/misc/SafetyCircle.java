@@ -2,19 +2,22 @@ package misc;
 
 public class SafetyCircle {
 
-    Vector2Dv1 pos;
-    double radius;
+    public static final int SAFE_ROBOT_WITH = 30;//todo fine tune meeeeeee
+
+    public Vector2Dv1 pos;
+    public double radius;
 
     public SafetyCircle(Vector2Dv1 pos, double radius){
         this.pos = pos;
         this.radius = radius;
     }
 
-    public boolean willHitCircle(Robotv1 robot) {
+    public ArrayList<Vector2Dv1> willHitCircle(Robotv1 robot, Vector2Dv1 directionToTarget) {
+        ArrayList<Vector2Dv1> returnList = new ArrayList<>();
         double xr = robot.getxPos(); // x-coordinate of robot position
         double yr = robot.getyPos(); // y-coordinate of robot position
-        double dx = robot.getDirection().x; // x-component of robot direction
-        double dy = robot.getDirection().y; // y-component of robot direction
+        double dx = directionToTarget.x; // x-component of robot direction
+        double dy = directionToTarget.y; // y-component of robot direction
         double xc = pos.x; // x-coordinate of circle center
         double yc = pos.y; // y-coordinate of circle center
 

@@ -47,8 +47,7 @@ public class NavAlgoPhaseTwoTest {
     void simpelHitOnCrossTest(){
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        Lines line = navPlanner.hitOnCrossToTarget();
-        assertTrue(line.toString().equals("Lines{p1=Vector2d[295.0, 184.0], p2=Vector2d[295.0, 176.0], hitPoint=Vector2d[295.0, 180.0]}"));
+        assertTrue(navPlanner.hitOnCrossToTarget());
     }
     @Test
     @DisplayName("hit on cross")
@@ -56,18 +55,16 @@ public class NavAlgoPhaseTwoTest {
         simulationRobot.setPos(100,250);
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        Lines line = navPlanner.hitOnCrossToTarget();
-        assertTrue(line.toString().equals("Lines{p1=Vector2d[316.0, 205.0], p2=Vector2d[316.0, 184.0], hitPoint=Vector2d[316.0, 199.6]}"));
+        assertTrue(navPlanner.hitOnCrossToTarget());
     }
 
     @Test
     @DisplayName("No hit on cross")
     void nohitOnCrossTest(){
-        simulationRobot.setPos(130,300);
+        simulationRobot.setPos(470,340);
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        Lines line = navPlanner.hitOnCrossToTarget();
-        assertTrue(line == null);
+        assertTrue(!navPlanner.hitOnCrossToTarget());
 
 
     }
@@ -79,9 +76,8 @@ public class NavAlgoPhaseTwoTest {
         Vector2Dv1 Corner = new Vector2Dv1(200,360/2);
         Vector2Dv1 Path = new Vector2Dv1(target.getxPos()-simulationRobot.getxPos(),target.getyPos()-simulationRobot.getyPos());
         SafetyCircle circle = new SafetyCircle(Corner, 20);
-        simulationRobot.setDirection(Path);
-        boolean crithit = circle.willHitCircle(simulationRobot);
-        assertTrue(crithit);
+        //simulationRobot.setDirection(Path);
+        assertTrue(circle.willHitCircle(simulationRobot, Path).size() != 0);
     }
 
     /**

@@ -1,13 +1,13 @@
 package nav;
 
 
+import exceptions.LineReturnException;
 import exceptions.NoHitException;
+import exceptions.Vector2Dv1ReturnException;
 import misc.*;
 import misc.ball.Ball;
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class NavAlgoPhaseTwo {
     private Robotv1 robot;
@@ -26,19 +26,44 @@ public class NavAlgoPhaseTwo {
         this.ballsToAvoid = ballsToAvoid;
     }
 
-    public String nextCommand() throws NoHitException {
+    public String nextCommand() {
         Vector2Dv1 dir = target.getPosVector().getSubtracted(robot.getPosVector());
-        System.out.println(cross.hit(robot, dir));
+        try {
+            cross.hit(robot, dir);
+        } catch (LineReturnException e) {
+            System.out.println(e.line.toString());;
+        } catch (Vector2Dv1ReturnException e) {
+            System.out.println(e.vector2D.toString());
+        } catch (NoHitException e) {
+            System.out.println("No hit");
+        }
         return "";
     };
 
-    public Lines hitOnCrossToTarget(){
+    /**
+     * Checks if there is a hit on the cross
+     * @return  True if there is a hit
+     *          False if there is no hit
+     */
+    /*TODO @Ulleren OPTIMERING, lave det så der bliver returneret en line i stedet for en bool om der er hit.
+        Det er så denne line og dens safety circles der skal testes fremover..
+        return evt også en cirkel. Forskellige returerings typer kan laves ved exceptions.
+     */
+    public boolean hitOnCrossToTarget(){
         Vector2Dv1 dir = target.getPosVector().getSubtracted(robot.getPosVector());
         try {
-            return cross.hit(robot, dir);
+            cross.hit(robot, dir);
+        } catch (LineReturnException e) {
+            System.out.println(e.line.toString());;
+            return true;
+        } catch (Vector2Dv1ReturnException e) {
+            System.out.println(e.vector2D.toString());
+            return true;
         } catch (NoHitException e) {
-            return null;
+            System.out.println("No hit");
+            return false;
         }
+        return false;
     }
 
 

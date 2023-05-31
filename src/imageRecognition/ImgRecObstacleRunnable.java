@@ -2,6 +2,7 @@ package imageRecognition;
 
 import exceptions.BadDataException;
 import imageRecognition.ImgRecObstacle;
+import misc.Vector2Dv1;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;

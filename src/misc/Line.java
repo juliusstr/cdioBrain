@@ -3,7 +3,7 @@ import exceptions.NoDataException;
 
 import java.awt.*;
 
-public class Lines {
+public class Line {
 
     public Vector2Dv1 p1;
     public Vector2Dv1 p2;
@@ -71,7 +71,7 @@ public class Lines {
                 '}';
     }
 
-    public Lines(Point p1, Point p2){
+    public Line(Point p1, Point p2){
         this.p1 = new Vector2Dv1(p1);
         this.p2 = new Vector2Dv1(p2);
         hitPoint = null;
