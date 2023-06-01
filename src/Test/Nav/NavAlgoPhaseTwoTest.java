@@ -5,7 +5,6 @@ import misc.*;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import misc.simulation.simulator;
-import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -92,8 +91,10 @@ public class NavAlgoPhaseTwoTest {
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         int iterationCount = 10000;
-        while(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0 && navPlanner.getWaypoints().size() > 0);
-        assertEquals(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()), false);
+        while(Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2)) > DISTANCE_ERROR && iterationCount-- > 0 && navPlanner.getWaypoints().size() > 0) {
+            simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand());
+        }
+        assertEquals(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()), false);
     }
 
     @Test
@@ -104,7 +105,7 @@ public class NavAlgoPhaseTwoTest {
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
         int iterationCount = 10000;
-        while(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
-        assertEquals(false, simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
+        while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
+        assertEquals(false, simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
     }
 }
