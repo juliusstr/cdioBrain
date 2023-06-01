@@ -70,4 +70,26 @@ public class NavAlgoPhaseTwo {
     public void wayPointGenerator(){
 
     }
+
+    public ArrayList<Vector2Dv1> shortestRoute(ArrayList<ArrayList<Vector2Dv1>> routes){
+        int index = -1;
+        double smallest_length = Double.MAX_VALUE;
+
+
+        for(int i = 0; i < routes.size(); i++){
+            double length = robot.getPosVector().distance(routes.get(i).get(0));
+            for(int j = 1; j < routes.get(i).size(); j++){
+                length+=routes.get(i).get(j-1).distance(routes.get(i).get(j));
+            }
+            if(length<smallest_length){
+                smallest_length = length;
+                index = i;
+            }
+        }
+
+       return routes.get(index);
+    }
+
+
+
 }
