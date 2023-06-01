@@ -1,6 +1,6 @@
 package misc;
 
-import exceptions.NoGoodCircleData;
+import exceptions.NoGoodCircleDataException;
 import misc.ball.Ball;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class BallStabilizer {
         }
     }
 
-    public ArrayList<Ball> getStableRobotCircels() throws NoGoodCircleData {
+    public ArrayList<Ball> getStableRobotCircels() throws NoGoodCircleDataException {
         ArrayList<Ball> circle = new ArrayList<>();
         //adds the newest black ball to the list if there is more than 2 black circles
         int count = 0;
@@ -72,7 +72,7 @@ public class BallStabilizer {
         if (count >= 2) {
             circle.add(blackCircle.get(i));
         } else {
-            throw new NoGoodCircleData("No good black circles found");
+            throw new NoGoodCircleDataException("No good black circles found");
         }
 
         count = 0;
@@ -86,16 +86,16 @@ public class BallStabilizer {
         if(count >= 2) {
             circle.add(redCircle.get(i));
         } else {
-            throw new NoGoodCircleData("No good red circles found");
+            throw new NoGoodCircleDataException("No good red circles found");
         }
         return  circle;
     }
 
 
-    public ArrayList<Ball> getStableBalls() throws NoGoodCircleData {
+    public ArrayList<Ball> getStableBalls() throws NoGoodCircleDataException {
         ArrayList<Ball> balls = new ArrayList<>();
         if (balls2d.size() < 2){
-            throw new NoGoodCircleData("Not enough data");
+            throw new NoGoodCircleDataException("Not enough data");
         }
         for (int i = 0; i < balls2d.size(); i++) {
             ArrayList<Ball> ball1d = balls2d.get(i);

@@ -58,14 +58,14 @@ public class Cross {
 
     /**
      * Checks if there is a hit against the cross, or any safety circles in the cross.
-     * @param robot
+     * @param robotPos
      * @param directionToTarget
      * @return  True if there is a hit
      *          False if there is no hit
      */
-    public void hit(Robotv1 robot, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
+    public void hit(Vector2Dv1 robotPos, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
 
-        ArrayList<Line> lines = hits(robot, directionToTarget);//hits in line
+        ArrayList<Line> lines = hits(robotPos, directionToTarget);//hits in line
         if (lines.size() != 0){
             hitreg = Boolean.FALSE;
             ArrayList<Vector2Dv1> hits = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Cross {
             int index = -1;
             double dist = Double.MAX_VALUE;
             for (int j = 0; j < lines.size(); j++) {
-                double localDist = robot.getPosVector().getSubtracted(hits.get(j)).getLength();
+                double localDist = robotPos.getSubtracted(hits.get(j)).getLength();
                 if (localDist < dist)
                     index = j;
                 dist = localDist;
@@ -94,12 +94,12 @@ public class Cross {
 
         for (Point point : crossPoint) { // hits in zones
             SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ROBOT_WITH);
-            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(robot, directionToTarget);
+            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(robotPos, directionToTarget);
             if(intercepts.size() != 0){
                 int index = -1;
                 double dist = Double.MAX_VALUE;
                 for (int i = 0; i < intercepts.size(); i++) {
-                    double temp = robot.getPosVector().distance(intercepts.get(i));
+                    double temp = robotPos.distance(intercepts.get(i));
                     if(dist>temp){
                         index = i;
                         dist = temp;
@@ -112,25 +112,64 @@ public class Cross {
         throw new NoHitException();
     }
 
-    public ArrayList<Line> hits(Robotv1 robot, Vector2Dv1 dir) {
+    public ArrayList<Line> hits(Vector2Dv1 robotPos, Vector2Dv1 dir) {
         ArrayList<Line> lines = new ArrayList<>();
         for (Line line : crossLines) {
-            if (line.hit(robot.getPosVector(), dir)) {
+            if (line.hit(robotPos, dir)) {
                 lines.add(line);
             }
         }
         return lines;
     }
 
+    /**
+     * Gets the exit point of the intercept with the safeZone
+     * @param pos Position vector. E.G. robot or waypoint.
+     * @param dir Diriction to look for intercepts.
+     * @return Vector for exit of safeZone
+     * @throws NoHitException Thrown when no intercept.
+     */
+    public Vector2Dv1 safeZoneExit(Vector2Dv1 pos, Vector2Dv1 dir) throws NoHitException {
+        //gets the closest intercept center from pos.
+        ArrayList<Point> interceptZoneCenters = new ArrayList<>();
+        for (Point point : crossPoint) { // hits in zones
+            SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ZONE_RADIUS);
+            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(pos, dir);
+            if(intercepts.size() != 0){
+                interceptZoneCenters.add(point);
+            }
 
-    //todo finde usages
-    /*public double avoid(Robotv1 robot, Vector2Dv1 dir) throws NoHitException {
-        Vector2Dv1 avoid_dir = new Vector2Dv1(dir);
-
-        while(hitreg == Boolean.TRUE) {
-            avoid_dir.getRotatedBy(rotate_angle * (-1));
-            hit(robot, avoid_dir);
         }
-        return rotate_angle;
-    }*/
+        if (interceptZoneCenters.size() == 0)
+            throw new NoHitException("No intercept with safeZones!");
+
+        int index = -1;
+        double dist = Double.MAX_VALUE;
+        for (int i = 0; i < interceptZoneCenters.size(); i++) {
+            double temp = pos.distance(new Vector2Dv1(interceptZoneCenters.get(i)));
+            if(dist>temp){
+                index = i;
+                dist = temp;
+            }
+        }
+        Point point = interceptZoneCenters.get(index);
+
+        //getes the furthest intercept form pos
+        SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ZONE_RADIUS);
+        ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(pos, dir);
+        if(intercepts.size() != 0) {//todo remove me if i work. catch above.
+            index = -1;
+            dist = Double.MIN_VALUE;
+            for (int i = 0; i < intercepts.size(); i++) {
+                double temp = pos.distance(intercepts.get(i));
+                if (dist < temp) {
+                    index = i;
+                    dist = temp;
+                }
+            }
+            return intercepts.get(index);
+
+        }
+        throw new NoHitException("No intercept with safeZone!");
+    }
 }

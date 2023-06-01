@@ -77,7 +77,7 @@ public class NavAlgoPhaseTwoTest {
         Vector2Dv1 Path = new Vector2Dv1(target.getxPos()-simulationRobot.getxPos(),target.getyPos()-simulationRobot.getyPos());
         SafetyCircle circle = new SafetyCircle(Corner, 20);
         //simulationRobot.setDirection(Path);
-        assertTrue(circle.willHitCircle(simulationRobot, Path).size() != 0);
+        assertTrue(circle.willHitCircle(simulationRobot.getPosVector(), Path).size() != 0);
     }
 
     /**

@@ -46,7 +46,7 @@ public class Boundry {
             b = vectors.get(1).getPoint();
             d = vectors.get(0).getPoint();
         }
-
+        //todo add scale avg to C-D and y axis
         scale = 1800/a.distance(b);
 
         a.x *= scale;
