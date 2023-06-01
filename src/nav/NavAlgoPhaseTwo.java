@@ -27,7 +27,6 @@ public class NavAlgoPhaseTwo {
 
     public NavAlgoPhaseTwo(){}
 
-
     public void updateNav(Robotv1 robot, Ball target, Cross cross, Boundry boundry, ArrayList<Ball> ballsToAvoid){
         this.robot = robot;
         this.target = target;
@@ -35,8 +34,6 @@ public class NavAlgoPhaseTwo {
         this.boundry = boundry;
         this.ballsToAvoid = ballsToAvoid;
     }
-
-
 
     public String nextCommand() {
         Vector2Dv1 dir = target.getPosVector().getSubtracted(robot.getPosVector());
@@ -179,6 +176,26 @@ public class NavAlgoPhaseTwo {
         } while (waypoint == null);
         return waypoint;
     }
+
+    public ArrayList<Vector2Dv1> shortestRoute(ArrayList<ArrayList<Vector2Dv1>> routes){
+        int index = -1;
+        double smallest_length = Double.MAX_VALUE;
+
+
+        for(int i = 0; i < routes.size(); i++){
+            double length = robot.getPosVector().distance(routes.get(i).get(0));
+            for(int j = 1; j < routes.get(i).size(); j++){
+                length+=routes.get(i).get(j-1).distance(routes.get(i).get(j));
+            }
+            if(length<smallest_length){
+                smallest_length = length;
+                index = i;
+            }
+        }
+
+       return routes.get(index);
+    }
+
 
 
 }
