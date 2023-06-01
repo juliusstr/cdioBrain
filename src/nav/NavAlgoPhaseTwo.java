@@ -96,19 +96,6 @@ public class NavAlgoPhaseTwo {
      * Index 0 in list will be next waypoint for straight line nav on the way to target.
      */
     public void wayPointGenerator() throws SizeLimitExceededException, TimeoutException {
-        /*
-        /hit to target?
-            yes: rotate dir both + and -
-                Stille hit?
-                    no: set waypoint to exit of saftyzone
-                    yes: continue to rotate in minus and plus.
-            /no : go with strait line så set target ass waypoint
-
-
-            note:
-                THe function should return list of lists containing waypoints.
-                Then an evaluator will choose the actual rout.
-         */
         ArrayList<ArrayList<Vector2Dv1>> routes = new ArrayList<>();
 
 
@@ -145,6 +132,7 @@ public class NavAlgoPhaseTwo {
         if(watchdog < WATCHDOG_MAX_TURNS_IN_ROUTE)
             throw new SizeLimitExceededException("Too many turns in cc route");
         routes.add(route);
+        waypoints = shortestRoute(routes);
     }
 
     /**
