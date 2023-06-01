@@ -22,9 +22,9 @@ public class simulator {
      * @return  true if a command has been run.
      *          false if the robot is on the ball.
      */
-    public Boolean updatePos(Ball target, Robotv1 simulationRobot, String nextCommand) {
-        double distanceToBall = Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2));
-        if(distanceToBall > DISTANCE_ERROR) {
+    public Boolean updatePos(Vector2Dv1 target, Robotv1 simulationRobot, String nextCommand) {
+        double distanceToBall = Math.sqrt(Math.pow((target.x - simulationRobot.getxPos()), 2) + Math.pow((target.y - simulationRobot.getyPos()), 2));
+        if(distanceToBall >= DISTANCE_ERROR) {
             currentSpeed = this.commandExtractor.extractSpeed(nextCommand);
             currentTurnSpeed = this.commandExtractor.extractTurnSpeed(nextCommand);
             currentTurnDirection = this.commandExtractor.extractTurnDirection(nextCommand);

@@ -5,6 +5,7 @@ import misc.*;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import misc.simulation.simulator;
+import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class NavAlgoPhaseTwoTest {
         boundryList.add(new Vector2Dv1(610, 20));
         boundryList.add(new Vector2Dv1(610, 340));
         boundry = new Boundry(boundryList);
-        target = new Ball(400, 360/2, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        target = new Ball(400, 360/4, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
     }
 
     @Test
@@ -91,7 +92,19 @@ public class NavAlgoPhaseTwoTest {
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         int iterationCount = 10000;
-        while(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
-        assertEquals(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()), false);
+        while(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0 && navPlanner.getWaypoints().size() > 0);
+        assertEquals(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()), false);
+    }
+
+    @Test
+    @DisplayName("Test next command")
+    void nextCommandTest(){
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
+        int iterationCount = 10000;
+        while(simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
+        assertEquals(false, simulator.updatePos(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
     }
 }
