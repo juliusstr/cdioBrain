@@ -1,6 +1,5 @@
 package misc.simulation;
 
-import exceptions.NoHitException;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
@@ -22,9 +21,34 @@ public class simulator {
      * @return  true if a command has been run.
      *          false if the robot is on the ball.
      */
-    public Boolean updatePos(Ball target, Robotv1 simulationRobot, String nextCommand) {
-        double distanceToBall = Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2));
-        if(distanceToBall > DISTANCE_ERROR) {
+    public Boolean updatePosSimple(Vector2Dv1 target, Robotv1 simulationRobot, String nextCommand) {
+        double distanceToBall = Math.sqrt(Math.pow((target.x - simulationRobot.getxPos()), 2) + Math.pow((target.y - simulationRobot.getyPos()), 2));
+        if(distanceToBall >= DISTANCE_ERROR) {
+            currentSpeed = this.commandExtractor.extractSpeed(nextCommand);
+            currentTurnSpeed = this.commandExtractor.extractTurnSpeed(nextCommand);
+            currentTurnDirection = this.commandExtractor.extractTurnDirection(nextCommand);
+            double deltaAngle;
+
+            if(currentTurnDirection == "l"){
+                deltaAngle = currentTurnSpeed * turnSpeedMultiplier;
+            } else if (currentTurnDirection == "r") {
+                deltaAngle = -currentTurnSpeed * turnSpeedMultiplier;
+            } else {
+                deltaAngle = 0;
+            }
+            simulationRobot.setDirection(Vector2Dv1.toCartesian(1, simulationRobot.getDirection().getAngle() - deltaAngle/2));
+            simulationRobot.setxPos(simulationRobot.getxPos() + (Math.cos(simulationRobot.getDirection().getAngle())*currentSpeed));
+            simulationRobot.setyPos(simulationRobot.getyPos() + (Math.sin(simulationRobot.getDirection().getAngle())*currentSpeed));
+            System.out.printf("Robot moved to: x=%d, y=%d \n", ((int) simulationRobot.getxPos()), (int)simulationRobot.getyPos());
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public Boolean updateWaypointPos(Vector2Dv1 waypoint, Robotv1 simulationRobot, String nextCommand) {
+        double distanceToBall = Math.sqrt(Math.pow((waypoint.x - simulationRobot.getxPos()), 2) + Math.pow((waypoint.y - simulationRobot.getyPos()), 2));
+        if(distanceToBall >= DISTANCE_ERROR) {
             currentSpeed = this.commandExtractor.extractSpeed(nextCommand);
             currentTurnSpeed = this.commandExtractor.extractTurnSpeed(nextCommand);
             currentTurnDirection = this.commandExtractor.extractTurnDirection(nextCommand);

@@ -22,10 +22,10 @@ public class commandExtractor {
 
         String[] turnTokens = turnCommand.split(" ");
         for (String token : turnTokens) {
-            if (token.equals("l")) {
-                return "Left";
-            } else if (token.equals("r")) {
-                return "Right";
+            if (token.equals("-l")) {
+                return "l";
+            } else if (token.equals("-r")) {
+                return "r";
             }
         }
 
