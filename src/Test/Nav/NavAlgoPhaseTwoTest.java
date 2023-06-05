@@ -25,8 +25,7 @@ public class NavAlgoPhaseTwoTest {
     Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
     String nextCommand;
-    public static final double ANGLE_ERROR = 0.04;
-    public static final double DISTANCE_ERROR = 20;
+    public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.DISTANCE_ERROR;
 
     /**
      * setUp for all the tests. Makes boundarys, a robot and a ball.
@@ -41,7 +40,7 @@ public class NavAlgoPhaseTwoTest {
         boundryList.add(new Vector2Dv1(610, 20));
         boundryList.add(new Vector2Dv1(610, 340));
         boundry = new Boundry(boundryList);
-        target = new Ball(400, 360/4, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        target = new Ball(400, 360/2, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
     }
 
     @Test

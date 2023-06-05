@@ -54,6 +54,10 @@ public class NavAlgoPhaseTwo {
 
         //*** Close enough ***
         if(distDelta < DISTANCE_ERROR){
+            if (waypoints.size() > 1){
+                waypoints.remove(0);
+                return nextCommand();
+            }
             System.out.printf("On ball\n");
             return "stop -t -d";
         }
