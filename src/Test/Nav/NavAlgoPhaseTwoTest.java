@@ -10,8 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.naming.SizeLimitExceededException;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -93,5 +95,42 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 10000;
         while(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
         assertEquals(simulator.updatePos(this.target, simulationRobot, navPlanner.nextCommand()), false);
+    }
+
+    /**
+     * test for straightline route.
+     */
+    @Test
+    @DisplayName("Waypoint generator simple test")
+    void simpleWaypointGenTest(){
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        target.setYPos(target.getyPos()+1);
+        target.setXPos(20);
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        try {
+            navPlanner.wayPointGenerator();
+        } catch (SizeLimitExceededException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(true);
+    }
+
+    @Test
+    @DisplayName("Waypoint generator test")
+    void WaypointGenTest(){
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        try {
+            navPlanner.wayPointGenerator();
+        } catch (SizeLimitExceededException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(navPlanner.waypoints);
+        assertTrue(true);
     }
 }

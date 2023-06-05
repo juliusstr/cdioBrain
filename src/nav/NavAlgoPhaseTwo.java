@@ -23,7 +23,7 @@ public class NavAlgoPhaseTwo {
     private Cross cross;
     private Boundry boundry;
     private ArrayList<Ball> ballsToAvoid;
-    private ArrayList<Vector2Dv1> waypoints;
+    public ArrayList<Vector2Dv1> waypoints;
 
     public NavAlgoPhaseTwo(){}
 
@@ -33,6 +33,7 @@ public class NavAlgoPhaseTwo {
         this.cross = cross;
         this.boundry = boundry;
         this.ballsToAvoid = ballsToAvoid;
+        waypoints = new ArrayList<>();
     }
 
     public String nextCommand() {
@@ -63,29 +64,45 @@ public class NavAlgoPhaseTwo {
         try {
             cross.hit(robot.getPosVector(), dir);
         } catch (LineReturnException e) {
-            System.out.println(e.line.toString());;
+            //System.out.println(e.line.toString());;
             return true;
         } catch (Vector2Dv1ReturnException e) {
-            System.out.println(e.vector2D.toString());
+            //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
-            System.out.println("No hit");
+            //System.out.println("No hit");
             return false;
         }
         return false;
     }
+    public boolean hitOnCrossToTargetFromPosAndDir(Vector2Dv1 pos,Vector2Dv1 dir){
+        try {
+            cross.hit(pos, dir);
+        } catch (LineReturnException e) {
+            //System.out.println(e.line.toString());;
+            return true;
+        } catch (Vector2Dv1ReturnException e) {
+            //System.out.println(e.vector2D.toString());
+            return true;
+        } catch (NoHitException e) {
+            //System.out.println("No hit");
+            return false;
+        }
+        return false;
+    }
+
     public boolean hitOnCrossToTargetVectorFromPos(Vector2Dv1 pos,Vector2Dv1 target){
         Vector2Dv1 dir = target.getSubtracted(pos);
         try {
             cross.hit(robot.getPosVector(), dir);
         } catch (LineReturnException e) {
-            System.out.println(e.line.toString());;
+            //System.out.println(e.line.toString());;
             return true;
         } catch (Vector2Dv1ReturnException e) {
-            System.out.println(e.vector2D.toString());
+            //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
-            System.out.println("No hit");
+            //System.out.println("No hit");
             return false;
         }
         return false;
@@ -101,13 +118,14 @@ public class NavAlgoPhaseTwo {
 
         Vector2Dv1 localTargetVector = target.getPosVector();
         boolean hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
-        if(hitToTarget){
+        if(!hitToTarget){
             waypoints.add(target.getPosVector());
+            return;
         }
 
         //first cc around obstruction. first turn
         ArrayList<Vector2Dv1> route = new ArrayList<>();
-        route.add(rotateVector(robot.getPosVector(),localTargetVector.clone(), -1));
+        route.add(rotateVector(robot.getPosVector(),localTargetVector, -1));
         //other turns
         localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
         int watchdog = 0;
@@ -115,13 +133,15 @@ public class NavAlgoPhaseTwo {
             route.add(rotateVector(route.get(route.size()-1),localTargetVector, 1));
             localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
         }
-        if(watchdog < WATCHDOG_MAX_TURNS_IN_ROUTE)
+        if(watchdog > WATCHDOG_MAX_TURNS_IN_ROUTE)
             throw new SizeLimitExceededException("Too many turns in cc route");
+        route.add(target.getPosVector());
         routes.add(route);
 
         //first c around obstruction. first turn
+        localTargetVector = target.getPosVector();
         route = new ArrayList<>();
-        route.add(rotateVector(robot.getPosVector(),localTargetVector.clone(), 1));
+        route.add(rotateVector(robot.getPosVector(),localTargetVector, 1));
         //other turns
         localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
         watchdog = 0;
@@ -129,8 +149,9 @@ public class NavAlgoPhaseTwo {
             route.add(rotateVector(route.get(route.size()-1),localTargetVector, -1));
             localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
         }
-        if(watchdog < WATCHDOG_MAX_TURNS_IN_ROUTE)
+        if(watchdog > WATCHDOG_MAX_TURNS_IN_ROUTE)
             throw new SizeLimitExceededException("Too many turns in cc route");
+        route.add(target.getPosVector());
         routes.add(route);
         waypoints = shortestRoute(routes);
     }
@@ -144,22 +165,22 @@ public class NavAlgoPhaseTwo {
      * @exception TimeoutException Thrown if run local watchdog is triggered
      */
     private Vector2Dv1 rotateVector(Vector2Dv1 pos, Vector2Dv1 rTVector, int cOrCC) throws TimeoutException {
-        rTVector.normalize();
-        while (hitOnCrossToTargetVectorFromPos(pos, rTVector)) {
-            rTVector.rotateBy(SEARCH_RAD_TO_TURN * cOrCC);
+        Vector2Dv1 dir = rTVector.getSubtracted(pos);
+        while (hitOnCrossToTargetFromPosAndDir(pos, dir)) {
+            dir.rotateBy(SEARCH_RAD_TO_TURN * cOrCC);
         }
         Vector2Dv1 waypoint;
         double step = -1;
         int i = 0;//watchdog
         do {
             try {
-                waypoint = cross.safeZoneExit(pos, rTVector);
+                waypoint = cross.safeZoneExit(pos, dir);
             } catch (NoHitException e) {
                 if(i++ < WATCHDOG_STEP_HALVS)
                     throw new TimeoutException("Did not finde a waypoint! - Watchdog triggered");
                 waypoint = null;
                 step = step/2;
-                rTVector.rotateBy(SEARCH_RAD_TO_TURN * step * cOrCC);
+                dir.rotateBy(SEARCH_RAD_TO_TURN * step * cOrCC);
             }
         } while (waypoint == null);
         return waypoint;

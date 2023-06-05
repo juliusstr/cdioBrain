@@ -44,7 +44,7 @@ public class SafetyCircle {
                 return returnList;
             } else {
                 // tangent point is in front of robot, circle is grazed
-                Vector2Dv1 vector2D = new Vector2Dv1( t, calY(robotPos, directionToTarget, t));
+                Vector2Dv1 vector2D = robotPos.getAdded(directionToTarget.getMultiplied(t));
                 returnList.add(vector2D);
                 return returnList;
             }
@@ -58,7 +58,7 @@ public class SafetyCircle {
             } else if (t1 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t2 > 0) {
-                    Vector2Dv1 vector2D = new Vector2Dv1( t2, calY(robotPos, directionToTarget, t2));
+                    Vector2Dv1 vector2D = robotPos.getAdded(directionToTarget.getMultiplied(t2));
                     returnList.add(vector2D);
                     return returnList;
                 } else {
@@ -67,7 +67,7 @@ public class SafetyCircle {
             } else if (t2 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t1 > 0) {
-                    Vector2Dv1 vector2D = new Vector2Dv1( t1, calY(robotPos, directionToTarget, t1));
+                    Vector2Dv1 vector2D = robotPos.getAdded(directionToTarget.getMultiplied(t1));
                     returnList.add(vector2D);
                     return returnList;
                 } else {
@@ -75,9 +75,9 @@ public class SafetyCircle {
                 }
             } else {
                 // both intersection points are in front of robot, circle is hit
-                Vector2Dv1 vector2D = new Vector2Dv1( t1, calY(robotPos, directionToTarget, t1));
+                Vector2Dv1 vector2D = robotPos.getAdded(directionToTarget.getMultiplied(t1));
                 returnList.add(vector2D);
-                vector2D = new Vector2Dv1( t2, calY(robotPos, directionToTarget, t2));
+                vector2D = robotPos.getAdded(directionToTarget.getMultiplied(t2));
                 returnList.add(vector2D);
                 return returnList;
             }

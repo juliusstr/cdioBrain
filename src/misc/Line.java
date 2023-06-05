@@ -27,30 +27,28 @@ public class Line {
         double direction_x = dir.x;
         double direction_y = dir.y;
 
-        // Calculate the intersection point between the line segment and the infinite line
-        double t;
-        double x_intersect, y_intersect;
+        // Calculate the direction vector of the line segment
+        double lineDirection_x = x2 - x1;
+        double lineDirection_y = y2 - y1;
 
-        if (x1 == x2) {
-            // Handle vertical line segment
-            t = (x1 - x_robot) / direction_x;
-            y_intersect = y_robot + t * direction_y;
-            x_intersect = x1;
-        } else {
-            // Calculate the intersection point
-            t = ((x1 - x_robot) * (y1 - y2) - (y1 - y_robot) * (x1 - x2)) /
-                    (direction_x * (y1 - y2) - direction_y * (x1 - x2));
-            x_intersect = x_robot + t * direction_x;
-            y_intersect = y_robot + t * direction_y;
-        }
+        // Calculate the vector from the robot's position to a point on the line
+        double vectorToLine_x = x1 - x_robot;
+        double vectorToLine_y = y1 - y_robot;
 
-        // Check if the intersection point lies within the line segment
-        boolean intersectsLineSegment = isBetween(x_intersect, x1, x2) && isBetween(y_intersect, y1, y2);
+        // Calculate the cross product of the line direction vector and the vector to the line
+        double crossProduct = lineDirection_x * vectorToLine_y - lineDirection_y * vectorToLine_x;
 
-        if (intersectsLineSegment) {
-            //System.out.println("The robot will hit the line segment at (" + x_intersect + ", " + y_intersect + ").");
-            hitPoint = new Vector2Dv1( x_intersect, y_intersect);
-            return true;
+        // Check if the robot will hit the line segment
+        if (crossProduct == 0) {
+            // The robot is collinear with the line segment, now check if it lies within the segment bounds
+            double dotProduct = lineDirection_x * direction_x + lineDirection_y * direction_y;
+            if (dotProduct > 0 && dotProduct <= Math.sqrt(lineDirection_x * lineDirection_x + lineDirection_y * lineDirection_y)) {
+                //System.out.println("The robot will hit the line segment.");
+                return true;
+            } else {
+                //System.out.println("The robot will not hit the line segment.");
+                return false;
+            }
         } else {
             //System.out.println("The robot will not hit the line segment.");
             return false;
