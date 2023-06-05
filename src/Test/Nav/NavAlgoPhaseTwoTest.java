@@ -28,7 +28,7 @@ public class NavAlgoPhaseTwoTest {
     public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.DISTANCE_ERROR;
 
     /**
-     * setUp for all the tests. Makes boundarys, a robot and a ball.
+     * setUp for all the tests. Makes boundarys, a robot and a ball. The robot is positioned opposite of the ball, with the cross in the middle of them.
      */
     @BeforeEach
     void setUp(){
