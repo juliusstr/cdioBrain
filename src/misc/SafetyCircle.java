@@ -7,8 +7,8 @@ import java.util.Vector;
 
 public class SafetyCircle {
 
-    public static final int SAFE_ROBOT_WITH = 40;//todo fine tune meeeeeee
-    public static final int SAFE_ZONE_RADIUS = 50;//todo fine tune meeeeeee
+    public static int SAFE_ROBOT_WITH = 40;//todo fine tune meeeeeee
+    public static int SAFE_ZONE_RADIUS = 50;//todo fine tune meeeeeee
 
     public Vector2Dv1 pos;
     public double radius;

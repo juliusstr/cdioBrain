@@ -1,6 +1,7 @@
 package Test.Nav;
 
 import exceptions.NoHitException;
+import exceptions.NoRouteException;
 import misc.*;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
@@ -87,7 +88,7 @@ public class NavAlgoPhaseTwoTest {
      */
     @Test
     @DisplayName("simulate one ball")
-    void simpelCollectTest() throws NoHitException, SizeLimitExceededException, TimeoutException {
+    void simpelCollectTest() throws NoRouteException {
         simulator simulator = new simulator();
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
@@ -125,9 +126,7 @@ public class NavAlgoPhaseTwoTest {
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         try {
             navPlanner.wayPointGenerator();
-        } catch (SizeLimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
+        } catch (NoRouteException e){
             throw new RuntimeException(e);
         }
         assertTrue(true);
@@ -137,16 +136,15 @@ public class NavAlgoPhaseTwoTest {
     @DisplayName("Waypoint generator test")
     void WaypointGenTest(){
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
-
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         try {
             navPlanner.wayPointGenerator();
-        } catch (SizeLimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
+        } catch (NoRouteException e) {
             throw new RuntimeException(e);
         }
         System.out.println(navPlanner.waypoints);
+        System.err.println(navPlanner.routes);
         assertTrue(true);
     }
+
 }
