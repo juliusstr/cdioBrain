@@ -1,6 +1,7 @@
 package imageRecognition;
 
 
+import Client.standardSettings;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.*;
@@ -22,7 +23,7 @@ public class ImgRecV2 {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         // Create a new VideoCapture object to get frames from the webcam
-        VideoCapture capture = new VideoCapture(2);
+        VideoCapture capture = new VideoCapture(standardSettings.videoCaptureIndex);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
         // Check if the VideoCapture object was successfully initialized

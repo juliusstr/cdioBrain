@@ -108,9 +108,9 @@ public class BallStabilizerPhaseTwoTest {
     @Test
     @DisplayName("init ball stabilizer phase two with static robot data")
     void initTestWithRobotData(){
-        Ball ball1 = new Ball(0,0,3, BallClassifierPhaseTwo.RED,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
+        Ball ball1 = new Ball(0,0,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
         Ball ball2 = new Ball(5,5,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
-        Ball ball11 = new Ball(20,20,3, BallClassifierPhaseTwo.RED,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
+        Ball ball11 = new Ball(20,20,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
         Ball ball12 = new Ball(25,25,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
         ArrayList<Ball> balls = new ArrayList<>();
         balls.add(ball1);

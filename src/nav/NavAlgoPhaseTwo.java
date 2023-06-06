@@ -25,8 +25,9 @@ public class NavAlgoPhaseTwo {
     private ArrayList<Ball> ballsToAvoid;
     public ArrayList<Vector2Dv1> waypoints;
 
-    public static final double ANGLE_ERROR = 0.04;
-    public static final double DISTANCE_ERROR = 19;
+    public static final double ANGLE_ERROR = Math.PI/180;
+    public static final double TARGET_DISTANCE_ERROR = 45;
+    public static final double WAYPOINT_DISTANCE_ERROR = 5;
 
     public NavAlgoPhaseTwo(){}
 
@@ -53,13 +54,17 @@ public class NavAlgoPhaseTwo {
         double angleDelta;
 
         //*** Close enough ***
-        if(distDelta < DISTANCE_ERROR){
+        if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
             if (waypoints.size() > 1){
                 waypoints.remove(0);
                 return nextCommand();
             }
             System.out.printf("On ball\n");
             return "stop -t -d";
+        }
+        if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() != 1){
+            System.err.println("On waypoint");
+            return "stop -t";
         }
 
         //***turn***
@@ -83,17 +88,17 @@ public class NavAlgoPhaseTwo {
         }
 
         //***drive***
-        if(Math.abs(angleDelta) > ANGLE_ERROR*2){
+        if(Math.abs(angleDelta) > ANGLE_ERROR*4){
             System.out.printf("command = %s\n", command);
-            return command;// + ";stop -d -t";
+            return command + ";stop -d";
         }
-        if(distDelta > DISTANCE_ERROR){
+        if(distDelta > WAYPOINT_DISTANCE_ERROR){
             double speed = distDelta/2;
             if (speed > 5)
                 speed = 5;
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
-            command += ";stop -d -t";
+            command += ";stop -d;stop -t";
         }
         System.out.printf("command = %s\n", command);
         return command;
@@ -226,12 +231,15 @@ public class NavAlgoPhaseTwo {
         Vector2Dv1 waypoint;
         double step = -1;
         int i = 0;//watchdog
+        String text = "";
         do {
             try {
                 waypoint = cross.safeZoneExit(pos, dir);
             } catch (NoHitException e) {
-                if(i++ < WATCHDOG_STEP_HALVS)
-                    throw new TimeoutException("Did not finde a waypoint! - Watchdog triggered");
+                if(i++ < WATCHDOG_STEP_HALVS) {
+                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\nrTVector: " + rTVector.toString() + "\ncOrCC: " + cOrCC + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
+                    throw new TimeoutException(text);
+                }
                 waypoint = null;
                 step = step/2;
                 dir.rotateBy(SEARCH_RAD_TO_TURN * step * cOrCC);
@@ -259,6 +267,23 @@ public class NavAlgoPhaseTwo {
        return routes.get(index);
     }
 
+    public Robotv1 getRobot() {
+        return robot;
+    }
 
+    public void setRobot(Robotv1 robot) {
+        this.robot = robot;
+    }
 
+    public Ball getTarget() {
+        return target;
+    }
+
+    public void setTarget(Ball target) {
+        this.target = target;
+    }
+
+    public void setCross(Cross cross) {
+        this.cross = cross;
+    }
 }
