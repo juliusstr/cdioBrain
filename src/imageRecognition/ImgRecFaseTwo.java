@@ -1,5 +1,7 @@
 package imageRecognition;
 
+import Client.standardSettings;
+import exceptions.BadDataException;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.KeyPoint;
@@ -21,12 +23,14 @@ public class ImgRecFaseTwo {
     private SimpleBlobDetector blobDetec;
     private MatOfKeyPoint keypoints;
 
+    public ImgRecObstacle imgRecObstacle;
+
     public ImgRecFaseTwo() {
 
 
         // Create a new VideoCapture object to get frames from the webcam
         System.err.println("loading webcam");
-        capture = new VideoCapture(2);
+        capture = new VideoCapture(standardSettings.videoCaptureIndex);
         System.err.println("changing frame size");
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
@@ -45,7 +49,14 @@ public class ImgRecFaseTwo {
         //params.set
         blobDetec = SimpleBlobDetector.create(params);
         keypoints = new MatOfKeyPoint();
-
+        frame = new Mat();
+        capture.read(frame);
+        imgRecObstacle = new ImgRecObstacle();
+        try {
+            imgRecObstacle.findeObstacle(frame);
+        } catch (BadDataException e) {
+            throw new RuntimeException(e);
+        }
     }
     public ArrayList<Ball> captureBalls(){
         // Continuously capture frames from the webcam and display them on the screen
@@ -59,7 +70,6 @@ public class ImgRecFaseTwo {
         // Apply some image processing to the frame (optional)
         //Imgproc.resize(frame, frame, new Size(1280, 960));
 
-        capture.read(frame);
         //Detect the balls, and but them into MatOfKeyPoints keypoints
         blobDetec.detect(frame, keypoints);
         //List of balls

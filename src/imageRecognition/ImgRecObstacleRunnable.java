@@ -1,5 +1,6 @@
 package imageRecognition;
 
+import Client.standardSettings;
 import exceptions.BadDataException;
 import imageRecognition.ImgRecObstacle;
 import misc.Vector2Dv1;
@@ -24,7 +25,7 @@ public class ImgRecObstacleRunnable {
         Mat input = new Mat(); //Imgcodecs.imread("test_img/WIN_20230315_10_32_53_Pro.jpg");
 
         VideoCapture capture;
-        capture = new VideoCapture(2);
+        capture = new VideoCapture(standardSettings.videoCaptureIndex);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
 

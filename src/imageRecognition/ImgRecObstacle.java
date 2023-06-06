@@ -5,18 +5,21 @@ import misc.Boundry;
 import misc.Cross;
 import misc.Vector2Dv1;
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ImgRecObstacle {
 
-    public static final int arg0 = 20;
-    public static final int arg1 = 20;
-    public static final int arg2 = 180;
-    public static final int arg3 = 130;
-    public static final int arg4 = 130;
+    public Color colorPicker = new Color(232, 59, 49);
+    public static final int arg0 = 10;
+    public static final int arg1 = 10;
+    public static final int arg2 = 160;
+    public static final int arg3 = 150;
+    public static final int arg4 = 150;
     public static final int arg5 = 255;
 
     public static final int arg6 = 4;
@@ -105,7 +108,7 @@ public class ImgRecObstacle {
             System.out.println("" + point.toString());
         }*/
         boundry = new Boundry(centers);
-        crossPos.multiply(boundry.scale);
+        //crossPos.multiply(boundry.scale);//todo hmmm
         cross = new Cross(new Vector2Dv1(crossPos.x,crossPos.y),new Vector2Dv1(angle));
     }
 }

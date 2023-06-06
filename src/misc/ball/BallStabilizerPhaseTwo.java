@@ -11,8 +11,8 @@ import java.util.ArrayList;
 public class BallStabilizerPhaseTwo {
 
 
-    public static final double MAX_DISTANCE_FOR_RELATION = 5;
-    public static final int TIME_TO_LIVE = 15;
+    public static final double MAX_DISTANCE_FOR_RELATION = 12;
+    public static final int TIME_TO_LIVE = 30;
     public static final int AGE_TO_GONE = 1;
 
 
@@ -38,7 +38,7 @@ public class BallStabilizerPhaseTwo {
                 if(ball.getStatus() != PrimitiveBall.Status.ROBOT){
                     ball.setStatus(PrimitiveBall.Status.IN_PLAY);
                 } else {
-                    if (ball.getColor().equals(BallClassifierPhaseTwo.RED) || ball.getColor().equals(BallClassifierPhaseTwo.BLACK)){
+                    if (ball.getColor().equals(BallClassifierPhaseTwo.GREEN) || ball.getColor().equals(BallClassifierPhaseTwo.BLACK)){
                         ball.setStatus(PrimitiveBall.Status.ROBOT);
                     } else {
                         ball.setStatus(PrimitiveBall.Status.IN_PLAY);
@@ -143,7 +143,7 @@ public class BallStabilizerPhaseTwo {
         }
 
         if (ballsToReturn.size() != 2)
-            throw new BadDataException("No stabel balls");
+            throw new BadDataException("No stable robot balls. Balls to return size: " + ballsToReturn.size() + "   Number of balls in list: " + balls.size());
 
         return ballsToReturn;
     }

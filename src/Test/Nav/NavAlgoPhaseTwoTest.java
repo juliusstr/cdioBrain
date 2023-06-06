@@ -25,7 +25,7 @@ public class NavAlgoPhaseTwoTest {
     Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
     String nextCommand;
-    public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.DISTANCE_ERROR;
+    public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.TARGET_DISTANCE_ERROR;
 
     /**
      * setUp for all the tests. Makes boundarys, a robot and a ball.
