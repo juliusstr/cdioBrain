@@ -64,7 +64,6 @@ public class Cross {
      *          False if there is no hit
      */
     public void hit(Vector2Dv1 robotPos, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
-
         ArrayList<Line> lines = hits(robotPos, directionToTarget);//hits in line
         if (lines.size() != 0){
             hitreg = Boolean.FALSE;
