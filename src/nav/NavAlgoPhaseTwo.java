@@ -49,7 +49,9 @@ public class NavAlgoPhaseTwo {
     public String nextCommand() {
 
         String command = "";
-
+        if(waypoints.size() == 0){
+            return "stop -d -t";
+        }
         Vector2Dv1 dir = waypoints.get(0).getSubtracted(robot.getPosVector());
 
         //*** cal dist and angle ***
@@ -60,18 +62,17 @@ public class NavAlgoPhaseTwo {
         double angleDelta;
 
         //*** Close enough ***
-        if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
-            if (waypoints.size() > 1){
-                waypoints.remove(0);
-                return nextCommand();
-            }
-            System.out.printf("On ball\n");
-            return "stop -t -d";
-        }
         if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() != 1){
             System.err.println("On waypoint");
-            return "stop -t";
+            waypoints.remove(0);
+            return "stop -d -t";
         }
+        if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
+            waypoints.remove(0);
+            System.out.printf("On ball\n");
+            return "stop -d -t";
+        }
+
 
         //***turn***
         angleDelta = Math.atan2(cross, dot);
@@ -171,6 +172,8 @@ public class NavAlgoPhaseTwo {
     /**
      * Populates ArrayList<Vector2Dv1> waypoints with waypoints to target.
      * Index 0 in list will be next waypoint for straight line nav on the way to target.
+     * @implNote Run only once before generate commands.
+     * nextCommand() will remove waypoints ass needed.
      */
     public void wayPointGenerator() throws NoRouteException {
         routes = new ArrayList<>();

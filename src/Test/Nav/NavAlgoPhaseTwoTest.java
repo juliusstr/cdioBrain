@@ -93,13 +93,12 @@ public class NavAlgoPhaseTwoTest {
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         navPlanner.wayPointGenerator();
-        int iterationCount = 10000;
+        int iterationCount = 1000;
         String command = "";
         do {
             command = navPlanner.nextCommand();
-            simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command);
-        } while(Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2)) > DISTANCE_ERROR && iterationCount-- > 0 && navPlanner.getWaypoints().size() > 0);
-        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command), false);
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
     }
 
     @Test
@@ -110,8 +109,8 @@ public class NavAlgoPhaseTwoTest {
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
         int iterationCount = 10000;
-        while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
-        assertEquals(false, simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
+        while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand(),target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(false, simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand(),target.getPosVector()));
     }
 
     /**
