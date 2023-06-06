@@ -1,6 +1,7 @@
 package Test.Nav;
 
 import exceptions.NoHitException;
+import exceptions.NoRouteException;
 import misc.*;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
@@ -25,7 +26,7 @@ public class NavAlgoPhaseTwoTest {
     Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
     String nextCommand;
-    public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.DISTANCE_ERROR;
+    public static final double DISTANCE_ERROR = NavAlgoPhaseTwo.TARGET_DISTANCE_ERROR;
 
     /**
      * setUp for all the tests. Makes boundarys, a robot and a ball. The robot is positioned opposite of the ball, with the cross in the middle of them.
@@ -87,18 +88,17 @@ public class NavAlgoPhaseTwoTest {
      */
     @Test
     @DisplayName("simulate one ball")
-    void simpelCollectTest() throws NoHitException, SizeLimitExceededException, TimeoutException {
+    void simpelCollectTest() throws NoRouteException {
         simulator simulator = new simulator();
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         navPlanner.wayPointGenerator();
-        int iterationCount = 10000;
+        int iterationCount = 1000;
         String command = "";
         do {
             command = navPlanner.nextCommand();
-            simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command);
-        } while(Math.sqrt(Math.pow((target.getxPos() - simulationRobot.getxPos()), 2) + Math.pow((target.getyPos() - simulationRobot.getyPos()), 2)) > DISTANCE_ERROR && iterationCount-- > 0 && navPlanner.getWaypoints().size() > 0);
-        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command), false);
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
     }
 
     @Test
@@ -107,10 +107,11 @@ public class NavAlgoPhaseTwoTest {
         simulator simulator = new simulator();
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
-        int iterationCount = 10000;
-        while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
-        assertEquals(false, simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
+        Vector2Dv1 waypoint = new Vector2Dv1(200, 180);
+        navPlanner.getWaypoints().add(waypoint);
+        int iterationCount = 1000;
+        while(simulator.updatePosSimple(waypoint, simulationRobot, navPlanner.nextCommand(), waypoint) && iterationCount-- > 0);
+        assertEquals(false, simulator.updatePosSimple(waypoint, simulationRobot, navPlanner.nextCommand(), waypoint));
     }
 
     /**
@@ -125,9 +126,7 @@ public class NavAlgoPhaseTwoTest {
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         try {
             navPlanner.wayPointGenerator();
-        } catch (SizeLimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
+        } catch (NoRouteException e){
             throw new RuntimeException(e);
         }
         assertTrue(true);
@@ -137,16 +136,15 @@ public class NavAlgoPhaseTwoTest {
     @DisplayName("Waypoint generator test")
     void WaypointGenTest(){
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
-
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         try {
             navPlanner.wayPointGenerator();
-        } catch (SizeLimitExceededException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
+        } catch (NoRouteException e) {
             throw new RuntimeException(e);
         }
         System.out.println(navPlanner.waypoints);
+        System.err.println(navPlanner.routes);
         assertTrue(true);
     }
+
 }

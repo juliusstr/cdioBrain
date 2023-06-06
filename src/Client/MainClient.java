@@ -37,7 +37,7 @@ public class MainClient {
         RoutePlanerFaseOne routePlanerFaseOne = new RoutePlanerFaseOne();
 
         Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.RED,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
 
         Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
 
@@ -104,6 +104,19 @@ public class MainClient {
 
                 out.println(respons);
                 System.out.println("sendt : \"" + respons + "\" end.");
+                if(respons.contains("collect")){
+                    System.out.println("Sleeping...");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Continue");
+                }
+                /*
+                System.err.println("robot pos: " + robotv1.getPosVector());
+                System.err.println("robot dir: " + robotv1.getPosVector());
+                 */
             } else {
                 out.println("unrecognised greeting");
             }

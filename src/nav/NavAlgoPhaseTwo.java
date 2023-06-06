@@ -3,6 +3,7 @@ package nav;
 
 import exceptions.LineReturnException;
 import exceptions.NoHitException;
+import exceptions.NoRouteException;
 import exceptions.Vector2Dv1ReturnException;
 import misc.*;
 import misc.ball.Ball;
@@ -24,9 +25,15 @@ public class NavAlgoPhaseTwo {
     private Boundry boundry;
     private ArrayList<Ball> ballsToAvoid;
     public ArrayList<Vector2Dv1> waypoints;
+    private enum RotateDirection {clockwise, nothing, counterClockwise}
 
-    public static final double ANGLE_ERROR = 0.04;
-    public static final double DISTANCE_ERROR = 19;
+    public ArrayList<ArrayList<Vector2Dv1>> routes;
+
+    public static final double ANGLE_ERROR = Math.PI/180;
+    public static final double TARGET_DISTANCE_ERROR = 45;
+    public static final double WAYPOINT_DISTANCE_ERROR = 5;
+    public static final double MAX_SEARCH_TREE_DEPTH_WAYPOINT = 10;
+
 
     public NavAlgoPhaseTwo(){}
 
@@ -42,7 +49,9 @@ public class NavAlgoPhaseTwo {
     public String nextCommand() {
 
         String command = "";
-
+        if(waypoints.size() == 0){
+            return "stop -d -t";
+        }
         Vector2Dv1 dir = waypoints.get(0).getSubtracted(robot.getPosVector());
 
         //*** cal dist and angle ***
@@ -53,14 +62,17 @@ public class NavAlgoPhaseTwo {
         double angleDelta;
 
         //*** Close enough ***
-        if(distDelta < DISTANCE_ERROR){
-            if (waypoints.size() > 1){
-                waypoints.remove(0);
-                return nextCommand();
-            }
-            System.out.printf("On ball\n");
-            return "stop -t -d";
+        if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() != 1){
+            System.err.println("On waypoint");
+            waypoints.remove(0);
+            return "stop -d -t";
         }
+        if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
+            waypoints.remove(0);
+            System.out.printf("On ball\n");
+            return "stop -d -t";
+        }
+
 
         //***turn***
         angleDelta = Math.atan2(cross, dot);
@@ -83,17 +95,17 @@ public class NavAlgoPhaseTwo {
         }
 
         //***drive***
-        if(Math.abs(angleDelta) > ANGLE_ERROR*2){
+        if(Math.abs(angleDelta) > ANGLE_ERROR*4){
             System.out.printf("command = %s\n", command);
-            return command;// + ";stop -d -t";
+            return command + ";stop -d";
         }
-        if(distDelta > DISTANCE_ERROR){
+        if(distDelta > WAYPOINT_DISTANCE_ERROR){
             double speed = distDelta/2;
             if (speed > 5)
                 speed = 5;
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
-            command += ";stop -d -t";
+            command += ";stop -d;stop -t";
         }
         System.out.printf("command = %s\n", command);
         return command;
@@ -160,10 +172,11 @@ public class NavAlgoPhaseTwo {
     /**
      * Populates ArrayList<Vector2Dv1> waypoints with waypoints to target.
      * Index 0 in list will be next waypoint for straight line nav on the way to target.
+     * @implNote Run only once before generate commands.
+     * nextCommand() will remove waypoints ass needed.
      */
-    public void wayPointGenerator() throws SizeLimitExceededException, TimeoutException {
-        ArrayList<ArrayList<Vector2Dv1>> routes = new ArrayList<>();
-
+    public void wayPointGenerator() throws NoRouteException {
+        routes = new ArrayList<>();
 
         Vector2Dv1 localTargetVector = target.getPosVector();
         boolean hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
@@ -171,39 +184,37 @@ public class NavAlgoPhaseTwo {
             waypoints.add(target.getPosVector());
             return;
         }
-
-        //first cc around obstruction. first turn
         ArrayList<Vector2Dv1> route = new ArrayList<>();
-        route.add(rotateVector(robot.getPosVector(),localTargetVector, -1));
-        //other turns
-        localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
-        int watchdog = 0;
-        while (hitOnCrossToTargetVectorFromPos(route.get(route.size()-1),localTargetVector) && watchdog++ < WATCHDOG_MAX_TURNS_IN_ROUTE ){
-            route.add(rotateVector(route.get(route.size()-1),localTargetVector, 1));
-            localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
-        }
-        if(watchdog > WATCHDOG_MAX_TURNS_IN_ROUTE)
-            throw new SizeLimitExceededException("Too many turns in cc route");
-        route.add(target.getPosVector());
-        routes.add(route);
+        wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.counterClockwise);
+        wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.clockwise);
 
-        //first c around obstruction. first turn
-        localTargetVector = target.getPosVector();
-        route = new ArrayList<>();
-        route.add(rotateVector(robot.getPosVector(),localTargetVector, 1));
-        //other turns
-        localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
-        watchdog = 0;
-        while (hitOnCrossToTargetVectorFromPos(route.get(route.size()-1),localTargetVector) && watchdog++ < WATCHDOG_MAX_TURNS_IN_ROUTE ){
-            route.add(rotateVector(route.get(route.size()-1),localTargetVector, -1));
-            localTargetVector = target.getPosVector().getSubtracted(route.get(route.size()-1));
-        }
-        if(watchdog > WATCHDOG_MAX_TURNS_IN_ROUTE)
-            throw new SizeLimitExceededException("Too many turns in cc route");
-        route.add(target.getPosVector());
-        routes.add(route);
         waypoints = shortestRoute(routes);
 
+    }
+
+    private void wayPointGeneratorRecursive(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) {
+        Vector2Dv1 localTargetVector = target.getPosVector();
+        boolean hitToTarget;
+        if (pastRoute.size() == 0){
+            hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
+        } else {
+            hitToTarget = hitOnCrossToTargetVectorFromPos(pastRoute.get(pastRoute.size()-1),localTargetVector);
+        }
+        if(!hitToTarget){
+            pastRoute.add(target.getPosVector());
+            routes.add(pastRoute);
+            return;
+        }
+        try {
+            pastRoute.add(rotateVector(robot.getPosVector(),localTargetVector, rotateDirection));
+        } catch (TimeoutException e) {
+            return;
+        }
+
+        if(pastRoute.size() < MAX_SEARCH_TREE_DEPTH_WAYPOINT) {
+            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
+            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+        }
     }
 
     public ArrayList<Vector2Dv1> getWaypoints() {
@@ -218,29 +229,32 @@ public class NavAlgoPhaseTwo {
      * @return Vector2Dv1 next point after turn.
      * @exception TimeoutException Thrown if run local watchdog is triggered
      */
-    private Vector2Dv1 rotateVector(Vector2Dv1 pos, Vector2Dv1 rTVector, int cOrCC) throws TimeoutException {
+    private Vector2Dv1 rotateVector(Vector2Dv1 pos, Vector2Dv1 rTVector, RotateDirection rotateDirection) throws TimeoutException {
         Vector2Dv1 dir = rTVector.getSubtracted(pos);
         while (hitOnCrossToTargetFromPosAndDir(pos, dir)) {
-            dir.rotateBy(SEARCH_RAD_TO_TURN * cOrCC);
+            dir.rotateBy(SEARCH_RAD_TO_TURN * (rotateDirection.ordinal()-1));
         }
         Vector2Dv1 waypoint;
         double step = -1;
         int i = 0;//watchdog
+        String text = "";
         do {
             try {
                 waypoint = cross.safeZoneExit(pos, dir);
             } catch (NoHitException e) {
-                if(i++ < WATCHDOG_STEP_HALVS)
-                    throw new TimeoutException("Did not finde a waypoint! - Watchdog triggered");
+                if(i++ < WATCHDOG_STEP_HALVS) {
+                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\nrTVector: " + rTVector.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
+                    throw new TimeoutException(text);
+                }
                 waypoint = null;
                 step = step/2;
-                dir.rotateBy(SEARCH_RAD_TO_TURN * step * cOrCC);
+                dir.rotateBy(SEARCH_RAD_TO_TURN * step * (rotateDirection.ordinal()-1));
             }
         } while (waypoint == null);
         return waypoint;
     }
 
-    public ArrayList<Vector2Dv1> shortestRoute(ArrayList<ArrayList<Vector2Dv1>> routes){
+    private ArrayList<Vector2Dv1> shortestRoute(ArrayList<ArrayList<Vector2Dv1>> routes) throws NoRouteException {
         int index = -1;
         double smallest_length = Double.MAX_VALUE;
 
@@ -255,10 +269,30 @@ public class NavAlgoPhaseTwo {
                 index = i;
             }
         }
-
-       return routes.get(index);
+        try {
+            return routes.get(index);
+        } catch (IndexOutOfBoundsException e){
+            throw new NoRouteException("No rout was found!");
+        }
     }
 
+    public Robotv1 getRobot() {
+        return robot;
+    }
 
+    public void setRobot(Robotv1 robot) {
+        this.robot = robot;
+    }
 
+    public Ball getTarget() {
+        return target;
+    }
+
+    public void setTarget(Ball target) {
+        this.target = target;
+    }
+
+    public void setCross(Cross cross) {
+        this.cross = cross;
+    }
 }
