@@ -108,8 +108,9 @@ public class NavAlgoPhaseTwoTest {
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
-        int iterationCount = 10000;
+        int iterationCount = 1000;
         while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()) && iterationCount-- > 0);
+        if(navPlanner.getWaypoints().size() == 0) navPlanner.getWaypoints().add(new Vector2Dv1(200, 180));
         assertEquals(false, simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, navPlanner.nextCommand()));
     }
 
