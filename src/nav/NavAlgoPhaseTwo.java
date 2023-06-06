@@ -32,6 +32,8 @@ public class NavAlgoPhaseTwo {
     public static final double ANGLE_ERROR = Math.PI/180;
     public static final double TARGET_DISTANCE_ERROR = 45;
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
+    public static final double MAX_SEARCH_TREE_DEPTH_WAYPOINT = 10;
+
 
     public NavAlgoPhaseTwo(){}
 
