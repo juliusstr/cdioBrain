@@ -1,6 +1,6 @@
 package imageRecognition;
 
-import Client.standardSettings;
+import Client.StandardSettings;
 import exceptions.BadDataException;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
@@ -30,7 +30,7 @@ public class ImgRecFaseTwo {
 
         // Create a new VideoCapture object to get frames from the webcam
         System.err.println("loading webcam");
-        capture = new VideoCapture(standardSettings.videoCaptureIndex);
+        capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
         System.err.println("changing frame size");
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
@@ -70,7 +70,7 @@ public class ImgRecFaseTwo {
         // Apply some image processing to the frame (optional)
         //Imgproc.resize(frame, frame, new Size(1280, 960));
 
-        //Detect the balls, and but them into MatOfKeyPoints keypoints
+        //Detect the balls, and then into MatOfKeyPoints keypoints
         blobDetec.detect(frame, keypoints);
         //List of balls
         ArrayList<Ball> balls = new ArrayList<>();
@@ -84,7 +84,7 @@ public class ImgRecFaseTwo {
                 int b = (int) colorDoubleArray[0]; // blue value
                 int g = (int) colorDoubleArray[1]; // green value
                 int r = (int) colorDoubleArray[2]; // red value
-                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UKNOWN));
+                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, StandardSettings.BALL_RADIUS_PX, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UKNOWN));
             }
         }
 

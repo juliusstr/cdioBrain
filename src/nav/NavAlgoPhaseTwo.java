@@ -36,6 +36,7 @@ public class NavAlgoPhaseTwo {
     public void updateNav(Robotv1 robot, Ball target, Cross cross, Boundry boundry, ArrayList<Ball> ballsToAvoid){
         this.robot = robot;
         this.target = target;
+        target.setZoneGroupId(-1);
         this.cross = cross;
         this.boundry = boundry;
         this.ballsToAvoid = ballsToAvoid;
@@ -185,6 +186,8 @@ public class NavAlgoPhaseTwo {
         wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.counterClockwise);
         wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.clockwise);
 
+        //todo add check to se if a waypoint is out of bound
+
         waypoints = shortestRoute(routes);
 
     }
@@ -290,13 +293,32 @@ public class NavAlgoPhaseTwo {
 
     public void setTarget(Ball target) {
         this.target = target;
+        target.setZoneGroupId(-1);
     }
 
     public void setCross(Cross cross) {
         this.cross = cross;
     }
 
-    private void setZoneGroupIDOOnObstacleAndBallsToAvoid(){
-
+    private void updateZoneGroupIdOnBallsToAvoid(){
+        ArrayList<Zone> crossCriticalZones = cross.getCriticalZones();
+        //todo take in to account the line on the cross not only the zone
+        for (Ball ball : ballsToAvoid) {
+            for (Zone crossZone : crossCriticalZones) {
+                double distMax = ball.getCriticalZone().radius+crossZone.radius;
+                double dist = ball.getPosVector().distance(crossZone.pos);
+                if(dist<= distMax){
+                    ball.setZoneGroupId(crossZone.zoneGroupID);
+                    ball.setZoneGroupIdToAdjacentBalls(ballsToAvoid);
+                }
+            }
+        }
+        int currentMaxId = 2;
+        for (int i = 0; i < ballsToAvoid.size(); i++) {
+            if (ballsToAvoid.get(i).getZoneGroupId() == -1){
+                ballsToAvoid.get(i).setZoneGroupId(++currentMaxId);
+                ballsToAvoid.get(i).setZoneGroupIdToAdjacentBalls(ballsToAvoid);
+            }
+        }
     };
 }

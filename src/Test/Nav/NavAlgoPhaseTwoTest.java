@@ -145,4 +145,8 @@ public class NavAlgoPhaseTwoTest {
         assertTrue(true);
     }
 
+    /*
+        TODO Make a test for zoneGroupeId
+     */
+
 }

@@ -1,16 +1,13 @@
 package imageRecognition;
 
-import Client.standardSettings;
+import Client.StandardSettings;
 import exceptions.BadDataException;
-import imageRecognition.ImgRecObstacle;
-import misc.Vector2Dv1;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.highgui.HighGui;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.core.CvType;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
@@ -25,7 +22,7 @@ public class ImgRecObstacleRunnable {
         Mat input = new Mat(); //Imgcodecs.imread("test_img/WIN_20230315_10_32_53_Pro.jpg");
 
         VideoCapture capture;
-        capture = new VideoCapture(standardSettings.videoCaptureIndex);
+        capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
 

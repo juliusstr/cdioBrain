@@ -1,18 +1,20 @@
 package misc;
 
+import exceptions.NoHitException;
+
 import java.util.ArrayList;
 
 public class Zone {
 
-    public static final int SAFE_ROBOT_WITH = 40;//todo fine tune meeeeeee
+    public static final int CRITICAL_ZONE_RADIUS = 40;//todo fine tune meeeeeee
     public static final int SAFE_ZONE_RADIUS = 50;//todo fine tune meeeeeee
 
     public Vector2Dv1 pos;
     public double radius;
     public int zoneGroupID;
 
-    public ArrayList<Vector2Dv1> intercepts;
-    public Vector2Dv1 closestIntercept;
+    private ArrayList<Vector2Dv1> intercepts;
+    private Vector2Dv1 closestIntercept;
 
     public Zone(Vector2Dv1 pos, double radius){
         this.pos = pos;
@@ -126,4 +128,17 @@ public class Zone {
         }
     }
 
+    public ArrayList<Vector2Dv1> getIntercepts() throws NoHitException {
+        if(intercepts == null){
+            throw new NoHitException("No intercept on zone!");
+        }
+        return intercepts;
+    }
+
+    public Vector2Dv1 getClosestIntercept() throws NoHitException {
+        if(closestIntercept == null){
+            throw new NoHitException("No intercept on zone!");
+        }
+        return closestIntercept;
+    }
 }

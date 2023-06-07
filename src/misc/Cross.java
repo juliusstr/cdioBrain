@@ -97,16 +97,16 @@ public class Cross {
 
         ArrayList<Zone> zonesWithIntercept = new ArrayList<>();
         for (Point point : crossPoint) { // hits in zones
-            Zone zone = new Zone(new Vector2Dv1(point), Zone.SAFE_ROBOT_WITH, zoneGroupID);
+            Zone zone = new Zone(new Vector2Dv1(point), Zone.CRITICAL_ZONE_RADIUS, zoneGroupID);
             zone.willHitZone(pos, directionToTarget);
-            if(zone.closestIntercept != null)
+            if(zone.getClosestIntercept() != null)
                 zonesWithIntercept.add(zone);
         }
         if(zonesWithIntercept.size() != 0){
             int index = -1;
             double dist = Double.MAX_VALUE;
             for (int i = 0; i < zonesWithIntercept.size(); i++) {
-                double temp = pos.distance(zonesWithIntercept.get(i).closestIntercept);
+                double temp = pos.distance(zonesWithIntercept.get(i).getClosestIntercept());
                 if(dist>temp){
                     index = i;
                     dist = temp;
@@ -176,5 +176,14 @@ public class Cross {
 
         }
         throw new NoHitException("No intercept with safeZone!");
+    }
+
+    public ArrayList<Zone> getCriticalZones() {
+        ArrayList<Zone> zones = new ArrayList<>();
+        for (Point point :
+                crossPoint) {
+            zones.add(new Zone(new Vector2Dv1(point), Zone.CRITICAL_ZONE_RADIUS, zoneGroupID));
+        }
+        return zones;
     }
 }
