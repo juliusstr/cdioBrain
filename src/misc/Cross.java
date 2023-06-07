@@ -58,13 +58,13 @@ public class Cross {
 
     /**
      * Checks if there is a hit against the cross, or any safety circles in the cross.
-     * @param robotPos
+     * @param pos
      * @param directionToTarget
      * @return  True if there is a hit
      *          False if there is no hit
      */
-    public void hit(Vector2Dv1 robotPos, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
-        ArrayList<Line> lines = hits(robotPos, directionToTarget);//hits in line
+    public void hit(Vector2Dv1 pos, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
+        ArrayList<Line> lines = hitsLineOnCross(pos, directionToTarget);//hits in line
         if (lines.size() != 0){
             hitreg = Boolean.FALSE;
             ArrayList<Vector2Dv1> hits = new ArrayList<>();
@@ -82,7 +82,7 @@ public class Cross {
             int index = -1;
             double dist = Double.MAX_VALUE;
             for (int j = 0; j < lines.size(); j++) {
-                double localDist = robotPos.getSubtracted(hits.get(j)).getLength();
+                double localDist = pos.getSubtracted(hits.get(j)).getLength();
                 if (localDist < dist)
                     index = j;
                 dist = localDist;
@@ -90,15 +90,15 @@ public class Cross {
             Line closestLine = lines.get(index);
             throw new LineReturnException(closestLine);
         }
-
+        //todo fix to get closest hit or center for zone that was hit closest to pos
         for (Point point : crossPoint) { // hits in zones
             SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ROBOT_WITH);
-            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(robotPos, directionToTarget);
+            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(pos, directionToTarget);
             if(intercepts.size() != 0){
                 int index = -1;
                 double dist = Double.MAX_VALUE;
                 for (int i = 0; i < intercepts.size(); i++) {
-                    double temp = robotPos.distance(intercepts.get(i));
+                    double temp = pos.distance(intercepts.get(i));
                     if(dist>temp){
                         index = i;
                         dist = temp;
@@ -111,7 +111,7 @@ public class Cross {
         throw new NoHitException();
     }
 
-    public ArrayList<Line> hits(Vector2Dv1 robotPos, Vector2Dv1 dir) {
+    public ArrayList<Line> hitsLineOnCross(Vector2Dv1 robotPos, Vector2Dv1 dir) {
         ArrayList<Line> lines = new ArrayList<>();
         for (Line line : crossLines) {
             if (line.hit(robotPos, dir)) {

@@ -29,7 +29,7 @@ public class NavAlgoPhaseTwo {
 
     public ArrayList<ArrayList<Vector2Dv1>> routes;
 
-    public static final double ANGLE_ERROR = Math.PI/180;
+    public static final double ANGLE_ERROR = Math.PI/180*1;
     public static final double TARGET_DISTANCE_ERROR = 45;
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
     public static final double MAX_SEARCH_TREE_DEPTH_WAYPOINT = 10;
@@ -65,11 +65,11 @@ public class NavAlgoPhaseTwo {
         if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() != 1){
             System.err.println("On waypoint");
             waypoints.remove(0);
-            return "stop -d -t";
+            return "stop -t -d";
         }
         if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
-            System.out.printf("On ball\n");
+            System.err.printf("On ball\n");
             return "stop -d -t";
         }
 
@@ -155,7 +155,7 @@ public class NavAlgoPhaseTwo {
     public boolean hitOnCrossToTargetVectorFromPos(Vector2Dv1 pos,Vector2Dv1 target){
         Vector2Dv1 dir = target.getSubtracted(pos);
         try {
-            cross.hit(robot.getPosVector(), dir);
+            cross.hit(pos, dir);
         } catch (LineReturnException e) {
             //System.out.println(e.line.toString());;
             return true;
@@ -194,11 +194,14 @@ public class NavAlgoPhaseTwo {
 
     private void wayPointGeneratorRecursive(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) {
         Vector2Dv1 localTargetVector = target.getPosVector();
+        Vector2Dv1 pos;
         boolean hitToTarget;
         if (pastRoute.size() == 0){
             hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
+            pos = robot.getPosVector();
         } else {
             hitToTarget = hitOnCrossToTargetVectorFromPos(pastRoute.get(pastRoute.size()-1),localTargetVector);
+            pos = pastRoute.get(pastRoute.size()-1);
         }
         if(!hitToTarget){
             pastRoute.add(target.getPosVector());
@@ -206,7 +209,7 @@ public class NavAlgoPhaseTwo {
             return;
         }
         try {
-            pastRoute.add(rotateVector(robot.getPosVector(),localTargetVector, rotateDirection));
+            pastRoute.add(rotateVector(pos,localTargetVector, rotateDirection));
         } catch (TimeoutException e) {
             return;
         }
