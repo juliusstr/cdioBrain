@@ -1,14 +1,10 @@
 package nav;
 
 
-import exceptions.LineReturnException;
-import exceptions.NoHitException;
-import exceptions.NoRouteException;
-import exceptions.Vector2Dv1ReturnException;
+import exceptions.*;
 import misc.*;
 import misc.ball.Ball;
 
-import javax.naming.SizeLimitExceededException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
@@ -127,7 +123,7 @@ public class NavAlgoPhaseTwo {
         } catch (LineReturnException e) {
             //System.out.println(e.line.toString());;
             return true;
-        } catch (Vector2Dv1ReturnException e) {
+        } catch (ZoneReturnException e) {
             //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
@@ -136,13 +132,14 @@ public class NavAlgoPhaseTwo {
         }
         return false;
     }
+
     public boolean hitOnCrossToTargetFromPosAndDir(Vector2Dv1 pos,Vector2Dv1 dir){
         try {
             cross.hit(pos, dir);
         } catch (LineReturnException e) {
             //System.out.println(e.line.toString());;
             return true;
-        } catch (Vector2Dv1ReturnException e) {
+        } catch (ZoneReturnException e) {
             //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
@@ -159,7 +156,7 @@ public class NavAlgoPhaseTwo {
         } catch (LineReturnException e) {
             //System.out.println(e.line.toString());;
             return true;
-        } catch (Vector2Dv1ReturnException e) {
+        } catch (ZoneReturnException e) {
             //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
@@ -228,7 +225,7 @@ public class NavAlgoPhaseTwo {
      * Turn rTVector CC until out of Cross or and critical zone on cross.
      * @param rTVector vector for pos or waypoint to target. rTVector will be changes in this function. Pass a clone.
      * @param pos position vector. Should be robot pos og waypoint pos.
-     * @param cOrCC 1 = CC, -1 = C;
+     * @param rotateDirection cc og c to rotate.
      * @return Vector2Dv1 next point after turn.
      * @exception TimeoutException Thrown if run local watchdog is triggered
      */
@@ -298,4 +295,8 @@ public class NavAlgoPhaseTwo {
     public void setCross(Cross cross) {
         this.cross = cross;
     }
+
+    private void setZoneGroupIDOOnObstacleAndBallsToAvoid(){
+
+    };
 }

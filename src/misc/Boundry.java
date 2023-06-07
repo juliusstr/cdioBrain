@@ -9,9 +9,11 @@ public class Boundry {
     public ArrayList<Point> points;
     public double scale;
 
+    public int zoneGroupID;
+
     public Boundry(ArrayList<Vector2Dv1> vectors) {
         Point a ,b, c, d;
-
+        zoneGroupID = 1;
         //finding a
         int index = -1;
         double score = Double.MAX_VALUE;
@@ -66,10 +68,10 @@ public class Boundry {
         points.add(d);
 
 
-        Line ab = new Line(a, b);
-        Line bc = new Line(b, c);
-        Line cd = new Line(c, d);
-        Line da = new Line(d, a);
+        Line ab = new Line(a, b,zoneGroupID);
+        Line bc = new Line(b, c,zoneGroupID);
+        Line cd = new Line(c, d,zoneGroupID);
+        Line da = new Line(d, a,zoneGroupID);
         bound = new ArrayList<>();
         bound.add(ab);
         bound.add(bc);

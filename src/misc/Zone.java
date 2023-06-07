@@ -1,29 +1,38 @@
 package misc;
 
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Vector;
 
-public class SafetyCircle {
+public class Zone {
 
     public static final int SAFE_ROBOT_WITH = 40;//todo fine tune meeeeeee
     public static final int SAFE_ZONE_RADIUS = 50;//todo fine tune meeeeeee
 
     public Vector2Dv1 pos;
     public double radius;
+    public int zoneGroupID;
 
-    public SafetyCircle(Vector2Dv1 pos, double radius){
+    public ArrayList<Vector2Dv1> intercepts;
+    public Vector2Dv1 closestIntercept;
+
+    public Zone(Vector2Dv1 pos, double radius){
         this.pos = pos;
         this.radius = radius;
+        zoneGroupID = -1;
+    }
+    public Zone(Vector2Dv1 pos, double radius, int zoneGroupID){
+        this.pos = pos;
+        this.radius = radius;
+        this.zoneGroupID = zoneGroupID;
     }
 
-    public ArrayList<Vector2Dv1> willHitCircle(Vector2Dv1 pos, Vector2Dv1 directionToTarget) {
+    public ArrayList<Vector2Dv1> willHitZone(Vector2Dv1 pos, Vector2Dv1 dir) {
+        closestIntercept = null;
+        intercepts = new ArrayList<>();
         ArrayList<Vector2Dv1> returnList = new ArrayList<>();
         double xr = pos.x; // x-coordinate of robot position
         double yr = pos.y; // y-coordinate of robot position
-        double dx = directionToTarget.x; // x-component of robot direction
-        double dy = directionToTarget.y; // y-component of robot direction
+        double dx = dir.x; // x-component of robot direction
+        double dy = dir.y; // y-component of robot direction
         double xc = this.pos.x; // x-coordinate of circle center
         double yc = this.pos.y; // y-coordinate of circle center
 
@@ -44,8 +53,10 @@ public class SafetyCircle {
                 return returnList;
             } else {
                 // tangent point is in front of robot, circle is grazed
-                Vector2Dv1 vector2D = pos.getAdded(directionToTarget.getMultiplied(t));
+                Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t));
                 returnList.add(vector2D);
+                closestIntercept = vector2D;
+                intercepts.add(vector2D);
                 return returnList;
             }
         } else {
@@ -58,8 +69,10 @@ public class SafetyCircle {
             } else if (t1 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t2 > 0) {
-                    Vector2Dv1 vector2D = pos.getAdded(directionToTarget.getMultiplied(t2));
+                    Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t2));
                     returnList.add(vector2D);
+                    closestIntercept = vector2D;
+                    intercepts.add(vector2D);
                     return returnList;
                 } else {
                     return returnList;
@@ -67,18 +80,27 @@ public class SafetyCircle {
             } else if (t2 < 0) {
                 // one intersection point is behind robot, check the other
                 if (t1 > 0) {
-                    Vector2Dv1 vector2D = pos.getAdded(directionToTarget.getMultiplied(t1));
+                    Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t1));
                     returnList.add(vector2D);
+                    closestIntercept = vector2D;
+                    intercepts.add(vector2D);
                     return returnList;
                 } else {
                     return returnList;
                 }
             } else {
                 // both intersection points are in front of robot, circle is hit
-                Vector2Dv1 vector2D = pos.getAdded(directionToTarget.getMultiplied(t1));
+                Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t1));
                 returnList.add(vector2D);
-                vector2D = pos.getAdded(directionToTarget.getMultiplied(t2));
+                intercepts.add(vector2D);
+                vector2D = pos.getAdded(dir.getMultiplied(t2));
                 returnList.add(vector2D);
+                intercepts.add(vector2D);
+                if(intercepts.get(0).distance(pos) > intercepts.get(1).distance(pos)){
+                    closestIntercept = intercepts.get(1);
+                } else {
+                    closestIntercept = intercepts.get(0);
+                }
                 return returnList;
             }
         }

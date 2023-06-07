@@ -11,10 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.naming.SizeLimitExceededException;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -77,9 +75,9 @@ public class NavAlgoPhaseTwoTest {
 
         Vector2Dv1 Corner = new Vector2Dv1(200,360/2);
         Vector2Dv1 Path = new Vector2Dv1(target.getxPos()-simulationRobot.getxPos(),target.getyPos()-simulationRobot.getyPos());
-        SafetyCircle circle = new SafetyCircle(Corner, 20);
+        Zone circle = new Zone(Corner, 20);
         //simulationRobot.setDirection(Path);
-        assertTrue(circle.willHitCircle(simulationRobot.getPosVector(), Path).size() != 0);
+        assertTrue(circle.willHitZone(simulationRobot.getPosVector(), Path).size() != 0);
     }
 
     /**
