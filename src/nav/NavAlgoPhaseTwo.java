@@ -30,6 +30,8 @@ public class NavAlgoPhaseTwo {
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
     public static final double MAX_SEARCH_TREE_DEPTH_WAYPOINT = 10;
 
+    public static int maxGroupeId = 2;
+
 
     public NavAlgoPhaseTwo(){}
 
@@ -300,6 +302,9 @@ public class NavAlgoPhaseTwo {
         this.cross = cross;
     }
 
+    /**
+     * updates the zoneGroupId on all balls in ballsToAvoid but not target
+     */
     private void updateZoneGroupIdOnBallsToAvoid(){
         ArrayList<Zone> crossCriticalZones = cross.getCriticalZones();
         //todo take in to account the line on the cross not only the zone
@@ -320,5 +325,6 @@ public class NavAlgoPhaseTwo {
                 ballsToAvoid.get(i).setZoneGroupIdToAdjacentBalls(ballsToAvoid);
             }
         }
+        maxGroupeId = currentMaxId;
     };
 }
