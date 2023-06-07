@@ -2,7 +2,6 @@ package misc.ball;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Ball extends PrimitiveBall{
 
@@ -10,7 +9,7 @@ public class Ball extends PrimitiveBall{
         BALL,
         ROBOT_FRONT,
         ROBOT_BACK,
-        UKNOWN
+        UNKNOWN
     }
     public static final double PX_TO_MM = 1.2;
     public static final int BALL_POS_HIS_MAX_SIZE = 10;

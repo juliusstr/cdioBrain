@@ -36,8 +36,9 @@ public class MainClient {
         ArrayList<Ball> balls = new ArrayList<>();
         RoutePlanerFaseOne routePlanerFaseOne = new RoutePlanerFaseOne();
 
-        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        // init balls for robot, to not have exception..
+        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
 
         Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
 
@@ -53,25 +54,27 @@ public class MainClient {
 
         balls = imgRec.captureBalls();
         BallStabilizerPhaseTwo stabilizer = new BallStabilizerPhaseTwo();
+        //clear the balls, to get the new list from the stabilizer
         routePlanerFaseOne.clearBalls();
         stabilizer.stabilizeBalls(balls);
 
-        ArrayList<Ball> roBall = new ArrayList<>();
+        ArrayList<Ball> robotBalls = new ArrayList<>();
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
             for (Ball ball : balls1) {
                 routePlanerFaseOne.addBallToList(ball);
             }
-            //roBall = stabilizer.getStabelRobotCirce();
+            //robotBalls = stabilizer.getStabelRobotCirce();
         } catch (NoDataException e) {
             //throw new RuntimeException(e);
 
         }
-        roBall.add(initBall);
-        roBall.add(initBall2);
+        robotBalls.add(initBall);
+        robotBalls.add(initBall2);
 
-        robotv1.updatePos(roBall.get(0), roBall.get(1));
+        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
+        //Needed to not crash if no balls were found on first frame
         routePlanerFaseOne.addBallToList(initBall);
         routePlanerFaseOne.init();
 
@@ -79,7 +82,7 @@ public class MainClient {
             greeting = in.readLine();
             if (greeting != null)
                 System.out.println("in: " + greeting);
-            if ("Got it".equals(greeting)) {
+            if ("Got it".equals(greeting)) { //todo lave så vi ikke venter på robot før vi beregner næste
 
                 balls = imgRec.captureBalls();
                 stabilizer.stabilizeBalls(balls);
@@ -90,8 +93,8 @@ public class MainClient {
                     for (Ball ball : balls1) {
                         routePlanerFaseOne.addBallToList(ball);
                     }
-                    roBall = stabilizer.getStabelRobotCirce();
-                    robotv1.updatePos(roBall.get(0), roBall.get(1));
+                    robotBalls = stabilizer.getStabelRobotCirce();
+                    robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
                     respons = routePlanerFaseOne.nextCommand();
                 } catch (NoDataException e) {
                     respons = "stop -d -t";

@@ -6,22 +6,17 @@ import misc.ball.PrimitiveBall;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.opencv.core.*;
-import org.opencv.core.Point;
 import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.features2d.SimpleBlobDetector_Params;
-import org.opencv.highgui.HighGui;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 import java.awt.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.opencv.features2d.Features2d.drawKeypoints;
-import static org.opencv.highgui.HighGui.imshow;
 
 public class VideoInputTest {
     VideoCapture capture;
@@ -77,7 +72,7 @@ public class VideoInputTest {
                     int b = (int) colorDoubleArray[0]; // blue value
                     int g = (int) colorDoubleArray[1]; // green value
                     int r = (int) colorDoubleArray[2]; // red value
-                    balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UKNOWN));
+                    balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UNKNOWN));
                 }
             }
         }

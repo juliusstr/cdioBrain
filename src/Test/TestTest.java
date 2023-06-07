@@ -15,7 +15,7 @@ public class TestTest {
 
     @BeforeEach
     void setUp(){
-        ball = new Ball(0, 0, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        ball = new Ball(0, 0, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
     }
 
     @Test

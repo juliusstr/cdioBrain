@@ -35,8 +35,8 @@ public class BallStabilizerPhaseTwoTest {
     @Test
     @DisplayName("init ball stabilizer phase two with static ball data")
     void initTestWithData(){
-        Ball ball = new Ball(0,0,3, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
-        Ball ball1 = new Ball(10,10,3, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
+        Ball ball = new Ball(0,0,3, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
+        Ball ball1 = new Ball(10,10,3, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
         ArrayList<Ball> balls = new ArrayList<>();
         balls.add(ball);
         try {
@@ -108,10 +108,10 @@ public class BallStabilizerPhaseTwoTest {
     @Test
     @DisplayName("init ball stabilizer phase two with static robot data")
     void initTestWithRobotData(){
-        Ball ball1 = new Ball(0,0,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
-        Ball ball2 = new Ball(5,5,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
-        Ball ball11 = new Ball(20,20,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
-        Ball ball12 = new Ball(25,25,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UKNOWN);
+        Ball ball1 = new Ball(0,0,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
+        Ball ball2 = new Ball(5,5,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
+        Ball ball11 = new Ball(20,20,3, BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
+        Ball ball12 = new Ball(25,25,3, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.UNKNOWN);
         ArrayList<Ball> balls = new ArrayList<>();
         balls.add(ball1);
         balls.add(ball2);

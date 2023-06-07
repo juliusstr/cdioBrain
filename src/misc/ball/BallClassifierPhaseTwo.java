@@ -1,6 +1,5 @@
 package misc.ball;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BallClassifierPhaseTwo {
@@ -30,7 +29,7 @@ public class BallClassifierPhaseTwo {
             ball.setType(Ball.Type.ROBOT_BACK);
             ball.setStatus(PrimitiveBall.Status.ROBOT);
         } else {
-            ball.setType(Ball.Type.UKNOWN);
+            ball.setType(Ball.Type.UNKNOWN);
         }
     }
 

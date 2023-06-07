@@ -52,10 +52,10 @@ public class BallStabilizerPhaseTwo {
     }
 
     private void stabilizeBall(Ball ball) throws TypeException {
-        if(ball.getType() == Ball.Type.UKNOWN){
+        if(ball.getType() == Ball.Type.UNKNOWN){
             BallClassifierPhaseTwo.classify(ball);
         }
-        if(ball.getType() == Ball.Type.UKNOWN){
+        if(ball.getType() == Ball.Type.UNKNOWN){
             throw new TypeException("Ball have no type.");
         }
         Ball relation = null;
