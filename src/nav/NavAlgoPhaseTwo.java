@@ -136,16 +136,25 @@ public class NavAlgoPhaseTwo {
         return false;
     }
 
-    public boolean hitOnCrossToTargetFromPosAndDir(Vector2Dv1 pos,Vector2Dv1 dir){
+    /**
+     * @param pos for witch to check
+     * @param dir to check;
+     * @param zoneId to return as the hit zone
+     * @return boolean - true if cross critical zone hit else false
+     */
+    public boolean hitOnCrossToTargetFromPosAndDir(Vector2Dv1 pos,Vector2Dv1 dir, Integer zoneId){
         try {
             cross.hit(pos, dir);
         } catch (LineReturnException e) {
+            zoneId = e.line.zoneGroupID;
             //System.out.println(e.line.toString());;
             return true;
         } catch (ZoneReturnException e) {
+            zoneId = e.zone.zoneGroupID;
             //System.out.println(e.vector2D.toString());
             return true;
         } catch (NoHitException e) {
+            zoneId = -1;
             //System.out.println("No hit");
             return false;
         }
@@ -167,6 +176,32 @@ public class NavAlgoPhaseTwo {
             return false;
         }
         return false;
+    }
+
+    public Zone     hitOnAllFromPosInDir(Vector2Dv1 pos, Vector2Dv1 dir){
+        ArrayList<Zone> allZones = new ArrayList<>();
+        allZones.addAll(cross.getCriticalZones());
+        for (Ball ball :
+                ballsToAvoid) {
+            allZones.add(ball.getCriticalZone());
+        }
+        if(allZones.size() == 0){
+            return null;
+        }
+        int index = -1;
+        double maxDist = Double.MAX_VALUE;
+        for (int i = 0; i < allZones.size(); i++) {
+            allZones.get(i).willHitZone(pos,dir);
+            try {
+                double dist = allZones.get(i).getClosestIntercept().distance(pos);
+                if(dist<maxDist){
+                    index = i;
+                }
+            } catch (NoHitException e) {
+                allZones.remove(i--);
+            }
+        }
+        return allZones.get(index);
     }
 
     /**
@@ -210,8 +245,9 @@ public class NavAlgoPhaseTwo {
             routes.add(pastRoute);
             return;
         }
+        Vector2Dv1 dir = localTargetVector.getSubtracted(pos);
         try {
-            pastRoute.add(rotateVector(pos,localTargetVector, rotateDirection));
+            pastRoute.add(rotateVector(pos,dir, rotateDirection));
         } catch (TimeoutException e) {
             return;
         }
@@ -222,22 +258,156 @@ public class NavAlgoPhaseTwo {
         }
     }
 
+    public void waypointGeneratorV2() throws NoRouteException, TimeoutException {
+        routes = new ArrayList<>();
+
+        Vector2Dv1 localTargetVector = target.getPosVector();
+        boolean hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
+        if(!hitToTarget){
+            waypoints.add(target.getPosVector());
+            return;
+        }
+        ArrayList<Vector2Dv1> route = new ArrayList<>();
+        wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.counterClockwise);
+        wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.clockwise);
+
+        //todo add check to se if a waypoint is out of bound
+
+        waypoints = shortestRoute(routes);
+    }
+
+    private void wayPointGeneratorRecursiveV2(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) throws TimeoutException {
+        Vector2Dv1 localTargetVector = target.getPosVector();
+        Vector2Dv1 pos;
+        boolean hitToTarget;
+        if (pastRoute.size() == 0){
+            hitToTarget = hitOnCrossToTargetVectorFromPos(robot.getPosVector(),localTargetVector);
+            pos = robot.getPosVector();
+        } else {
+            hitToTarget = hitOnCrossToTargetVectorFromPos(pastRoute.get(pastRoute.size()-1),localTargetVector);
+            pos = pastRoute.get(pastRoute.size()-1);
+        }
+        if(!hitToTarget){
+            pastRoute.add(target.getPosVector());
+            routes.add(pastRoute);
+            return;
+        }
+
+        Vector2Dv1 dir = localTargetVector.getSubtracted(pos);
+
+        Zone hitZone = null;
+        Zone previusHitZone = null;
+        previusHitZone = hitOnAllFromPosInDir(pos, dir);
+
+        while ((hitZone = hitOnAllFromPosInDir(pos, dir)) != null) {
+            dir.rotateBy(SEARCH_RAD_TO_TURN * (rotateDirection.ordinal()-1));
+            if(previusHitZone != hitZone){
+                if (previusHitZone.zoneGroupID != hitZone.zoneGroupID){
+                    caseClosestZoneChange((ArrayList<Vector2Dv1>) pastRoute.clone(), rotateDirection, previusHitZone, hitZone, dir, pos);
+                }
+                previusHitZone = hitZone;
+            }
+        }
+
+        Vector2Dv1 waypoint;
+        double step = -1;
+        int i = 0;//watchdog
+        String text = "";
+        Zone safeZone = previusHitZone.getNewSafetyZoneFromCriticalZone();
+        do {
+            try {
+
+                safeZone.willHitZone(pos, dir);
+                waypoint = safeZone.getClosestIntercept();
+
+            } catch (NoHitException e) {
+                if(i++ < WATCHDOG_STEP_HALVS) {
+                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\ndir: " + dir.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
+                    throw new TimeoutException(text);
+                }
+                waypoint = null;
+                step = step/2;
+                dir.rotateBy(SEARCH_RAD_TO_TURN * step * (rotateDirection.ordinal()-1));
+            }
+        } while (waypoint == null);
+        //todo check if rout form pos to waypoint hits critical-zone closer to robot.
+        pastRoute.add(waypoint);
+
+        if(pastRoute.size() < MAX_SEARCH_TREE_DEPTH_WAYPOINT) {
+            wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
+            wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+        }
+    }
+
+    private void caseClosestZoneChange(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection, Zone previusHitZone, Zone hitZone, Vector2Dv1 dir, Vector2Dv1 pos) throws TimeoutException {
+
+        Zone zone;
+
+        try {//sker ikke
+            if(previusHitZone.getClosestIntercept().distance(pos) > hitZone.getClosestIntercept().distance(pos)){
+                rotateDirection = fliprorateDirection(rotateDirection);
+                zone = hitZone;
+            } else {
+                zone = previusHitZone;
+            }
+        } catch (NoHitException e) {
+            throw new RuntimeException(e);
+        }
+
+        Vector2Dv1 waypoint;
+        double step = -1;
+        int i = 0;//watchdog
+        String text = "";
+        Zone safeZone = zone.getNewSafetyZoneFromCriticalZone();
+        do {
+            try {
+
+                safeZone.willHitZone(pos, dir);
+                waypoint = safeZone.getClosestIntercept();
+
+            } catch (NoHitException e) {
+                if(i++ < WATCHDOG_STEP_HALVS) {
+                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\ndir: " + dir.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
+                    throw new TimeoutException(text);
+                }
+                waypoint = null;
+                step = step/2;
+                dir.rotateBy(SEARCH_RAD_TO_TURN * step * (rotateDirection.ordinal()-1));
+            }
+        } while (waypoint == null);
+        //todo check if rout form pos to waypoint hits critical-zone closer to robot.
+        pastRoute.add(waypoint);
+
+        if(pastRoute.size() < MAX_SEARCH_TREE_DEPTH_WAYPOINT) {
+            wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
+            wayPointGeneratorRecursiveV2((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+        }
+
+    }
+
     public ArrayList<Vector2Dv1> getWaypoints() {
         return waypoints;
     }
 
     /**
-     * Turn rTVector CC until out of Cross or and critical zone on cross.
-     * @param rTVector vector for pos or waypoint to target. rTVector will be changes in this function. Pass a clone.
+     * Turn dir until out of Cross or and critical zone on cross.
+     * @param dir vector for direction to change. dir vill be changed pass a clone if it may not change.
      * @param pos position vector. Should be robot pos og waypoint pos.
      * @param rotateDirection cc og c to rotate.
      * @return Vector2Dv1 next point after turn.
      * @exception TimeoutException Thrown if run local watchdog is triggered
      */
-    private Vector2Dv1 rotateVector(Vector2Dv1 pos, Vector2Dv1 rTVector, RotateDirection rotateDirection) throws TimeoutException {
-        Vector2Dv1 dir = rTVector.getSubtracted(pos);
-        while (hitOnCrossToTargetFromPosAndDir(pos, dir)) {
+    private Vector2Dv1 rotateVector(Vector2Dv1 pos, Vector2Dv1 dir, RotateDirection rotateDirection) throws TimeoutException {
+        Integer hitZoneId = -1;
+        Integer previusHitZoneId = -1;
+        hitOnCrossToTargetFromPosAndDir(pos, dir, hitZoneId);
+        previusHitZoneId = hitZoneId;
+        while (hitOnCrossToTargetFromPosAndDir(pos, dir, hitZoneId)) {
             dir.rotateBy(SEARCH_RAD_TO_TURN * (rotateDirection.ordinal()-1));
+            if(previusHitZoneId.intValue() != hitZoneId.intValue()){
+                //throw new HitException("New zone hit!");
+                //idear for new. will not implement in this function. all new will be made with inspiration from this.
+            }
         }
         Vector2Dv1 waypoint;
         double step = -1;
@@ -248,7 +418,7 @@ public class NavAlgoPhaseTwo {
                 waypoint = cross.safeZoneExit(pos, dir);
             } catch (NoHitException e) {
                 if(i++ < WATCHDOG_STEP_HALVS) {
-                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\nrTVector: " + rTVector.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
+                    text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\ndir: " + dir.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
                     throw new TimeoutException(text);
                 }
                 waypoint = null;
@@ -327,4 +497,11 @@ public class NavAlgoPhaseTwo {
         }
         maxGroupeId = currentMaxId;
     };
+
+    public RotateDirection fliprorateDirection(RotateDirection rotateDirection){
+        if(rotateDirection == RotateDirection.counterClockwise){
+            return RotateDirection.clockwise;
+        }
+        return RotateDirection.counterClockwise;
+    }
 }

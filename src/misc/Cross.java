@@ -63,7 +63,7 @@ public class Cross {
      * Checks if there is a hit against the cross, or any safety circles in the cross.
      * @param pos
      * @param directionToTarget
-     * @throws LineReturnException returns the line that was hit.
+     * @throws LineReturnException returns the line that was hit closest to pos.
      * @throws ZoneReturnException return the closest zone of a hit on a critical zone
      * @throws NoHitException when the cross or it's critical zones was not hit.
      */
@@ -99,8 +99,12 @@ public class Cross {
         for (Point point : crossPoint) { // hits in zones
             Zone zone = new Zone(new Vector2Dv1(point), Zone.CRITICAL_ZONE_RADIUS, zoneGroupID);
             zone.willHitZone(pos, directionToTarget);
-            if(zone.getClosestIntercept() != null)
-                zonesWithIntercept.add(zone);
+            try {
+                if (zone.getClosestIntercept() != null)
+                    zonesWithIntercept.add(zone);
+            } catch (NoHitException e){
+
+            }
         }
         if(zonesWithIntercept.size() != 0){
             int index = -1;

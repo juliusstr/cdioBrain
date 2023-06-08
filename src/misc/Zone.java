@@ -141,4 +141,11 @@ public class Zone {
         }
         return closestIntercept;
     }
+
+    public Zone getNewSafetyZoneFromCriticalZone(){
+        if(radius == SAFE_ZONE_RADIUS){
+            return this;
+        }
+        return new Zone(this.pos,SAFE_ZONE_RADIUS,zoneGroupID);
+    }
 }
