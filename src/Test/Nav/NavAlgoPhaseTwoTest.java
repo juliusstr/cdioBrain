@@ -132,7 +132,7 @@ public class NavAlgoPhaseTwoTest {
 
     @Test
     @DisplayName("Waypoint generator test")
-    void WaypointGenTest(){
+    void waypointGenTest(){
         NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
         navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
         try {
@@ -148,5 +148,11 @@ public class NavAlgoPhaseTwoTest {
     /*
         TODO Make a test for zoneGroupeId
      */
+    @Test
+    @DisplayName("ZoneGroupeId balls next to cross & away from cross")
+    void zoneGroupeIdTest(){
+        Point crossCorner = cross.crossPoint.get(0);
+
+    }
 
 }
