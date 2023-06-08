@@ -1,5 +1,7 @@
 package misc.ball;
 
+import Client.StandardSettings;
+import misc.BallClassifier;
 import misc.Vector2Dv1;
 import misc.Zone;
 
@@ -45,6 +47,22 @@ public class Ball extends PrimitiveBall{
         ballPosHis = new ArrayList<>();
         this.id = id;
         this.type = type;
+        lastSeenAlive = -1;
+        zoneGroupId = -1;
+    }
+
+    /**
+     * ONLY TO USE FOR SIMULATION
+     * @param pos
+     */
+    public Ball(Vector2Dv1 pos){
+        super((int)pos.x, (int)pos.y);
+        this.radius = StandardSettings.BALL_RADIUS_PX;
+        this.color = BallClassifierPhaseTwo.WHITE;
+        this.isInPx = true;
+        ballPosHis = new ArrayList<>();
+        this.id = -1;
+        this.type = Type.BALL;
         lastSeenAlive = -1;
         zoneGroupId = -1;
     }

@@ -43,6 +43,7 @@ public class NavAlgoPhaseTwo {
         this.boundry = boundry;
         this.ballsToAvoid = ballsToAvoid;
         waypoints = new ArrayList<>();
+        this.updateZoneGroupIdOnBallsToAvoid();
     }
 
     public String nextCommand() {
@@ -201,6 +202,7 @@ public class NavAlgoPhaseTwo {
                 allZones.remove(i--);
             }
         }
+        if(index == -1) return null;
         return allZones.get(index);
     }
 
@@ -303,7 +305,7 @@ public class NavAlgoPhaseTwo {
             dir.rotateBy(SEARCH_RAD_TO_TURN * (rotateDirection.ordinal()-1));
             if(previusHitZone != hitZone){
                 if (previusHitZone.zoneGroupID != hitZone.zoneGroupID){
-                    caseClosestZoneChange((ArrayList<Vector2Dv1>) pastRoute.clone(), rotateDirection, previusHitZone, hitZone, dir, pos);
+                    caseClosestZoneChange((ArrayList<Vector2Dv1>) pastRoute.clone(), rotateDirection, previusHitZone, hitZone, dir.clone(), pos);
                 }
                 previusHitZone = hitZone;
             }
@@ -321,7 +323,7 @@ public class NavAlgoPhaseTwo {
                 waypoint = safeZone.getClosestIntercept();
 
             } catch (NoHitException e) {
-                if(i++ < WATCHDOG_STEP_HALVS) {
+                if(i++ > WATCHDOG_STEP_HALVS) {
                     text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\ndir: " + dir.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
                     throw new TimeoutException(text);
                 }
@@ -366,7 +368,7 @@ public class NavAlgoPhaseTwo {
                 waypoint = safeZone.getClosestIntercept();
 
             } catch (NoHitException e) {
-                if(i++ < WATCHDOG_STEP_HALVS) {
+                if(i++ > WATCHDOG_STEP_HALVS) {
                     text = "Did not finde a waypoint! - Watchdog triggered\nPos : " + pos.toString() + "\ndir: " + dir.toString() + "\ncOrCC: " + (rotateDirection.ordinal()-1) + "\n robot pos: " + robot.getPosVector() + "\nrobot dir: " + robot.getDirection();
                     throw new TimeoutException(text);
                 }
@@ -478,6 +480,9 @@ public class NavAlgoPhaseTwo {
     public void updateZoneGroupIdOnBallsToAvoid(){
         ArrayList<Zone> crossCriticalZones = cross.getCriticalZones();
         //todo take in to account the line on the cross not only the zone
+        for (Ball ball: ballsToAvoid) {
+            ball.setZoneGroupId(-1);
+        }
         for (Ball ball : ballsToAvoid) {
             for (Zone crossZone : crossCriticalZones) {
                 double distMax = ball.getCriticalZone().radius+crossZone.radius;

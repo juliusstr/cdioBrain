@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -148,9 +149,107 @@ public class NavAlgoPhaseTwoTest {
         assertTrue(true);
     }
 
-    /*
-        TODO Make a test for zoneGroupeId
-     */
+    @Test
+    @DisplayName("waypointgenerator V2 kør under krydset test")
+    void waypointV2UnderKrydsTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(337, 282)));
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println(navPlanner.routes);
+    }
+
+    @Test
+    @DisplayName("waypointgenerator V2 kør over krydset test")
+    void waypointV2OverKrydsTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(303, 78)));
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println(navPlanner.routes);
+    }
+    @Test
+    @DisplayName("waypointgenerator V2 bold foran krydset test")
+    void waypointV2ForanKrydsTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(218, 197)));
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println("Number of routes: " + navPlanner.routes.size());
+    }
+    @Test
+    @DisplayName("waypointgenerator V2 bold bag krydset test")
+    void waypointV2BagKrydsTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(422, 163)));
+
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println("Number of routes: " + navPlanner.routes.size());
+    }
+    @Test
+    @DisplayName("waypointgenerator V2 4 bolde test")
+    void waypointV2_4BoldeTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(422, 163)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(218, 197)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(303, 78)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(337, 282)));
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println("Number of routes: " + navPlanner.routes.size());
+    }
+    @Test
+    @DisplayName("waypointgenerator V2 bold væk fra kryds oppe test")
+    void waypointV2BoldOverTest() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(337, 330)));
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+        navPlanner.waypointGeneratorV2();
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = navPlanner.nextCommand();
+        } while(simulator.updatePosSimple(navPlanner.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println(navPlanner.routes);
+    }
     @Test
     @DisplayName("ZoneGroupeId balls next to cross & away from cross")
     void zoneGroupeIdTest(){
