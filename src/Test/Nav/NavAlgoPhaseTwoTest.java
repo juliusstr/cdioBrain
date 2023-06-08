@@ -1,9 +1,11 @@
 package Test.Nav;
 
+import Client.StandardSettings;
 import exceptions.NoHitException;
 import exceptions.NoRouteException;
 import misc.*;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.PrimitiveBall;
 import misc.simulation.simulator;
 import nav.NavAlgoPhaseTwo;
@@ -40,6 +42,7 @@ public class NavAlgoPhaseTwoTest {
         boundryList.add(new Vector2Dv1(610, 340));
         boundry = new Boundry(boundryList);
         target = new Ball(400, 360/2, 4, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        ballsToAvoid = new ArrayList<>();
     }
 
     @Test
@@ -151,8 +154,37 @@ public class NavAlgoPhaseTwoTest {
     @Test
     @DisplayName("ZoneGroupeId balls next to cross & away from cross")
     void zoneGroupeIdTest(){
-        Point crossCorner = cross.crossPoint.get(0);
+        Vector2Dv1 crossCorner = new Vector2Dv1(cross.crossPoint.get(0));
+        System.out.println("corner pos: " + crossCorner);
+        Vector2Dv1 crossCenter = cross.pos;
+        Vector2Dv1 dir = crossCorner.getSubtracted(crossCenter).getNormalized();
+        System.out.println("cross pos: " + crossCenter);
+;
+        final int ballZoneRadius = Zone.CRITICAL_ZONE_RADIUS + StandardSettings.BALL_RADIUS_PX;
+        final int crossZoneRadius = Zone.CRITICAL_ZONE_RADIUS;
 
+        Ball hitZoneBall = new Ball(crossCorner.getAdded(dir.getMultiplied(ballZoneRadius+crossZoneRadius-10)),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
+        Ball edgeZoneBall = new Ball(crossCorner.getAdded(dir.getMultiplied(ballZoneRadius*2+crossZoneRadius)),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
+        Ball noHitZoneBall = new Ball(crossCorner.getAdded(dir.getMultiplied(ballZoneRadius*5+crossZoneRadius+10)),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
+        Ball noHitZoneBall2 = new Ball(crossCorner.getAdded(dir.getMultiplied(ballZoneRadius*6+crossZoneRadius+10)),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,false, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
+
+        ballsToAvoid.add(edgeZoneBall);
+        ballsToAvoid.add(hitZoneBall);
+        ballsToAvoid.add(noHitZoneBall2);
+        ballsToAvoid.add(noHitZoneBall);
+
+        NavAlgoPhaseTwo navPlanner = new NavAlgoPhaseTwo();
+        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
+
+        navPlanner.updateZoneGroupIdOnBallsToAvoid();
+        System.out.println("hit" + hitZoneBall);
+        System.out.println("edge" + edgeZoneBall);
+        System.out.println("no hit" + noHitZoneBall);
+        System.out.println("no hit2" + noHitZoneBall2);
+        assertTrue(hitZoneBall.getZoneGroupId() == 2);
+        assertTrue(edgeZoneBall.getZoneGroupId() == 2);
+        assertTrue(noHitZoneBall2.getZoneGroupId() == 3);
+        assertTrue(noHitZoneBall.getZoneGroupId() == 3);
     }
 
 }

@@ -1,5 +1,6 @@
 package misc.ball;
 
+import misc.Vector2Dv1;
 import misc.Zone;
 
 import java.awt.*;
@@ -36,6 +37,17 @@ public class Ball extends PrimitiveBall{
         lastSeenAlive = -1;
         zoneGroupId = -1;
     }
+    public Ball(Vector2Dv1 pos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
+        super((int)pos.x, (int)pos.y);
+        this.radius = radius;
+        this.color = color;
+        this.isInPx = isInPx;
+        ballPosHis = new ArrayList<>();
+        this.id = id;
+        this.type = type;
+        lastSeenAlive = -1;
+        zoneGroupId = -1;
+    }
 
     @Override
     public String toString() {
@@ -46,6 +58,7 @@ public class Ball extends PrimitiveBall{
                 ", xPos=" + xPos +
                 ", yPos=" + yPos +
                 ", status=" + status +
+                ", zoneGroupeId=" + zoneGroupId +
                 '}';
     }
 

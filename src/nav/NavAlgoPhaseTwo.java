@@ -305,7 +305,7 @@ public class NavAlgoPhaseTwo {
     /**
      * updates the zoneGroupId on all balls in ballsToAvoid but not target
      */
-    private void updateZoneGroupIdOnBallsToAvoid(){
+    public void updateZoneGroupIdOnBallsToAvoid(){
         ArrayList<Zone> crossCriticalZones = cross.getCriticalZones();
         //todo take in to account the line on the cross not only the zone
         for (Ball ball : ballsToAvoid) {
