@@ -1,5 +1,6 @@
 package misc;
 
+import Client.StandardSettings;
 import exceptions.NoHitException;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Zone {
 
     private ArrayList<Vector2Dv1> intercepts;
     private Vector2Dv1 closestIntercept;
+    private Vector2Dv1 furthestIntercept;
 
     public Zone(Vector2Dv1 pos, double radius){
         this.pos = pos;
@@ -29,6 +31,7 @@ public class Zone {
 
     public ArrayList<Vector2Dv1> willHitZone(Vector2Dv1 pos, Vector2Dv1 dir) {
         closestIntercept = null;
+        furthestIntercept = null;
         intercepts = new ArrayList<>();
         ArrayList<Vector2Dv1> returnList = new ArrayList<>();
         double xr = pos.x; // x-coordinate of robot position
@@ -58,6 +61,7 @@ public class Zone {
                 Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t));
                 returnList.add(vector2D);
                 closestIntercept = vector2D;
+                furthestIntercept = vector2D;
                 intercepts.add(vector2D);
                 return returnList;
             }
@@ -74,6 +78,7 @@ public class Zone {
                     Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t2));
                     returnList.add(vector2D);
                     closestIntercept = vector2D;
+                    furthestIntercept = vector2D;
                     intercepts.add(vector2D);
                     return returnList;
                 } else {
@@ -85,6 +90,7 @@ public class Zone {
                     Vector2Dv1 vector2D = pos.getAdded(dir.getMultiplied(t1));
                     returnList.add(vector2D);
                     closestIntercept = vector2D;
+                    furthestIntercept = vector2D;
                     intercepts.add(vector2D);
                     return returnList;
                 } else {
@@ -100,8 +106,10 @@ public class Zone {
                 intercepts.add(vector2D);
                 if(intercepts.get(0).distance(pos) > intercepts.get(1).distance(pos)){
                     closestIntercept = intercepts.get(1);
+                    furthestIntercept = intercepts.get(0);
                 } else {
                     closestIntercept = intercepts.get(0);
+                    furthestIntercept = intercepts.get(1);
                 }
                 return returnList;
             }
@@ -142,10 +150,32 @@ public class Zone {
         return closestIntercept;
     }
 
+    public Vector2Dv1 getFurthestIntercept() throws NoHitException {
+        if(furthestIntercept == null){
+            throw new NoHitException("No intercept on zone!");
+        }
+        return furthestIntercept;
+    }
+
     public Zone getNewSafetyZoneFromCriticalZone(){
+
         if(radius == SAFE_ZONE_RADIUS){
             return this;
         }
+        if(radius == StandardSettings.BALL_RADIUS_PX + CRITICAL_ZONE_RADIUS){
+            return new Zone(this.pos,StandardSettings.BALL_RADIUS_PX + SAFE_ZONE_RADIUS,zoneGroupID);
+        }
         return new Zone(this.pos,SAFE_ZONE_RADIUS,zoneGroupID);
+    }
+
+    @Override
+    public String toString() {
+        return "Zone{" +
+                "pos=" + pos +
+                ", radius=" + radius +
+                ", zoneGroupID=" + zoneGroupID +
+                ", closestIntercept=" + closestIntercept +
+                ", furthestIntercept=" + furthestIntercept +
+                '}';
     }
 }
