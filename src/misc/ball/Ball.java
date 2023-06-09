@@ -1,5 +1,10 @@
 package misc.ball;
 
+import Client.StandardSettings;
+import misc.BallClassifier;
+import misc.Vector2Dv1;
+import misc.Zone;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -20,8 +25,10 @@ public class Ball extends PrimitiveBall{
     private Type type;
     private int lastSeenAlive;
     private ArrayList<Point> ballPosHis;
+    private int zoneGroupId;
 
-    public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {
+
+    public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
         super(xPos, yPos);
         this.radius = radius;
         this.color = color;
@@ -30,6 +37,34 @@ public class Ball extends PrimitiveBall{
         this.id = id;
         this.type = type;
         lastSeenAlive = -1;
+        zoneGroupId = -1;
+    }
+    public Ball(Vector2Dv1 pos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
+        super((int)pos.x, (int)pos.y);
+        this.radius = radius;
+        this.color = color;
+        this.isInPx = isInPx;
+        ballPosHis = new ArrayList<>();
+        this.id = id;
+        this.type = type;
+        lastSeenAlive = -1;
+        zoneGroupId = -1;
+    }
+
+    /**
+     * ONLY TO USE FOR SIMULATION
+     * @param pos
+     */
+    public Ball(Vector2Dv1 pos){
+        super((int)pos.x, (int)pos.y);
+        this.radius = StandardSettings.BALL_RADIUS_PX;
+        this.color = BallClassifierPhaseTwo.WHITE;
+        this.isInPx = true;
+        ballPosHis = new ArrayList<>();
+        this.id = -1;
+        this.type = Type.BALL;
+        lastSeenAlive = -1;
+        zoneGroupId = -1;
     }
 
     @Override
@@ -41,6 +76,7 @@ public class Ball extends PrimitiveBall{
                 ", xPos=" + xPos +
                 ", yPos=" + yPos +
                 ", status=" + status +
+                ", zoneGroupeId=" + zoneGroupId +
                 '}';
     }
 
@@ -91,6 +127,13 @@ public class Ball extends PrimitiveBall{
         return isInPx;
     }
 
+    public int getZoneGroupId() {
+        return zoneGroupId;
+    }
+
+    public void setZoneGroupId(int zoneGroupId) {
+        this.zoneGroupId = zoneGroupId;
+    }
 
     public void convertPxToMm(){
         if (isInPx){
@@ -105,5 +148,26 @@ public class Ball extends PrimitiveBall{
         return ballPosHis;
     }
 
+    public Zone getSafetyZone(){
+        return new Zone(this.getPosVector(), Zone.SAFE_ZONE_RADIUS + radius, zoneGroupId);
+    }
 
+    public Zone getCriticalZone(){
+        return new Zone(this.getPosVector(), Zone.CRITICAL_ZONE_RADIUS + radius, zoneGroupId);
+    }
+
+    public void setZoneGroupIdToAdjacentBalls(ArrayList<Ball> balls){
+        for (int i = 0; i < balls.size(); i++) {
+            if (this == balls.get(i))
+                continue;
+            if (balls.get(i).getZoneGroupId() == -1){
+                double distMax = balls.get(i).getCriticalZone().radius+this.getCriticalZone().radius;
+                double dist = balls.get(i).getPosVector().distance(this.getPosVector());
+                if(dist<= distMax){
+                    balls.get(i).setZoneGroupId(this.zoneGroupId);
+                    balls.get(i).setZoneGroupIdToAdjacentBalls(balls);
+                }
+            }
+        }
+    }
 }

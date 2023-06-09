@@ -16,6 +16,8 @@ public class Cross {
     public Vector2Dv1 vec;
     public Vector2Dv1 pos;
 
+    public int zoneGroupID;
+
     public Boolean hitreg;
     public static final double rotate_angle = Math.PI / 180;
 
@@ -24,6 +26,7 @@ public class Cross {
         this.pos = pos;
         crossPoint = new ArrayList<>();
         int i;
+        zoneGroupID = 2;
 
         for (i = 0; i < 4; i++) {
             vec.normalize();
@@ -48,9 +51,9 @@ public class Cross {
         crossLines = new ArrayList<>();
         for (i = 0; i < crossPoint.size(); i++) {
             if (i < crossPoint.size() - 1) {
-                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(i + 1)));
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(i + 1),zoneGroupID));
             } else {
-                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(0)));
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(0),zoneGroupID));
             }
         }
 
@@ -58,13 +61,14 @@ public class Cross {
 
     /**
      * Checks if there is a hit against the cross, or any safety circles in the cross.
-     * @param robotPos
+     * @param pos
      * @param directionToTarget
-     * @return  True if there is a hit
-     *          False if there is no hit
+     * @throws LineReturnException returns the line that was hit closest to pos.
+     * @throws ZoneReturnException return the closest zone of a hit on a critical zone
+     * @throws NoHitException when the cross or it's critical zones was not hit.
      */
-    public void hit(Vector2Dv1 robotPos, Vector2Dv1 directionToTarget) throws LineReturnException, Vector2Dv1ReturnException, NoHitException {
-        ArrayList<Line> lines = hits(robotPos, directionToTarget);//hits in line
+    public void hit(Vector2Dv1 pos, Vector2Dv1 directionToTarget) throws LineReturnException, NoHitException, ZoneReturnException {
+        ArrayList<Line> lines = hitsLineOnCross(pos, directionToTarget);//hits in line
         if (lines.size() != 0){
             hitreg = Boolean.FALSE;
             ArrayList<Vector2Dv1> hits = new ArrayList<>();
@@ -82,7 +86,7 @@ public class Cross {
             int index = -1;
             double dist = Double.MAX_VALUE;
             for (int j = 0; j < lines.size(); j++) {
-                double localDist = robotPos.getSubtracted(hits.get(j)).getLength();
+                double localDist = pos.getSubtracted(hits.get(j)).getLength();
                 if (localDist < dist)
                     index = j;
                 dist = localDist;
@@ -91,27 +95,33 @@ public class Cross {
             throw new LineReturnException(closestLine);
         }
 
+        ArrayList<Zone> zonesWithIntercept = new ArrayList<>();
         for (Point point : crossPoint) { // hits in zones
-            SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ROBOT_WITH);
-            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(robotPos, directionToTarget);
-            if(intercepts.size() != 0){
-                int index = -1;
-                double dist = Double.MAX_VALUE;
-                for (int i = 0; i < intercepts.size(); i++) {
-                    double temp = robotPos.distance(intercepts.get(i));
-                    if(dist>temp){
-                        index = i;
-                        dist = temp;
-                    }
-                }
-                throw new Vector2Dv1ReturnException(intercepts.get(index));
-            }
+            Zone zone = new Zone(new Vector2Dv1(point), Zone.CRITICAL_ZONE_RADIUS, zoneGroupID);
+            zone.willHitZone(pos, directionToTarget);
+            try {
+                if (zone.getClosestIntercept() != null)
+                    zonesWithIntercept.add(zone);
+            } catch (NoHitException e){
 
+            }
+        }
+        if(zonesWithIntercept.size() != 0){
+            int index = -1;
+            double dist = Double.MAX_VALUE;
+            for (int i = 0; i < zonesWithIntercept.size(); i++) {
+                double temp = pos.distance(zonesWithIntercept.get(i).getClosestIntercept());
+                if(dist>temp){
+                    index = i;
+                    dist = temp;
+                }
+            }
+            throw new ZoneReturnException(zonesWithIntercept.get(index));
         }
         throw new NoHitException();
     }
 
-    public ArrayList<Line> hits(Vector2Dv1 robotPos, Vector2Dv1 dir) {
+    public ArrayList<Line> hitsLineOnCross(Vector2Dv1 robotPos, Vector2Dv1 dir) {
         ArrayList<Line> lines = new ArrayList<>();
         for (Line line : crossLines) {
             if (line.hit(robotPos, dir)) {
@@ -132,8 +142,8 @@ public class Cross {
         //gets the closest intercept center from pos.
         ArrayList<Point> interceptZoneCenters = new ArrayList<>();
         for (Point point : crossPoint) { // hits in zones
-            SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ZONE_RADIUS);
-            ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(pos, dir);
+            Zone circle = new Zone(new Vector2Dv1(point), Zone.SAFE_ZONE_RADIUS,zoneGroupID);
+            ArrayList<Vector2Dv1> intercepts = circle.willHitZone(pos, dir);
             if(intercepts.size() != 0){
                 interceptZoneCenters.add(point);
             }
@@ -154,8 +164,8 @@ public class Cross {
         Point point = interceptZoneCenters.get(index);
 
         //getes the furthest intercept form pos
-        SafetyCircle circle = new SafetyCircle(new Vector2Dv1(point), SafetyCircle.SAFE_ZONE_RADIUS);
-        ArrayList<Vector2Dv1> intercepts = circle.willHitCircle(pos, dir);
+        Zone circle = new Zone(new Vector2Dv1(point), Zone.SAFE_ZONE_RADIUS,zoneGroupID);
+        ArrayList<Vector2Dv1> intercepts = circle.willHitZone(pos, dir);
         if(intercepts.size() != 0) {//todo remove me if i work. catch above.
             index = -1;
             dist = Double.MIN_VALUE;
@@ -170,5 +180,14 @@ public class Cross {
 
         }
         throw new NoHitException("No intercept with safeZone!");
+    }
+
+    public ArrayList<Zone> getCriticalZones() {
+        ArrayList<Zone> zones = new ArrayList<>();
+        for (Point point :
+                crossPoint) {
+            zones.add(new Zone(new Vector2Dv1(point), Zone.CRITICAL_ZONE_RADIUS, zoneGroupID));
+        }
+        return zones;
     }
 }

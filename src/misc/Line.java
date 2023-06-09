@@ -9,6 +9,7 @@ public class Line {
     public Vector2Dv1 p2;
 
     private Vector2Dv1 hitPoint;
+    public int zoneGroupID;
 
 
     public boolean hit(Vector2Dv1 pos, Vector2Dv1 dir1) {
@@ -44,6 +45,10 @@ public class Line {
             double dotProduct = lineDirection_x * direction_x + lineDirection_y * direction_y;
             if (dotProduct > 0 && dotProduct <= Math.sqrt(lineDirection_x * lineDirection_x + lineDirection_y * lineDirection_y)) {
                 //System.out.println("The robot will hit the line segment.");
+                double t = vectorToLine_x / direction_x;
+                double x_intersect = x_robot + t * direction_x;
+                double y_intersect = y_robot + t * direction_y;
+                hitPoint = new Vector2Dv1(x_intersect, y_intersect);
                 return true;
             } else {
                 //System.out.println("The robot will not hit the line segment.");
@@ -73,6 +78,13 @@ public class Line {
         this.p1 = new Vector2Dv1(p1);
         this.p2 = new Vector2Dv1(p2);
         hitPoint = null;
+        zoneGroupID = -1;
+    }
+    public Line(Point p1, Point p2, int zoneGroupID){
+        this.p1 = new Vector2Dv1(p1);
+        this.p2 = new Vector2Dv1(p2);
+        hitPoint = null;
+        this.zoneGroupID = zoneGroupID;
     }
 
     public Vector2Dv1 getHitVector() throws NoDataException{
