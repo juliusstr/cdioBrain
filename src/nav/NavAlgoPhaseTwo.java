@@ -7,7 +7,7 @@ import misc.*;
 import misc.ball.Ball;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 public class NavAlgoPhaseTwo {
     /**
@@ -33,6 +33,8 @@ public class NavAlgoPhaseTwo {
     public static int maxGroupeId = 2;
 
     public static int lowestWaypointCount;
+
+    private static ThreadPoolExecutor threadPoolExecutor;
 
 
     public NavAlgoPhaseTwo(){}
@@ -288,10 +290,34 @@ public class NavAlgoPhaseTwo {
             waypoints.add(target.getPosVector());
             return;
         }
-        ArrayList<Vector2Dv1> route = new ArrayList<>();
-        wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.counterClockwise);
-        wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.clockwise);
 
+        threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+
+
+        ArrayList<Vector2Dv1> route = new ArrayList<>();
+        threadPoolExecutor.submit(() -> {
+            try {
+                wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.counterClockwise);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        threadPoolExecutor.submit(() -> {
+            try {
+                wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) route.clone(), RotateDirection.clockwise);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        int i = 0;
+        while (threadPoolExecutor.getActiveCount()>0){
+            System.err.println("sleep: " + (++i));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         //todo add check to se if a waypoint is out of bound
 
         waypoints = shortestRoute(routes);
@@ -369,8 +395,20 @@ public class NavAlgoPhaseTwo {
         pastRoute.add(waypoint);
 
         if(pastRoute.size() < lowestWaypointCount) {
-            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
-            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+            threadPoolExecutor.submit(() -> {
+                try {
+                    wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            threadPoolExecutor.submit(() -> {
+                try {
+                    wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
@@ -428,8 +466,20 @@ public class NavAlgoPhaseTwo {
         pastRoute.add(waypoint);
 
         if(pastRoute.size() < lowestWaypointCount) {
-            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
-            wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+            threadPoolExecutor.submit(() -> {
+                try {
+                    wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.counterClockwise);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            threadPoolExecutor.submit(() -> {
+                try {
+                    wayPointGeneratorRecursive((ArrayList<Vector2Dv1>) pastRoute.clone(), RotateDirection.clockwise);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
