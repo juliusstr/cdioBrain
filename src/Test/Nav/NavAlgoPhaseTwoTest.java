@@ -1,6 +1,5 @@
 package Test.Nav;
 
-import Client.StandardSettings;
 import exceptions.NoHitException;
 import exceptions.NoRouteException;
 import misc.*;
@@ -12,9 +11,11 @@ import nav.NavAlgoPhaseTwo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import Client.StandardSettings;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,7 +42,7 @@ public class NavAlgoPhaseTwoTest {
         boundryList.add(new Vector2Dv1(610, 20));
         boundryList.add(new Vector2Dv1(610, 340));
         boundry = new Boundry(boundryList);
-        target = new Ball(500, 360/2, StandardSettings.BALL_RADIUS_PX, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        target = new Ball(500, 360/2, StandardSettings.BALL_RADIUS_PX, new Color(1,1,1), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
         ballsToAvoid = new ArrayList<>();
     }
 

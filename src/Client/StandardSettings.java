@@ -26,6 +26,6 @@ public class StandardSettings {
     /**
      * sppeds up nav by 300-400% but does not get best route.
      */
-    public static final boolean NAV_WAYPOINT_GENERATOR_SPEED_SEARCH = false;
+    public static final boolean NAV_WAYPOINT_GENERATOR_SPEED_SEARCH = true;
 
 }
