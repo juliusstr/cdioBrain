@@ -59,7 +59,13 @@ public class BallClassifierPhaseTwo {
         }
         return closestColer;
     }
-    
+
+    /**
+     *Sets placment and generates the picup waypoint
+     * @param ball
+     * @param boundry
+     * @param cross
+     */
     public static void ballSetPlacement(Ball ball, Boundry boundry, Cross cross){
         //cross
         ArrayList<Zone> zones = cross.getCriticalZones();
@@ -111,11 +117,9 @@ public class BallClassifierPhaseTwo {
             Vector2Dv1 dir = ball.getPosVector().getSubtracted(closestPointOnLine);
             dir.normalize();
             ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
+            return;
         }
-
-
-        
-        //todo finde out if its in a corner or a edge
+        ball.setPlacement((Ball.Placement.FREE));
     }
     
 
