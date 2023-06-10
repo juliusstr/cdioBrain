@@ -114,7 +114,7 @@ public class BallClassifierPhaseTwo {
 
 
         
-        //todo finde out if its in a corner or a edge
+        //todo find out if its in a corner or an edge
     }
     
 

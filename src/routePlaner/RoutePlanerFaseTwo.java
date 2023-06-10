@@ -18,6 +18,10 @@ public class RoutePlanerFaseTwo {
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
 
+    public RoutePlanerFaseTwo() {
+
+    }
+
     public List<Ball> getBalls() {
         return balls;
     }
@@ -75,21 +79,27 @@ public class RoutePlanerFaseTwo {
         int score1 = 0;
         int score2 = 0;
         int temp_score = 0;
-        int best_score = 0;
+        int best_score = -1;
         int i, j ,k;
 
-        for (i = 0; i < balls.size(); i++){
-
-            for (j = 0; j < balls.get(i).getRoutes().size(); j++){
-                score1 = balls.get(i).getRoutes().get(j).getScore();
-                for (k = 0; k < balls.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
-                    score2 = balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
+        for (i = 0; i < ball_list.size(); i++){
+            for (j = 0; j < ball_list.get(i).getRoutes().size(); j++){
+                if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd())
+                    continue;
+                score1 = ball_list.get(i).getRoutes().get(j).getScore();
+                for (k = 0; k < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
+                    if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
+                        continue;
+                    if (ball_list.get(i).getRoutes().get(j).getEnd() == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
+                        continue;
+                    score2 = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
                     temp_score = score1 + score2;
-                    if(temp_score < best_score){
+                    if(temp_score < best_score || best_score == -1){
+                        best_heat.clear();
                         best_score = temp_score;
-                        best_heat.add(balls.get(i));
-                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd());
-                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
+                        best_heat.add(ball_list.get(i));
+                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd());
+                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
                     }
                 }
             }
