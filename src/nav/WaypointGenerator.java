@@ -24,10 +24,10 @@ public class WaypointGenerator {
     private enum RotateDirection {clockwise, nothing, counterClockwise}
     private static int lowestWaypointCount = 0;
 
-    private static Vector2Dv1 start;
-    private static Vector2Dv1 target;
+    private Vector2Dv1 start;
+    private Vector2Dv1 target;
 
-    private static ArrayList<ArrayList<Vector2Dv1>> routes = null;
+    private ArrayList<ArrayList<Vector2Dv1>> routes = null;
 
     public class WaypointRoute{
         protected ArrayList<Vector2Dv1> route = null;
@@ -128,10 +128,20 @@ public class WaypointGenerator {
         return allZones.get(index);
     }
 
-    public WaypointGenerator(Vector2Dv1 target, Vector2Dv1 start) throws NoRouteException, TimeoutException {
+    /**
+     * Populates ArrayList<Vector2Dv1> waypoints with waypoints to target.
+     * Index 0 in list will be next waypoint for straight line nav on the way to target.
+     * @implNote Run only once before generate commands.
+     * nextCommand() will remove waypoints ass needed.
+     * See options to modify algorithm in StandardSettings.
+     */
+    public WaypointGenerator(Vector2Dv1 target, Vector2Dv1 start, Cross c, Boundry b, ArrayList<Ball> bta) throws NoRouteException, TimeoutException {
         lowestWaypointCount = StandardSettings.NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT;
         routes = new ArrayList<>();
         List<Vector2Dv1> waypoints = new ArrayList<>();
+        this.boundry = b;
+        this.cross = c;
+        this.ballsToAvoid = bta;
         this.target = target;
         this.start = start;
         Zone hitToTarget;
@@ -171,7 +181,7 @@ public class WaypointGenerator {
         waypointRoute = new WaypointRoute();
 
         waypointRoute.route = shortestRoute();
-
+        waypointRoute.score = waypointRoute.route.size();
     }
 
     private void wayPointGeneratorRecursive(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) throws TimeoutException {
@@ -281,6 +291,14 @@ public class WaypointGenerator {
         }
     }
 
+    /**
+     * Turn dir until out of Cross or and critical zone on cross.
+     * @param dir vector for direction to change. dir vill be changed pass a clone if it may not change.
+     * @param pos position vector. Should be robot pos og waypoint pos.
+     * @param rotateDirection cc og c to rotate.
+     * @return Vector2Dv1 next point after turn.
+     * @exception TimeoutException Thrown if run local watchdog is triggered
+     */
     private void caseClosestZoneChange(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection, Zone previusHitZone, Zone hitZone, Vector2Dv1 dir, Vector2Dv1 pos) throws TimeoutException {
 
         Zone zone;

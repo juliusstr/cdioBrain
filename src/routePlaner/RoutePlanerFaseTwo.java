@@ -1,6 +1,8 @@
 package routePlaner;
 
 import exceptions.NoRouteException;
+import misc.Boundry;
+import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
@@ -20,6 +22,9 @@ public class RoutePlanerFaseTwo {
     private List<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
+    Cross cross;
+    Boundry boundry;
+    ArrayList<Ball> ballsToAvoid;
 
     public List<Ball> getBalls() {
         return balls;
@@ -44,10 +49,10 @@ public class RoutePlanerFaseTwo {
                     if(!usedBalls.contains(b2) && (!difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
                         Route r1 = new Route(b.getPosVector());
                         r1.setEnd(b2);
-                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector()).waypointRoute;
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector(), null, null, null).waypointRoute;
                         r1.setScore(wr.getScore());
                         List<Vector2Dv1> waypoints = wr.getRoute();
-                        r1.setRoute(waypoints);
+                        r1.setWaypoints(waypoints);
                         b.addRoute(r1);
                         Route r2 = new Route(b2.getPosVector());
                         r2.setEnd(b);
