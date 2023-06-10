@@ -114,18 +114,16 @@ public class RoutePlanerfaseTwoTest {
     @Test
     @DisplayName("Goal init test")
     void goalInitTest(){
-        RoutePlanerFaseTwo routePlaner = new RoutePlanerFaseTwo(simulationRobot,ballsToAvoid);
-        routePlaner.setBoundry(boundry);
-        routePlaner.initGoalWaypoints();
-        System.out.println(routePlaner.goalWaypoint0);
-        System.out.println(routePlaner.goalWaypoint1);
+        RoutePlanerFaseTwo routePlaner = new RoutePlanerFaseTwo(simulationRobot,ballsToAvoid, boundry);
+        System.out.println(routePlaner.getGoalWaypoint(0));
+        System.out.println(routePlaner.getGoalWaypoint(1));
     }
 
     @Test
     @DisplayName("Ball classifier test")
     void heatGenTest(){
 
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),null);
+        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),null, boundry);
         ArrayList<Ball> best_route = new ArrayList<>();
 
         double score = 0;
