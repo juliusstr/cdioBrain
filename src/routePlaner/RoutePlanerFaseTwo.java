@@ -1,13 +1,16 @@
 package routePlaner;
 
+import exceptions.NoRouteException;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
 import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
+import nav.WaypointGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
     private NavAlgoPhaseTwo nav = null;
@@ -32,7 +35,7 @@ public class RoutePlanerFaseTwo {
         nav = new NavAlgoPhaseTwo();
     }
 
-    private void ballRoutes(Boolean difficultBalls, int minAmount){
+    private void ballRoutes(Boolean difficultBalls, int minAmount) throws NoRouteException, TimeoutException {
         List<Ball> usedBalls = new ArrayList<>();
         for (Ball b : balls) {
             usedBalls.add(b);
@@ -41,10 +44,9 @@ public class RoutePlanerFaseTwo {
                     if(!usedBalls.contains(b2) && (!difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
                         Route r1 = new Route(b.getPosVector());
                         r1.setEnd(b2);
-                        // Set up nav
-                        r1.setScore(1); //getscore
-                        nav.getWaypoints();
-                        List<Vector2Dv1> waypoints = nav.waypoints;
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector()).waypointRoute;
+                        r1.setScore(wr.getScore());
+                        List<Vector2Dv1> waypoints = wr.getRoute();
                         r1.setRoute(waypoints);
                         b.addRoute(r1);
                         Route r2 = new Route(b2.getPosVector());
