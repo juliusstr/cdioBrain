@@ -17,13 +17,13 @@ public class HeatGenerator {
         int i = 0;
         int j = 0;
 
-        for (i = 0; i < ball_list.size(); i++){
+        /*for (i = 0; i < ball_list.size(); i++){
             if(ball_list.get(i).Route.score<best_score){
                 best_route.get(j) = ball_list.get(i).Route;
                 j++;
             }
 
-        }
+        }*/
 
 
 
