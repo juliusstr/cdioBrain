@@ -1,13 +1,20 @@
 package routePlaner;
 
+import Client.StandardSettings;
+import exceptions.NoRouteException;
+import misc.Boundry;
+import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
 import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
+import nav.WaypointGenerator;
 
+import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
     private NavAlgoPhaseTwo nav = null;
@@ -17,6 +24,13 @@ public class RoutePlanerFaseTwo {
     private List<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
+    Cross cross;
+    Boundry boundry;
+    ArrayList<Ball> ballsToAvoid;
+
+
+    private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
+    private Vector2Dv1 goalWaypoint1;
 
     public RoutePlanerFaseTwo() {
 
@@ -36,7 +50,7 @@ public class RoutePlanerFaseTwo {
         nav = new NavAlgoPhaseTwo();
     }
 
-    private void ballRoutes(Boolean difficultBalls, int minAmount){
+    private void ballRoutes(Boolean difficultBalls, int minAmount) throws NoRouteException, TimeoutException {
         List<Ball> usedBalls = new ArrayList<>();
         for (Ball b : balls) {
             usedBalls.add(b);
@@ -45,11 +59,10 @@ public class RoutePlanerFaseTwo {
                     if(!usedBalls.contains(b2) && (!difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
                         Route r1 = new Route(b.getPosVector());
                         r1.setEnd(b2);
-                        // Set up nav
-                        r1.setScore(1); //getscore
-                        nav.getWaypoints();
-                        List<Vector2Dv1> waypoints = nav.waypoints;
-                        r1.setRoute(waypoints);
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector(), null, null, null).waypointRoute;
+                        r1.setScore(wr.getScore());
+                        List<Vector2Dv1> waypoints = wr.getRoute();
+                        r1.setWaypoints(waypoints);
                         b.addRoute(r1);
                         Route r2 = new Route(b2.getPosVector());
                         r2.setEnd(b);
@@ -105,5 +118,29 @@ public class RoutePlanerFaseTwo {
             }
         }
         return best_heat;
+    }
+
+    public void initGoalWaypoints(){
+        int index1 = -1, index2 = -1;
+        int minX = Integer.MAX_VALUE;
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if(boundry.points.get(i).x < minX){
+                index1 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        minX = Integer.MAX_VALUE;
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if(boundry.points.get(i).x < minX && i != index1){
+                index2 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        Vector2Dv1 corner1 = new Vector2Dv1(boundry.points.get(index1));
+        Vector2Dv1 corner2 = new Vector2Dv1(boundry.points.get(index2));
+        Vector2Dv1 midVector = corner1.getMidVector(corner2);
+        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy(Math.PI/2);
+        goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
+        goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
     }
 }
