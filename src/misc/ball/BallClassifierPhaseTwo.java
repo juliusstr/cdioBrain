@@ -78,6 +78,12 @@ public class BallClassifierPhaseTwo {
                     edgeCloseenughCount++;
                 }
             }
+            if(edgeCloseenughCount == 2){
+                ball.setPlacement(Ball.Placement.CORNER);
+            }
+            if(edgeCloseenughCount == 1){
+                ball.setPlacement(Ball.Placement.EDGE);
+            }
         }
 
         
