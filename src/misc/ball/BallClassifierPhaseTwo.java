@@ -66,7 +66,8 @@ public class BallClassifierPhaseTwo {
         for (Zone zone: zones) {
             if(zone.posInsideZone(ball.getPosVector())){
                 ball.setPlacement(Ball.Placement.CORNER);
-                Vector2Dv1 dir = ball.getPosVector().getSubtracted(cross.pos).getNormalized();
+                Vector2Dv1 dir = ball.getPosVector().getSubtracted(cross.pos);
+                dir.normalize();
                 ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
                 return;
             }
@@ -95,9 +96,8 @@ public class BallClassifierPhaseTwo {
                     if(endPoint1.samePos(endPoint2) && endPoint1.distance(ball.getPosVector()) < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS){
                         Vector2Dv1 dir1 = boundry.bound.get(i).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(i).closestLineEndPointToPos).getNormalized();
                         Vector2Dv1 dir2 = boundry.bound.get(j).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(j).closestLineEndPointToPos).getNormalized();
-                        double angle = (dir1.getAngle()-dir2.getAngle())/2+dir2.getAngle();
-                        Vector2Dv1 dir = dir1.getNormalized();
-                        dir.rotateBy(angle);
+                        Vector2Dv1 dir = dir1.getMidVector(dir2);
+                        dir.normalize();
                         ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
                         return;
                     }
@@ -108,7 +108,8 @@ public class BallClassifierPhaseTwo {
         if(edgeCloseenughCount == 1){
             ball.setPlacement(Ball.Placement.EDGE);
             Vector2Dv1 closestPointOnLine = lineDist.line.findClosestPoint(ball.getPosVector());
-            Vector2Dv1 dir = closestPointOnLine.getSubtracted(ball.getPosVector()).getNormalized();
+            Vector2Dv1 dir = ball.getPosVector().getSubtracted(closestPointOnLine);
+            dir.normalize();
             ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
         }
 
