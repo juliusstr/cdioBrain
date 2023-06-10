@@ -8,24 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Route {
-    private Vektor2Dv1 end = null;
-    private List<Vektor2Dv1> route = null;
-    private int score = null;
+    private Ball end = null;
+    private List<Vector2Dv1> route = null;
+    private int score = 0;
 
-
+    public Route(){}
     public void setScore(int s){ score = s; }
-    public void setRoute(List<Vektor2Dv1> r){ route = r; }
-    public void setEnd(Vektor2Dv1 e){ end = e; }
+    public void setRoute(List<Vector2Dv1> r){ route = r; }
+    public void setEnd(Ball e){ end = e; }
 
     public int getScore(){
         return score;
     }
 
-    public List<Vektor2Dv1> getRoute(){
+    public List<Vector2Dv1> getRoute(){
         return route;
     }
 
-    public Vektor2Dv1 getEnd(){
+    public Ball getEnd(){
         return end;
     }
 

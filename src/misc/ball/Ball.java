@@ -4,9 +4,11 @@ import Client.StandardSettings;
 import misc.Vector2Dv1;
 import misc.Zone;
 import routePlaner.Route;
+import routePlaner.RoutePlanerFaseTwo;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ball extends PrimitiveBall{
 
@@ -34,6 +36,7 @@ public class Ball extends PrimitiveBall{
 
     private Placement placement;
 
+    private List<Route> routes = new ArrayList<>();
 
     public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
         super(xPos, yPos);
