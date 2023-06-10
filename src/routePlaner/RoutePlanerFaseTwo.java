@@ -32,8 +32,34 @@ public class RoutePlanerFaseTwo {
         nav = new NavAlgoPhaseTwo();
     }
 
-    public void ballRoutes(Boolean dificultBalls, int minAmount){
-
+    private void ballRoutes(Boolean difficultBalls, int minAmount){
+        List<Ball> usedBalls = new ArrayList<>();
+        for (Ball b : balls) {
+            usedBalls.add(b);
+            if((!difficultBalls || b.getPlacement() == Ball.Placement.FREE)){
+                for (Ball b2: balls) {
+                    if(!usedBalls.contains(b2) && (!difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
+                        Route r1 = new Route(b.getPosVector());
+                        r1.setEnd(b2);
+                        // Set up nav
+                        r1.setScore(1); //getscore
+                        nav.getWaypoints();
+                        List<Vector2Dv1> waypoints = nav.waypoints;
+                        r1.setRoute(waypoints);
+                        b.addRoute(r1);
+                        Route r2 = new Route(b2.getPosVector());
+                        r2.setEnd(b);
+                        List<Vector2Dv1> r2Waypoints = new ArrayList<>();
+                        for (int i = waypoints.size()-1; i > 0; i++) {
+                            r2Waypoints.add(waypoints.get(i));
+                        }
+                        r2Waypoints.add(b.getPosVector());
+                        r2.setScore(r1.getScore());
+                        b.addRoute(r2);
+                    }
+                }
+            }
+        }
     }
 
     public String nextCommand(){

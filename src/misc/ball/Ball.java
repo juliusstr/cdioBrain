@@ -36,6 +36,9 @@ public class Ball extends PrimitiveBall{
 
     private Placement placement;
 
+    private List<Route> routes = new ArrayList<>();
+
+
     public List<Route> getRoutes() {
         return routes;
     }
@@ -44,7 +47,22 @@ public class Ball extends PrimitiveBall{
         this.routes = routes;
     }
 
-    private List<Route> routes = new ArrayList<>();
+    public Boolean is(int id){
+        return (id == this.id);
+    }
+
+    public void removeRoute(Ball b) {
+        for (Route r: routes) {
+            if(b.is(r.getEnd().getId())){
+                routes.remove(r);
+                break;
+            }
+        }
+    }
+
+    public void addRoute(Route r) {
+        this.routes.add(r);
+    }
 
     public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
         super(xPos, yPos);
