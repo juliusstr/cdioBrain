@@ -9,10 +9,11 @@ import java.util.List;
 
 public class Route {
     private Ball end = null;
+    private Vector2Dv1 startPoint = null;
     private List<Vector2Dv1> route = null;
     private int score = 0;
 
-    public Route(){}
+    public Route(Vector2Dv1 v){ startPoint = v; }
     public void setScore(int s){ score = s; }
     public void setRoute(List<Vector2Dv1> r){ route = r; }
     public void setEnd(Ball e){ end = e; }
