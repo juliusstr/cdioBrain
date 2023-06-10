@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Route {
     private Ball end = null;
+    private Vector2Dv1 startPoint = null;
     private List<Vector2Dv1> route = null;
     private int score = 0;
 

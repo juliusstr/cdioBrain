@@ -16,11 +16,16 @@ public class RoutePlanerFaseTwo {
     private List<Ball> ballsHeat2 = null;
     private List<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
+    private Ball goalFakeBall = null;
 
     public RoutePlanerFaseTwo(Robotv1 r, List<Ball> b) {
         balls = b;
         robot = r;
         nav = new NavAlgoPhaseTwo();
+    }
+
+    public void ballRoutes(Boolean dificultBalls, int minAmount){
+
     }
 
     public String nextCommand(){
