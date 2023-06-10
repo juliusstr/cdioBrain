@@ -7,7 +7,6 @@ import misc.*;
 import misc.ball.Ball;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeoutException;
@@ -35,7 +34,7 @@ public class WaypointGenerator {
         protected int score = -1;
 
         public int getScore(){ return score; }
-        public List<Vector2Dv1> getRoute(){ return route; }
+        public ArrayList<Vector2Dv1> getRoute(){ return route; }
     }
 
     public WaypointRoute waypointRoute = null;
@@ -138,7 +137,7 @@ public class WaypointGenerator {
     public WaypointGenerator(Vector2Dv1 target, Vector2Dv1 start, Cross c, Boundry b, ArrayList<Ball> bta) throws NoRouteException, TimeoutException {
         lowestWaypointCount = StandardSettings.NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT;
         routes = new ArrayList<>();
-        List<Vector2Dv1> waypoints = new ArrayList<>();
+        ArrayList<Vector2Dv1> waypoints = new ArrayList<>();
         this.boundry = b;
         this.cross = c;
         this.ballsToAvoid = bta;

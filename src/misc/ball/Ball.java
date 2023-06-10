@@ -39,6 +39,7 @@ public class Ball extends PrimitiveBall{
     private Placement placement;
 
     private List<Route> routes = new ArrayList<>();
+    private Route goalRoute = null;
 
 
     public List<Route> getRoutes() {
@@ -47,6 +48,13 @@ public class Ball extends PrimitiveBall{
 
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
+    }
+    public Route getGoalRoute() {
+        return goalRoute;
+    }
+
+    public void setGoalRoute(Route route) {
+        this.goalRoute = route;
     }
 
     public Boolean is(int id){

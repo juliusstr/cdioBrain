@@ -2,6 +2,10 @@ package misc;
 
 import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
+import routePlaner.Route;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Robotv1 {
     private double xPos,
@@ -18,6 +22,41 @@ public class Robotv1 {
         angelSpeed = 0;
     }
 
+    private List<Route> heat1Routes = new ArrayList<>();
+    private List<Route> heat2Routes = new ArrayList<>();
+    private List<Route> heat3Routes = new ArrayList<>();
+
+    private int heatRouteNum = 1;
+
+    public void endHeatRoutes(){
+        heatRouteNum++;
+    }
+
+    public List<Route> getRoutes(int heat) {
+        switch (heat){
+            case 1:
+                return heat1Routes;
+            case 2:
+                return heat2Routes;
+            case 3:
+                return heat3Routes;
+        }
+        return null;
+    }
+
+    public void addRoute(Route r) {
+        switch (heatRouteNum){
+            case 1:
+                this.heat1Routes.add(r);
+            break;
+            case 2:
+                this.heat2Routes.add(r);
+            break;
+            case 3:
+                this.heat3Routes.add(r);
+            break;
+        }
+    }
 
     public double getxPos() {
         return xPos;
