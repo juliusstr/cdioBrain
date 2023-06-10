@@ -1,7 +1,6 @@
 package misc.ball;
 
 import Client.StandardSettings;
-import misc.BallClassifier;
 import misc.Vector2Dv1;
 import misc.Zone;
 import routePlaner.Route;
@@ -17,6 +16,11 @@ public class Ball extends PrimitiveBall{
         ROBOT_BACK,
         UNKNOWN
     }
+    public enum Placement {
+        FREE,
+        CORNER,
+        EDGE
+    }
     public static final double PX_TO_MM = 1.2;
     public static final int BALL_POS_HIS_MAX_SIZE = 10;
     private int radius;
@@ -27,6 +31,8 @@ public class Ball extends PrimitiveBall{
     private int lastSeenAlive;
     private ArrayList<Point> ballPosHis;
     private int zoneGroupId;
+
+    private Placement placement;
 
 
     public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
@@ -170,5 +176,13 @@ public class Ball extends PrimitiveBall{
                 }
             }
         }
+    }
+
+    public Placement getPlacement() {
+        return placement;
+    }
+
+    public void setPlacement(Placement placement) {
+        this.placement = placement;
     }
 }
