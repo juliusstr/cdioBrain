@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import routePlaner.Route;
-//import routePlaner.RoutePlanerFaseOne;
 import routePlaner.RoutePlanerFaseTwo;
 
 import java.awt.*;
@@ -45,7 +44,7 @@ public class RoutePlanerfaseTwoTest {
 
     @Test
     @DisplayName("Ball classifier test")
-    void ballClassifierTest() {
+    void ballClassifierTest(){
         //bondery corner
         Ball ball1 = new Ball(new Vector2Dv1(30 + 25, 20 + 25), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE, true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL);
         BallClassifierPhaseTwo.ballSetPlacement(ball1, boundry, cross);
@@ -59,21 +58,21 @@ public class RoutePlanerfaseTwoTest {
         System.out.println("ball pickUp point: " + ball1.getPickUpPoint());
         assertEquals(ball1.getPlacement() == Ball.Placement.CORNER, true);
         assertEquals(((int) ball1.getPickUpPoint().x), 542);
-        assertEquals(((int) ball1.getPickUpPoint().y), 272);
+        assertEquals(((int) ball1.getPickUpPoint().y) , 272);
 
         ball1 = new Ball(new Vector2Dv1(610 - 25, 20 + 25), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE, true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL);
         BallClassifierPhaseTwo.ballSetPlacement(ball1, boundry, cross);
         System.out.println("ball pickUp point: " + ball1.getPickUpPoint());
         assertEquals(ball1.getPlacement() == Ball.Placement.CORNER, true);
         assertEquals(((int) ball1.getPickUpPoint().x), 542);
-        assertEquals(((int) ball1.getPickUpPoint().y), 87);
+        assertEquals(((int) ball1.getPickUpPoint().y) , 87);
 
         ball1 = new Ball(new Vector2Dv1(30 + 25, 340 - 25), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE, true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL);
         BallClassifierPhaseTwo.ballSetPlacement(ball1, boundry, cross);
         System.out.println("ball pickUp point: " + ball1.getPickUpPoint());
         assertEquals(ball1.getPlacement() == Ball.Placement.CORNER, true);
         assertEquals(((int) ball1.getPickUpPoint().x), 97);
-        assertEquals(((int) ball1.getPickUpPoint().y), 272);
+        assertEquals(((int) ball1.getPickUpPoint().y) , 272);
 
         //bondery edge
         ball1 = new Ball(new Vector2Dv1(30 + 270, 20 + 8), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE, true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL);
@@ -81,7 +80,7 @@ public class RoutePlanerfaseTwoTest {
         System.out.println("ball pickUp point: " + ball1.getPickUpPoint());
         assertEquals(ball1.getPlacement() == Ball.Placement.EDGE, true);
         assertEquals(((int) ball1.getPickUpPoint().x), 300);
-        assertEquals(((int) ball1.getPickUpPoint().y), 88);
+        assertEquals(((int) ball1.getPickUpPoint().y) , 88);
 
         ball1 = new Ball(new Vector2Dv1(30 + 270, 340 - 8), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE, true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL);
         BallClassifierPhaseTwo.ballSetPlacement(ball1, boundry, cross);
