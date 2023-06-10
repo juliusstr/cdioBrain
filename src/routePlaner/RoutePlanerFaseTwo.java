@@ -239,4 +239,12 @@ public class RoutePlanerFaseTwo {
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
     }
+
+    public Vector2Dv1 getGoalWaypoint0() {
+        return goalWaypoint0;
+    }
+
+    public Vector2Dv1 getGoalWaypoint1() {
+        return goalWaypoint1;
+    }
 }

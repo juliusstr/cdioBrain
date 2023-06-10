@@ -115,10 +115,9 @@ public class RoutePlanerfaseTwoTest {
     @DisplayName("Goal init test")
     void goalInitTest(){
         RoutePlanerFaseTwo routePlaner = new RoutePlanerFaseTwo(simulationRobot,ballsToAvoid);
-        routePlaner.setBoundry(boundry);
         routePlaner.initGoalWaypoints();
-        System.out.println(routePlaner.goalWaypoint0);
-        System.out.println(routePlaner.goalWaypoint1);
+        System.out.println(routePlaner.getGoalWaypoint0());
+        System.out.println(routePlaner.getGoalWaypoint1());
     }
 
     @Test

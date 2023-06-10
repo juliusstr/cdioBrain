@@ -1,5 +1,6 @@
 package misc.simulation;
 
+import Client.StandardSettings;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import nav.CommandGenerator;
@@ -42,7 +43,7 @@ public class simulator {
 
         distanceToBall = Math.sqrt(Math.pow((target.x - simulationRobot.getxPos()), 2) + Math.pow((target.y - simulationRobot.getyPos()), 2));
 
-        if (distanceToBall < CommandGenerator.TARGET_DISTANCE_ERROR){
+        if (distanceToBall < StandardSettings.TARGET_DISTANCE_ERROR){
             return false;
         } else {
             return true;

@@ -41,43 +41,8 @@ public class WaypointGeneratorTest {
         ballsToAvoid = new ArrayList<>();
     }
 
-    @Test
-    @DisplayName("Simpel hit on cross")
-    void simpelHitOnCrossTest(){
-        CommandGenerator navPlanner = new CommandGenerator(simulationRobot, target);
-        , cross, boundry, ballsToAvoid);
-        assertTrue(navPlanner.hitOnCrossToTarget());
-    }
-    @Test
-    @DisplayName("hit on cross")
-    void hitOnCrossTest(){
-        simulationRobot.setPos(100,250);
-        CommandGenerator navPlanner = new CommandGenerator();
-        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        assertTrue(navPlanner.hitOnCrossToTarget());
-    }
-
-    @Test
-    @DisplayName("No hit on cross")
-    void nohitOnCrossTest(){
-        simulationRobot.setPos(470,340);
-        CommandGenerator navPlanner = new CommandGenerator();
-        navPlanner.updateNav(simulationRobot, target, cross, boundry, ballsToAvoid);
-        assertTrue(!navPlanner.hitOnCrossToTarget());
 
 
-    }
-
-    @Test
-    @DisplayName("Hit on critical circle")
-    void simpelHitOnCritCircleTest(){
-
-        Vector2Dv1 Corner = new Vector2Dv1(200,360/2);
-        Vector2Dv1 Path = new Vector2Dv1(target.getxPos()-simulationRobot.getxPos(),target.getyPos()-simulationRobot.getyPos());
-        Zone circle = new Zone(Corner, 20);
-        //simulationRobot.setDirection(Path);
-        assertTrue(circle.willHitZone(simulationRobot.getPosVector(), Path).size() != 0);
-    }
 
     @Test
     @DisplayName("Waypoint generator simple test")
@@ -96,6 +61,7 @@ public class WaypointGeneratorTest {
         assertTrue(true);
     }
 
-    /*
+
+
 
 }
