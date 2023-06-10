@@ -1,7 +1,6 @@
 package misc.ball;
 import Client.StandardSettings;
 import misc.*;
-import nav.NavAlgoPhaseTwo;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +12,8 @@ public class BallClassifierPhaseTwo {
     public static final Color BLACK = new Color(81, 83, 82);
     public static final Color GREEN = new Color(61, 143, 100);
     public static final Color WHITE = new Color(255, 255, 255);
-    public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE};
+    public static final Color ORANGE = new Color(253, 97, 60);
+    public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE, ORANGE};
 
 
 

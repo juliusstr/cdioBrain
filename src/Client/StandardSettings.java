@@ -48,4 +48,12 @@ public class StandardSettings {
     public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 80;
     public static final int ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP = 30;
 
+    /**
+     * CommandGenerator
+     */
+    public static final double ANGLE_ERROR = Math.PI/180*1;
+    public static final double TARGET_DISTANCE_ERROR = 45;
+    public static final double WAYPOINT_DISTANCE_ERROR = 5;
+
+
 }

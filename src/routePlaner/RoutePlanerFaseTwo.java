@@ -7,8 +7,7 @@ import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
-import nav.NavAlgoFaseOne;
-import nav.NavAlgoPhaseTwo;
+import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
 import java.awt.*;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
+    private CommandGenerator nav = null;
     private NavAlgoPhaseTwo nav = null;
     private ArrayList<Ball> balls = null;
     private ArrayList<Ball> ballsHeat1 = null;
@@ -43,9 +43,9 @@ public class RoutePlanerFaseTwo {
     public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b) {
         balls = b;
         robot = r;
-        nav = new NavAlgoPhaseTwo();
         cross = null;
         boundry = null;
+        nav = new CommandGenerator();
     }
 
     private void generateheats(){

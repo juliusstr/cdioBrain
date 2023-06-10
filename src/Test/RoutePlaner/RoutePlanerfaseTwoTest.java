@@ -112,7 +112,14 @@ public class RoutePlanerfaseTwoTest {
         assertEquals(((int) ball1.getPickUpPoint().x), 377);
         assertEquals(((int) ball1.getPickUpPoint().y) , 116);
 
-
+    @Test
+    @DisplayName("Goal init test")
+    void goalInitTest(){
+        RoutePlanerFaseTwo routePlaner = new RoutePlanerFaseTwo(simulationRobot,ballsToAvoid);
+        routePlaner.setBoundry(boundry);
+        routePlaner.initGoalWaypoints();
+        System.out.println(routePlaner.goalWaypoint0);
+        System.out.println(routePlaner.goalWaypoint1);
     }
 
     @Test

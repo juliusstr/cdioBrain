@@ -2,8 +2,7 @@ package misc.simulation;
 
 import misc.Robotv1;
 import misc.Vector2Dv1;
-import misc.ball.Ball;
-import nav.NavAlgoPhaseTwo;
+import nav.CommandGenerator;
 
 import static Test.Nav.NavAlgoPhaseTwoTest.DISTANCE_ERROR;
 
@@ -43,7 +42,7 @@ public class simulator {
 
         distanceToBall = Math.sqrt(Math.pow((target.x - simulationRobot.getxPos()), 2) + Math.pow((target.y - simulationRobot.getyPos()), 2));
 
-        if (distanceToBall < NavAlgoPhaseTwo.TARGET_DISTANCE_ERROR){
+        if (distanceToBall < CommandGenerator.TARGET_DISTANCE_ERROR){
             return false;
         } else {
             return true;
