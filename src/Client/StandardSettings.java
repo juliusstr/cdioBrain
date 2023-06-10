@@ -40,4 +40,12 @@ public class StandardSettings {
      */
     public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 60;
 
+    /**
+     * -----------------------------
+     * RoutPlanerPhaseTwo
+     * -----------------------------
+     */
+    public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 80;
+    public static final int ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP = 30;
+
 }
