@@ -30,6 +30,23 @@ public class RoutePlanerFaseTwo {
     private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
     private Vector2Dv1 goalWaypoint1;
 
+
+    public void setBoundry(Boundry b){
+        this.boundry = b;
+    }
+    public void setCross(Cross c){
+        this.cross = c;
+    }
+
+    public Vector2Dv1 getGoalWaypoint(int i){
+        switch (i){
+            case 0:
+                return goalWaypoint0;
+            case 1:
+                return goalWaypoint1;
+        }
+        return null;
+    }
     public ArrayList<Ball> getBalls() {
         return balls;
     }
@@ -38,11 +55,12 @@ public class RoutePlanerFaseTwo {
         this.balls = balls;
     }
 
-    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b) {
+    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry) {
         balls = b;
         robot = r;
         cross = null;
-        boundry = null;
+        this.boundry = boundry;
+        initGoalWaypoints();
     }
 
     private void generateheats(){
