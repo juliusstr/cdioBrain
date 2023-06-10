@@ -27,5 +27,9 @@ public class StandardSettings {
      * sppeds up nav by 300-400% but does not get best route.
      */
     public static final boolean NAV_WAYPOINT_GENERATOR_SPEED_SEARCH = false;
+    /**
+     * Number of threads to use in search for route in wayPointGen
+     */
+    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 8;
 
 }

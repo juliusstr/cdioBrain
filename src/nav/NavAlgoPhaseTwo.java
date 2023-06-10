@@ -291,7 +291,7 @@ public class NavAlgoPhaseTwo {
             return;
         }
 
-        threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(StandardSettings.NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS);
 
 
         ArrayList<Vector2Dv1> route = new ArrayList<>();
