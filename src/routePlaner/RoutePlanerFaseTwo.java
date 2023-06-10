@@ -11,6 +11,7 @@ import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
 import nav.WaypointGenerator;
 
+import java.awt.*;
 import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,10 @@ public class RoutePlanerFaseTwo {
     Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
 
-    public ArrayList<Ball> getBalls() {
-
     private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
     private Vector2Dv1 goalWaypoint1;
 
-    public List<Ball> getBalls() {
+    public ArrayList<Ball> getBalls() {
         return balls;
     }
 

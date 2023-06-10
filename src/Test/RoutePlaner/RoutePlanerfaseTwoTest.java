@@ -119,7 +119,7 @@ public class RoutePlanerfaseTwoTest {
     @DisplayName("Ball classifier test")
     void heatGenTest(){
 
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo();
+        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),null);
         ArrayList<Ball> best_route = new ArrayList<>();
 
         double score = 0;
