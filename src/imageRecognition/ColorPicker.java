@@ -34,7 +34,7 @@ public class ColorPicker {
 
         String filePath = "test_img/colorpickerTest.JPEG";
 
-        //updatePicture(filePath);
+        updatePicture(filePath);
         System.err.println("Update picture done");
 
 
@@ -80,7 +80,7 @@ public class ColorPicker {
     }
 
     public static void addPicToJFrame(BufferedImage img){
-        JFrame f = new JFrame("Add an image to JFrame");
+        JFrame f = new JFrame("Click on point to sample colors");
         ImageIcon icon = new ImageIcon(img);
 
         Mouse mouse = new Mouse();
