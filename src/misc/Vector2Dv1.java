@@ -272,4 +272,11 @@ public class Vector2Dv1 {
         }
         return false;
     }
+
+    public Vector2Dv1 getMidVector(Vector2Dv1 dir2) {
+        double x = this.x + dir2.x;
+        double y = this.y + dir2.y;
+        Vector2Dv1 v = new Vector2Dv1(x,y);
+        return v.getMultiplied(0.5);
+    }
 }
