@@ -1,5 +1,6 @@
 package routePlaner;
 
+import Client.StandardSettings;
 import exceptions.NoRouteException;
 import misc.Boundry;
 import misc.Cross;
@@ -10,7 +11,7 @@ import nav.NavAlgoFaseOne;
 import nav.NavAlgoPhaseTwo;
 import nav.WaypointGenerator;
 
-import java.awt.*;
+import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +29,11 @@ public class RoutePlanerFaseTwo {
     ArrayList<Ball> ballsToAvoid;
 
     public ArrayList<Ball> getBalls() {
+
+    private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
+    private Vector2Dv1 goalWaypoint1;
+
+    public List<Ball> getBalls() {
         return balls;
     }
 
@@ -161,25 +167,55 @@ public class RoutePlanerFaseTwo {
         int score1 = 0;
         int score2 = 0;
         int temp_score = 0;
-        int best_score = 0;
+        int best_score = -1;
         int i, j ,k;
 
-        for (i = 0; i < balls.size(); i++){
-
-            for (j = 0; j < balls.get(i).getRoutes().size(); j++){
-                score1 = balls.get(i).getRoutes().get(j).getScore();
-                for (k = 0; k < balls.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
-                    score2 = balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
+        for (i = 0; i < ball_list.size(); i++){
+            for (j = 0; j < ball_list.get(i).getRoutes().size(); j++){
+                if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd())
+                    continue;
+                score1 = ball_list.get(i).getRoutes().get(j).getScore();
+                for (k = 0; k < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
+                    if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
+                        continue;
+                    if (ball_list.get(i).getRoutes().get(j).getEnd() == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
+                        continue;
+                    score2 = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
                     temp_score = score1 + score2;
-                    if(temp_score < best_score){
+                    if(temp_score < best_score || best_score == -1){
+                        best_heat.clear();
                         best_score = temp_score;
-                        best_heat.add(balls.get(i));
-                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd());
-                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
+                        best_heat.add(ball_list.get(i));
+                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd());
+                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
                     }
                 }
             }
         }
         return best_heat;
+    }
+
+    public void initGoalWaypoints(){
+        int index1 = -1, index2 = -1;
+        int minX = Integer.MAX_VALUE;
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if(boundry.points.get(i).x < minX){
+                index1 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        minX = Integer.MAX_VALUE;
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if(boundry.points.get(i).x < minX && i != index1){
+                index2 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        Vector2Dv1 corner1 = new Vector2Dv1(boundry.points.get(index1));
+        Vector2Dv1 corner2 = new Vector2Dv1(boundry.points.get(index2));
+        Vector2Dv1 midVector = corner1.getMidVector(corner2);
+        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy(Math.PI/2);
+        goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
+        goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
     }
 }
