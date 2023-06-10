@@ -69,29 +69,33 @@ public class RoutePlanerFaseTwo {
     }
 
 
-    public void heatGenerator() {
+    public ArrayList<Ball> heatGenerator(ArrayList<Ball> ball_list) {
 
-        List<Route> best_route = new ArrayList<>();
-        NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+        //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+        ArrayList<Ball> best_heat = new ArrayList<>();
 
+        int score1 = 0;
+        int score2 = 0;
+        int temp_score = 0;
         int best_score = 0;
-        int i = 0;
-        int j = 0;
-        int route_index = 0;
+        int i, j ,k;
 
         for (i = 0; i < balls.size(); i++){
-            for (j = 0; j < balls.get(i).getRoutes().size(); j++)
-            if(balls.get(i).getRoutes().get(j).getScore() < best_score){
-                best_route.add(balls.get(i).getRoutes().get(j));
-                route_index++;
 
+            for (j = 0; j < balls.get(i).getRoutes().size(); j++){
+                score1 = balls.get(i).getRoutes().get(j).getScore();
+                for (k = 0; k < balls.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
+                    score2 = balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
+                    temp_score = score1 + score2;
+                    if(temp_score < best_score){
+                        best_score = temp_score;
+                        best_heat.add(balls.get(i));
+                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd());
+                        best_heat.add(balls.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
+                    }
+                }
             }
-
         }
-
-
-
-
+        return best_heat;
     }
-
 }

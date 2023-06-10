@@ -32,4 +32,12 @@ public class StandardSettings {
      */
     public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 8;
 
+
+    /**
+     * -----------------------------
+     * BallClassifierPhaseTwo
+     * -----------------------------
+     */
+    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 60;
+
 }

@@ -7,7 +7,7 @@ public class Boundry {
 
     public ArrayList<Line> bound;
     public ArrayList<Point> points;
-    public double scale;
+    public double scale = 1;
 
     public int zoneGroupID;
 
@@ -49,7 +49,7 @@ public class Boundry {
             d = vectors.get(0).getPoint();
         }
         //todo add scale avg to C-D and y axis
-        scale = 1800/a.distance(b);
+        //scale = 1800/a.distance(b);
 
         a.x *= scale;
         a.y *= scale;

@@ -12,6 +12,15 @@ public class Line {
     public int zoneGroupID;
 
 
+
+    public void setClosestLineEndPointToPos(Vector2Dv1 pos) {
+        this.closestLineEndPointToPos = getClosestLineEndPointToPos(pos);
+    }
+
+    public Vector2Dv1 closestLineEndPointToPos;
+    public Vector2Dv1 furthestLineEndPointToPos;
+
+
     public boolean hit(Vector2Dv1 pos, Vector2Dv1 dir1) {
 
         Vector2Dv1 dir = new Vector2Dv1(dir1);
@@ -95,13 +104,27 @@ public class Line {
     }
 
     public Vector2Dv1 findClosestPoint(Vector2Dv1 point) {
-        // Calculate direction vector of the line segment
-        double dx = p1.x - p2.x;
-        double dy = p1.x - p2.x;
+        double x = point.x;
+        double y = point.y;
+        double x1 = p1.x;
+        double y1 = p1.y;
+        double x2 = p2.x;
+        double y2 = p2.y;
 
-        // Calculate vector from p2 to the given point
-        double px = point.x - p2.x;
-        double py = point.x - p2.x;
+        // Calculate direction vector of the line segment
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        // Check if the line segment is vertical
+        if (Math.abs(dx) < 1e-6) {
+            if (y >= Math.min(y1, y2) && y <= Math.max(y1, y2)) {
+                return new Vector2Dv1(x1, y);
+            }
+        }
+
+        // Calculate vector from lineStart to the given point
+        double px = x - x1;
+        double py = y - y1;
 
         // Calculate the parameter t
         double dotProduct = px * dx + py * dy;
@@ -110,13 +133,13 @@ public class Line {
 
         // Check if the closest point lies within the line segment
         if (t < 0) {
-            return p2; // Closest point is p2
+            return p1; // Closest point is lineStart
         } else if (t > 1) {
-            return p1; // Closest point is p1
+            return p2; // Closest point is lineEnd
         } else {
             // Calculate the coordinates of the closest point
-            double closestX = p2.x + t * dx;
-            double closestY = p2.x + t * dy;
+            double closestX = x1 + t * dx;
+            double closestY = y1 + t * dy;
             return new Vector2Dv1(closestX, closestY);
         }
     }
@@ -124,6 +147,19 @@ public class Line {
     public double findDistanceToPoint(Vector2Dv1 point) {
         Vector2Dv1 intercept = this.findClosestPoint(point);
         return point.distance(intercept);
+    }
+
+    public Vector2Dv1 getClosestLineEndPointToPos(Vector2Dv1 pos){
+        Vector2Dv1 closestPoint = findClosestPoint(pos);
+        if(closestPoint.distance(p1) > closestPoint.distance(p2)){
+            this.closestLineEndPointToPos = p2;
+            this.furthestLineEndPointToPos = p1;
+            return p2;
+        } else {
+            this.closestLineEndPointToPos = p1;
+            this.furthestLineEndPointToPos = p2;
+            return p1;
+        }
     }
 
 }
