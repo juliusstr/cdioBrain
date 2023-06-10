@@ -61,30 +61,57 @@ public class BallClassifierPhaseTwo {
     }
     
     public static void ballSetPlacement(Ball ball, Boundry boundry, Cross cross){
-
+        //cross
         ArrayList<Zone> zones = cross.getCriticalZones();
         for (Zone zone: zones) {
             if(zone.posInsideZone(ball.getPosVector())){
                 ball.setPlacement(Ball.Placement.CORNER);
-                break;
+                Vector2Dv1 dir = ball.getPosVector().getSubtracted(cross.pos).getNormalized();
+                ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
+                return;
             }
         }
-        if(ball.getPlacement() != Ball.Placement.CORNER){
-            int edgeCloseenughCount = 0;
-            ArrayList<LineDist> lineDists = new ArrayList<>();
-            for (Line line : boundry.bound) {
-                lineDists.add(new LineDist(line, line.findDistanceToPoint(ball.getPosVector())));
-                if(lineDists.get(lineDists.size()-1).distToline < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS) {
-                    edgeCloseenughCount++;
+        //bonderyas
+        int edgeCloseenughCount = 0;
+        ArrayList<LineDist> lineDists = new ArrayList<>();
+        LineDist lineDist = new LineDist(null,Double.MAX_VALUE);
+        for (Line line : boundry.bound) {
+            lineDists.add(new LineDist(line, line.findDistanceToPoint(ball.getPosVector())));
+            if(lineDists.get(lineDists.size()-1).distToline < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS) {
+                edgeCloseenughCount++;
+                if(lineDist.distToline>lineDists.get(lineDists.size()-1).distToline){
+                    lineDist = lineDists.get(lineDists.size()-1);
                 }
             }
-            if(edgeCloseenughCount == 2){
-                ball.setPlacement(Ball.Placement.CORNER);
-            }
-            if(edgeCloseenughCount == 1){
-                ball.setPlacement(Ball.Placement.EDGE);
-            }
         }
+        if(edgeCloseenughCount == 2){
+            ball.setPlacement(Ball.Placement.CORNER);
+            for (int i = 0; i < boundry.bound.size(); i++) {
+                for (int j = 0; j < boundry.bound.size(); j++) {
+                    if(i == j)
+                        continue;
+                    Vector2Dv1 endPoint1 = boundry.bound.get(i).getClosestLineEndPointToPos(ball.getPosVector());
+                    Vector2Dv1 endPoint2 = boundry.bound.get(j).getClosestLineEndPointToPos(ball.getPosVector());
+                    if(endPoint1.samePos(endPoint2) && endPoint1.distance(ball.getPosVector()) < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS){
+                        Vector2Dv1 dir1 = boundry.bound.get(i).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(i).closestLineEndPointToPos).getNormalized();
+                        Vector2Dv1 dir2 = boundry.bound.get(j).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(j).closestLineEndPointToPos).getNormalized();
+                        double angle = (dir1.getAngle()-dir2.getAngle())/2+dir2.getAngle();
+                        Vector2Dv1 dir = dir1.getNormalized();
+                        dir.rotateBy(angle);
+                        ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
+                        return;
+                    }
+                }
+            }
+
+        }
+        if(edgeCloseenughCount == 1){
+            ball.setPlacement(Ball.Placement.EDGE);
+            Vector2Dv1 closestPointOnLine = lineDist.line.findClosestPoint(ball.getPosVector());
+            Vector2Dv1 dir = closestPointOnLine.getSubtracted(ball.getPosVector()).getNormalized();
+            ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
+        }
+
 
         
         //todo finde out if its in a corner or a edge

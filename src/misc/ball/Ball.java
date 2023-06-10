@@ -34,6 +34,8 @@ public class Ball extends PrimitiveBall{
     private ArrayList<Point> ballPosHis;
     private int zoneGroupId;
 
+    private Vector2Dv1 pickUpVector;
+
     private Placement placement;
 
     private List<Route> routes = new ArrayList<>();
@@ -213,5 +215,13 @@ public class Ball extends PrimitiveBall{
 
     public void setPlacement(Placement placement) {
         this.placement = placement;
+    }
+
+    public void setPickUpWaypoint(Vector2Dv1 vector){
+        pickUpVector = vector;
+    }
+
+    public Vector2Dv1 getPickUpPoint(){
+        return getPosVector().getAdded(pickUpVector);
     }
 }

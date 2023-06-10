@@ -263,4 +263,13 @@ public class Vector2Dv1 {
     public String toString() {
         return "Vector2d[" + x + ", " + y + "]";
     }
+
+    public boolean samePos(Vector2Dv1 vector2Dv1) {
+        if(x == vector2Dv1.x){
+            if (y == vector2Dv1.y){
+                return true;
+            }
+        }
+        return false;
+    }
 }
