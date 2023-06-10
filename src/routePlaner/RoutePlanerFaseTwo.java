@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
-    private CommandGenerator nav = null;
-    private NavAlgoPhaseTwo nav = null;
     private ArrayList<Ball> balls = null;
     private ArrayList<Ball> ballsHeat1 = null;
     private ArrayList<Ball> ballsHeat2 = null;
@@ -45,7 +43,6 @@ public class RoutePlanerFaseTwo {
         robot = r;
         cross = null;
         boundry = null;
-        nav = new CommandGenerator();
     }
 
     private void generateheats(){

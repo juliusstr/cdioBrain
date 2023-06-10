@@ -18,41 +18,16 @@ public class CommandGenerator {
     public static final double TWO_PI = Math.PI*2;
     public static final int WATCHDOG_STEP_HALVS = 10;
     private Robotv1 robot;
-    private Vector2Dv1 target;
     public ArrayList<Vector2Dv1> waypoints;
-
-
-
-
 
     public static int lowestWaypointCount;
 
     private static ThreadPoolExecutor threadPoolExecutor;
 
-
-    public CommandGenerator(Robotv1 robot, Vector2Dv1 target){
+    public CommandGenerator(Robotv1 robot, ArrayList<Vector2Dv1> waypoints){
         this.robot = robot;
-        this.target = target;
-    }
-
-    public CommandGenerator(Robotv1 robot, Ball target){
-        this.robot = robot;
-        this.target = target.getPosVector();
-    }
-
-    public CommandGenerator(Robotv1 robot, Vector2Dv1 target, ArrayList<Vector2Dv1> waypoints){
-        this.robot = robot;
-        this.target = target;
         this.waypoints = (ArrayList<Vector2Dv1>) waypoints.clone();
     }
-
-    public CommandGenerator(Robotv1 robot, Ball target, ArrayList<Vector2Dv1> waypoints){
-        this.robot = robot;
-        this.target = target.getPosVector();
-        this.waypoints = (ArrayList<Vector2Dv1>) waypoints.clone();
-    }
-
-
 
     public String nextCommand() {
 
@@ -132,13 +107,6 @@ public class CommandGenerator {
     }
     public void setRobot(Robotv1 robot) {
         this.robot = robot;
-    }
-
-    public void setTarget(Vector2Dv1 target) {
-        this.target = target;
-    }
-    public void setTarget(Ball target) {
-        this.target = target.getPosVector();
     }
 
     /**
