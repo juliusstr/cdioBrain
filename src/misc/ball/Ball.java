@@ -36,6 +36,14 @@ public class Ball extends PrimitiveBall{
 
     private Placement placement;
 
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
     private List<Route> routes = new ArrayList<>();
 
     public Ball(int xPos, int yPos, int radius, Color color, boolean isInPx, Status status, int id, Type type) {//todo add status to super call
