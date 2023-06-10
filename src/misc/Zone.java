@@ -168,6 +168,11 @@ public class Zone {
         return new Zone(this.pos,SAFE_ZONE_RADIUS,zoneGroupID);
     }
 
+    public boolean posInsideZone(Vector2Dv1 pos){
+        double dist = pos.distance(this.pos);
+        return dist < radius;
+    }
+
     @Override
     public String toString() {
         return "Zone{" +

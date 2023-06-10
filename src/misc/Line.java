@@ -121,5 +121,10 @@ public class Line {
         }
     }
 
+    public double findDistanceToPoint(Vector2Dv1 point) {
+        Vector2Dv1 intercept = this.findClosestPoint(point);
+        return point.distance(intercept);
+    }
+
 }
 
