@@ -26,11 +26,12 @@ public class RoutePlanerFaseTwo {
     private Ball goalFakeBall = null;
     Cross cross;
     Boundry boundry;
+
     ArrayList<Ball> ballsToAvoid;
 
 
-    private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
-    private Vector2Dv1 goalWaypoint1;
+    public Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
+    public Vector2Dv1 goalWaypoint1;
 
     public RoutePlanerFaseTwo() {
 
@@ -42,6 +43,14 @@ public class RoutePlanerFaseTwo {
 
     public void setBalls(List<Ball> balls) {
         this.balls = balls;
+    }
+
+    public Boundry getBoundry() {
+        return boundry;
+    }
+
+    public void setBoundry(Boundry boundry) {
+        this.boundry = boundry;
     }
 
     public RoutePlanerFaseTwo(Robotv1 r, List<Ball> b) {
