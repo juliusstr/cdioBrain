@@ -18,6 +18,14 @@ public class RoutePlanerFaseTwo {
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
 
+    public List<Ball> getBalls() {
+        return balls;
+    }
+
+    public void setBalls(List<Ball> balls) {
+        this.balls = balls;
+    }
+
     public RoutePlanerFaseTwo(Robotv1 r, List<Ball> b) {
         balls = b;
         robot = r;
@@ -33,5 +41,29 @@ public class RoutePlanerFaseTwo {
     }
 
 
+    public void heatGenerator() {
+
+        List<Route> best_route = new ArrayList<>();
+        NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+
+        int best_score = 0;
+        int i = 0;
+        int j = 0;
+        int route_index = 0;
+
+        for (i = 0; i < balls.size(); i++){
+            for (j = 0; j < balls.get(i).getRoutes().size(); j++)
+            if(balls.get(i).getRoutes().get(j).getScore() < best_score){
+                best_route.add(balls.get(i).getRoutes().get(j));
+                route_index++;
+
+            }
+
+        }
+
+
+
+
+    }
 
 }
