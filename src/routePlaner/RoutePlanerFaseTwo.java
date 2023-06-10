@@ -72,7 +72,7 @@ public class RoutePlanerFaseTwo {
 
         //heat 2
         try {
-            ballRoutes(false, 4, true, goalFakeBall.getPosVector());
+            ballRoutes(false, 4, false, goalFakeBall.getPosVector());
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
@@ -85,15 +85,21 @@ public class RoutePlanerFaseTwo {
             }
         }
         ballsHeat2 = heatGenerator(ballsHeat2);
+        for (Ball b: balls) {
+            if(ballsHeat2.contains(b)){
+                balls.remove(b);
+            }
+        }
         //heat 3
         try {
-            ballRoutes(false, 4, true, goalFakeBall.getPosVector());
+            ballRoutes(true, 3, false, goalFakeBall.getPosVector());
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-
+        ballsHeat3 = balls;
+        ballsHeat3 = heatGenerator(ballsHeat3);
     }
 
     private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
