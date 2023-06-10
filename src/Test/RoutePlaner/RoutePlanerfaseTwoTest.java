@@ -155,7 +155,7 @@ public class RoutePlanerfaseTwoTest {
             for(int j = 0, k = 0;j < 10; j++){
                 if(i!=j){
                 ball_list.get(i).addRoute(new Route(ball_list.get(i).getPosVector()));
-                ball_list.get(i).getRoutes().get(k).setRoute(null);
+                ball_list.get(i).getRoutes().get(k).setWaypoints(null);
                 ball_list.get(i).getRoutes().get(k).setEnd(ball_list.get(j));
                 ball_list.get(i).getRoutes().get(k).setScore((int) ball_list.get(i).getPosVector().distance(ball_list.get(i).getRoutes().get(k).getEnd().getPosVector()));
                 k++;
