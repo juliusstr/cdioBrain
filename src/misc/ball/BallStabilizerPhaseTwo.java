@@ -76,7 +76,6 @@ public class BallStabilizerPhaseTwo {
         relation.setPos(ball.getPoint());
         relation.zeroLastSeenAlive();
     }
-
     // returns the ball that the ball relates to the input ball. throws exception if it fails.
     public Ball relates(Ball ball) throws NoDataException, BadDataException {
         if (balls.isEmpty())

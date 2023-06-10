@@ -168,28 +168,47 @@ public class RoutePlanerFaseTwo {
 
         int score1 = 0;
         int score2 = 0;
+        int orange_score = 0;
         int temp_score = 0;
         int best_score = -1;
         int i, j ,k;
+        int orange_ball_index = 0;
+        boolean orange_flag = true;
 
         for (i = 0; i < ball_list.size(); i++){
+            if(ball_list.get(i).getColor() == Color.orange)
+                i++;
             for (j = 0; j < ball_list.get(i).getRoutes().size(); j++){
                 if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd())
                     continue;
+                if(ball_list.get(i).getRoutes().get(j).getEnd().getColor() == Color.orange)
+                    j++;
                 score1 = ball_list.get(i).getRoutes().get(j).getScore();
                 for (k = 0; k < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
                     if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
                         continue;
                     if (ball_list.get(i).getRoutes().get(j).getEnd() == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
                         continue;
+                    if(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getColor() == Color.orange)
+                        k++;
+                    for (int l = 0; l < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().size(); l++){
+                        if( ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(l).getEnd().getColor() == Color.orange){
+                            orange_ball_index = l;
+                           orange_score = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(orange_ball_index).getScore();
+                        }
+                    }
                     score2 = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
-                    temp_score = score1 + score2;
+
+                    temp_score = score1 + score2 + orange_score;
                     if(temp_score < best_score || best_score == -1){
                         best_heat.clear();
                         best_score = temp_score;
                         best_heat.add(ball_list.get(i));
                         best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd());
                         best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
+                        if(orange_flag){
+                            best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(orange_ball_index).getEnd());
+                        }
                     }
                 }
             }
