@@ -22,6 +22,7 @@ public class WaypointGenerator {
 
     private enum RotateDirection {clockwise, nothing, counterClockwise}
     private static int lowestWaypointCount = 0;
+    public static int maxGroupeId = 2;
 
     private Vector2Dv1 start;
     private Vector2Dv1 target;
@@ -144,6 +145,7 @@ public class WaypointGenerator {
         this.target = target;
         this.start = start;
         Zone hitToTarget;
+        updateZoneGroupIdOnBallsToAvoid();
         hitToTarget = hitOnAllFromPosToTarget(start);
         if(hitToTarget == null){
             waypoints.add(target);
@@ -374,4 +376,30 @@ public class WaypointGenerator {
         }
         return RotateDirection.counterClockwise;
     }
+
+    public void updateZoneGroupIdOnBallsToAvoid(){
+        ArrayList<Zone> crossCriticalZones = cross.getCriticalZones();
+        //todo take in to account the line on the cross not only the zone
+        for (Ball ball: ballsToAvoid) {
+            ball.setZoneGroupId(-1);
+        }
+        for (Ball ball : ballsToAvoid) {
+            for (Zone crossZone : crossCriticalZones) {
+                double distMax = ball.getCriticalZone().radius+crossZone.radius;
+                double dist = ball.getPosVector().distance(crossZone.pos);
+                if(dist<= distMax){
+                    ball.setZoneGroupId(crossZone.zoneGroupID);
+                    ball.setZoneGroupIdToAdjacentBalls(ballsToAvoid);
+                }
+            }
+        }
+        int currentMaxId = 2;
+        for (int i = 0; i < ballsToAvoid.size(); i++) {
+            if (ballsToAvoid.get(i).getZoneGroupId() == -1){
+                ballsToAvoid.get(i).setZoneGroupId(++currentMaxId);
+                ballsToAvoid.get(i).setZoneGroupIdToAdjacentBalls(ballsToAvoid);
+            }
+        }
+        maxGroupeId = currentMaxId;
+    };
 }

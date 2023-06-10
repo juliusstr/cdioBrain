@@ -1,7 +1,6 @@
 package misc.ball;
 import Client.StandardSettings;
 import misc.*;
-import nav.NavAlgoPhaseTwo;
 
 import java.awt.*;
 import java.util.ArrayList;
