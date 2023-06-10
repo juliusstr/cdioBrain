@@ -4,13 +4,13 @@ import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
 import nav.NavAlgoFaseOne;
-import nav.NavAlgoFaseTwo;
+import nav.NavAlgoPhaseTwo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoutePlanerFaseTwo {
-    private NavAlgoFaseTwo nav = null;
+    private NavAlgoPhaseTwo nav = null;
     private List<Ball> balls = null;
     private List<Ball> ballsHeat1 = null;
     private List<Ball> ballsHeat2 = null;
@@ -20,7 +20,11 @@ public class RoutePlanerFaseTwo {
     public RoutePlanerFaseTwo(Robotv1 r, List<Ball> b) {
         balls = b;
         robot = r;
-        nav = new NavAlgoFaseTwo();
+        nav = new NavAlgoPhaseTwo();
+    }
+
+    public String nextCommand(){
+        return "";
     }
 
 
