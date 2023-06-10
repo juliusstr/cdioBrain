@@ -94,5 +94,32 @@ public class Line {
         return new Vector2Dv1(hitPoint);
     }
 
+    public Vector2Dv1 findClosestPoint(Vector2Dv1 point) {
+        // Calculate direction vector of the line segment
+        double dx = p1.x - p2.x;
+        double dy = p1.x - p2.x;
+
+        // Calculate vector from p2 to the given point
+        double px = point.x - p2.x;
+        double py = point.x - p2.x;
+
+        // Calculate the parameter t
+        double dotProduct = px * dx + py * dy;
+        double lineSegmentLengthSquared = dx * dx + dy * dy;
+        double t = dotProduct / lineSegmentLengthSquared;
+
+        // Check if the closest point lies within the line segment
+        if (t < 0) {
+            return p2; // Closest point is p2
+        } else if (t > 1) {
+            return p1; // Closest point is p1
+        } else {
+            // Calculate the coordinates of the closest point
+            double closestX = p2.x + t * dx;
+            double closestY = p2.x + t * dy;
+            return new Vector2Dv1(closestX, closestY);
+        }
+    }
+
 }
 
