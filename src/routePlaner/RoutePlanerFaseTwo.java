@@ -7,6 +7,7 @@ import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
@@ -201,9 +202,10 @@ public class RoutePlanerFaseTwo {
             for (Ball b: ball_list) {
                 if(b.getColor() == Color.ORANGE){
                     orangeBall = b;
-                    ball_list.remove(b);
+                    break;
                 }
             }
+            ball_list.remove(orangeBall);
         }
         for (Ball b1: ball_list) {
             // Add score from robot to b1 to temp_score
@@ -237,6 +239,7 @@ public class RoutePlanerFaseTwo {
                         best_heat.add(b1);
                         best_heat.add(b2);
                         best_heat.add(b3);
+                        best_heat.add(orangeBall);
                         best_score = temp_score;
                     }
                 }

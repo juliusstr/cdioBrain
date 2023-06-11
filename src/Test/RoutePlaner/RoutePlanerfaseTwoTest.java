@@ -123,7 +123,7 @@ public class RoutePlanerfaseTwoTest {
     @DisplayName("Ball classifier test")
     void heatGenTest(){
 
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),null, boundry);
+        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),new ArrayList<>(), boundry);
         ArrayList<Ball> best_route = new ArrayList<>();
 
         double score = 0;
@@ -133,7 +133,7 @@ public class RoutePlanerfaseTwoTest {
         Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
+        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,Color.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
