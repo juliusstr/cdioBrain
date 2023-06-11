@@ -62,14 +62,18 @@ public class MainClient {
 
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+
+        System.out.println("Mapping route...");
         routePlanerFaseTwo.getHeats();
+        System.out.println("Mapping route complete!");
 
         Socket s = new Socket("192.168.1.102",6666);
+        System.err.println("Wating on server...");
 
-        System.err.println("Wating on server");
         out = new PrintWriter(s.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
+        System.out.println("Press enter to start!");
         Scanner inputWait = new Scanner(System.in);
         inputWait.nextLine();
 
