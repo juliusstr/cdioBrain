@@ -232,4 +232,10 @@ public class Ball extends PrimitiveBall{
     public Vector2Dv1 getPickUpPoint(){
         return getPosVector().getAdded(pickUpVector);
     }
+
+    public Vector2Dv1 getLineUpPoint(){
+        Vector2Dv1 dir = this.getPosVector().getSubtracted(getPickUpPoint());
+        dir = dir.getNormalized().getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP);
+        return getPickUpPoint().getAdded(dir);
+    }
 }
