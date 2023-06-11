@@ -282,9 +282,10 @@ public class WaypointGenerator {
         WaypointRoute returnRoute = null;
         double smallestCost = Double.MAX_VALUE;
             for (WaypointRoute route : this.routes) {
-                if (route.cost < smallestCost)
+                if (route.cost < smallestCost){
                     smallestCost = route.cost;
                     returnRoute = route;
+                }
             }
                 return returnRoute;
         }

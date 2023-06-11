@@ -56,6 +56,13 @@ public class WaypointGeneratorTest {
     @Test
     @DisplayName("Waypoint generator test")
     void waypointGenTest() throws NoRouteException, TimeoutException {
+        start.set(start.x,start.y+40);
+        ballsToAvoid.add(new Ball(new Vector2Dv1(337, 330)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(200, 120)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(190, 256)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(330, 256)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(440, 180)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(506, 118)));
         WaypointGenerator.WaypointRoute wr = new WaypointGenerator(start, target, cross, boundry, ballsToAvoid).waypointRoute;
         System.out.println(wr.getRoute());
         System.err.println(wr.getCost());
