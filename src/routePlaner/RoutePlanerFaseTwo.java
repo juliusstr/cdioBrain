@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 public class RoutePlanerFaseTwo {
     private ArrayList<Ball> balls = null;
     public ArrayList<Ball> ballsHeat1 = null;
-    private ArrayList<Ball> ballsHeat2 = null;
+    public ArrayList<Ball> ballsHeat2 = null;
     private ArrayList<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
@@ -96,7 +96,11 @@ public class RoutePlanerFaseTwo {
         ballsHeat1 = heat1Generator(ballsHeat1);
         for (Ball b: ballsHeat1) {
             balls.remove(b);
-        }/*
+        }
+        for (Ball b: balls) {
+            b.setRoutes(new ArrayList<>());
+            b.setGoalRoute(null);
+        }
         //heat 2
         try {
             ballRoutes(false, 4, false, goalFakeBall.getPosVector());
@@ -118,6 +122,10 @@ public class RoutePlanerFaseTwo {
         ballsHeat2 = heat2Generator(ballsHeat2);
         for (Ball b: ballsHeat2) {
             balls.remove(b);
+        }/*
+        for (Ball b: balls) {
+            b.setRoutes(new ArrayList<>());
+            b.setGoalRoute(null);
         }
         //heat 3
         try {
@@ -285,7 +293,7 @@ public class RoutePlanerFaseTwo {
         double best_score = -1;
         for (Ball b1: ball_list) {
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(1)) {
+            for (Route rRobot: robot.getRoutes(2)) {
                 if(rRobot.getEnd() == b1){
                     score1 = rRobot.getScore();
                     break;
@@ -333,7 +341,7 @@ public class RoutePlanerFaseTwo {
         double best_score = -1;
         for (Ball b1: ball_list) {
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(1)) {
+            for (Route rRobot: robot.getRoutes(3)) {
                 if(rRobot.getEnd() == b1){
                     score1 = rRobot.getScore();
                     break;
