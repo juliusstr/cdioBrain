@@ -138,9 +138,7 @@ public class RoutePlanerFaseTwo {
                     btaGoal.remove(b);
 
                     WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(b.getPosVector(), goalFakeBall.getPosVector(), cross, boundry, btaGoal).waypointRoute;
-
-
-                    goal.setScore(wrgoal.getScore());
+                    goal.setScore(wrgoal.getCost());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
                     b.setGoalRoute(goal);
@@ -151,7 +149,7 @@ public class RoutePlanerFaseTwo {
                 ArrayList<Ball> btaGoal = balls;
                 btaGoal.remove(b);
                 WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(robotPos, b.getPosVector(), cross, boundry, btaGoal).waypointRoute;
-                robotRoute.setScore(wrRobot.getScore());
+                robotRoute.setScore(wrRobot.getCost());
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
@@ -164,7 +162,7 @@ public class RoutePlanerFaseTwo {
                         bta.remove(b);
                         bta.remove(b2);
                         WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector(), cross, boundry, bta).waypointRoute;
-                        r1.setScore(wr.getScore());
+                        r1.setScore(wr.getCost());
                         ArrayList<Vector2Dv1> waypoints = wr.getRoute();
                         r1.setWaypoints(waypoints);
                         b.addRoute(r1);
@@ -191,11 +189,11 @@ public class RoutePlanerFaseTwo {
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
         ArrayList<Ball> best_heat = new ArrayList<>();
 
-        int score1 = 0;
-        int score2 = 0;
-        int orange_score = 0;
-        int temp_score = 0;
-        int best_score = -1;
+        double score1 = 0;
+        double score2 = 0;
+        double orange_score = 0;
+        double temp_score = 0;
+        double best_score = -1;
         int i, j ,k;
         int orange_ball_index = 0;
         Ball orangeBall = null;
