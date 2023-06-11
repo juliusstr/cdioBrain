@@ -7,10 +7,16 @@ import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
+import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.lang.management.MemoryType;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
@@ -52,10 +58,10 @@ public class RoutePlanerFaseTwo {
         this.balls = balls;
     }
 
-    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry) {
+    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry, Cross c) {
         balls = (ArrayList<Ball>) b.clone();
         robot = r;
-        cross = null;
+        cross = c;
         this.boundry = boundry;
         initGoalWaypoints();
     }
@@ -174,10 +180,6 @@ public class RoutePlanerFaseTwo {
         }
     }
 
-    public String nextCommand(){
-        return "";
-    }
-
 
     public ArrayList<Ball> heatGenerator(ArrayList<Ball> ball_list) {
 
@@ -198,9 +200,10 @@ public class RoutePlanerFaseTwo {
             for (Ball b: ball_list) {
                 if(b.getColor() == Color.ORANGE){
                     orangeBall = b;
-                    ball_list.remove(b);
+                    break;
                 }
             }
+            ball_list.remove(orangeBall);
         }
         for (Ball b1: ball_list) {
             // Add score from robot to b1 to temp_score
@@ -234,50 +237,12 @@ public class RoutePlanerFaseTwo {
                         best_heat.add(b1);
                         best_heat.add(b2);
                         best_heat.add(b3);
+                        best_heat.add(orangeBall);
                         best_score = temp_score;
                     }
                 }
             }
         }
-/*
-        for (i = 0; i < ball_list.size(); i++){
-            if(ball_list.get(i).getColor() == Color.orange)
-                i++;
-            for (j = 0; j < ball_list.get(i).getRoutes().size(); j++){
-                if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd())
-                    continue;
-                if(ball_list.get(i).getRoutes().get(j).getEnd().getColor() == Color.orange)
-                    j++;
-                score1 = ball_list.get(i).getRoutes().get(j).getScore();
-                for (k = 0; k < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().size(); k++){
-                    if (ball_list.get(i) == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
-                        continue;
-                    if (ball_list.get(i).getRoutes().get(j).getEnd() == ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd())
-                        continue;
-                    if(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getColor() == Color.orange)
-                        k++;
-                    for (int l = 0; l < ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().size(); l++){
-                        if( ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(l).getEnd().getColor() == Color.orange){
-                            orange_ball_index = l;
-                           orange_score = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(orange_ball_index).getScore();
-                        }
-                    }
-                    score2 = ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getScore();
-
-                    temp_score = score1 + score2 + orange_score;
-                    if(temp_score < best_score || best_score == -1){
-                        best_heat.clear();
-                        best_score = temp_score;
-                        best_heat.add(ball_list.get(i));
-                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd());
-                        best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd());
-                        if(orange_flag){
-                            best_heat.add(ball_list.get(i).getRoutes().get(j).getEnd().getRoutes().get(k).getEnd().getRoutes().get(orange_ball_index).getEnd());
-                        }
-                    }
-                }
-            }
-        }*/
         return best_heat;
     }
 
@@ -311,5 +276,11 @@ public class RoutePlanerFaseTwo {
 
     public Vector2Dv1 getGoalWaypoint1() {
         return goalWaypoint1;
+    }
+
+    public void run(PrintWriter out, BufferedReader in){
+        while (ballsHeat1.size() != 0){
+
+        }
     }
 }

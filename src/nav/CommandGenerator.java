@@ -29,7 +29,7 @@ public class CommandGenerator {
         this.waypoints = (ArrayList<Vector2Dv1>) waypoints.clone();
     }
 
-    public String nextCommand() {
+    public String nextCommand(boolean isTargetBall) {
 
         String command = "";
         if(waypoints.size() == 0){
@@ -39,7 +39,6 @@ public class CommandGenerator {
 
         //*** cal dist and angle ***
         double distDelta = Math.sqrt(Math.pow((waypoints.get(0).x- robot.getxPos()), 2)+Math.pow((waypoints.get(0).y- robot.getyPos()), 2));
-
         double dot = dir.dot(robot.getDirection());
         double cross = dir.cross(robot.getDirection());
         double angleDelta;
@@ -50,9 +49,14 @@ public class CommandGenerator {
             waypoints.remove(0);
             return "stop -t -d";
         }
-        if(distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
+        if(isTargetBall && distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On ball\n");
+            return "stop -d -t";
+        }
+        if(!isTargetBall && distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
+            waypoints.remove(0);
+            System.err.printf("On waypoint\n");
             return "stop -d -t";
         }
 

@@ -71,7 +71,7 @@ public class MainClient {
         robotBalls.add(initBall2);
 
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
-        routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry);
+        routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
 
         do {
             greeting = in.readLine();
