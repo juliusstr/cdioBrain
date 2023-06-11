@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
     private ArrayList<Ball> balls = null;
-    private ArrayList<Ball> ballsHeat1 = null;
+    public ArrayList<Ball> ballsHeat1 = null;
     private ArrayList<Ball> ballsHeat2 = null;
     private ArrayList<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
@@ -69,7 +69,7 @@ public class RoutePlanerFaseTwo {
     /**
      *
      */
-    private void generateheats(){
+    public void getHeats(){
         //heat 1
         try {
             ballRoutes(false, 4, true, robot.getPosVector());
@@ -90,7 +90,7 @@ public class RoutePlanerFaseTwo {
                 balls.remove(b);
             }
         }
-
+        /*
         //heat 2
         try {
             ballRoutes(false, 4, false, goalFakeBall.getPosVector());
@@ -120,13 +120,15 @@ public class RoutePlanerFaseTwo {
             throw new RuntimeException(e);
         }
         ballsHeat3 = (ArrayList<Ball>)balls.clone();
-        ballsHeat3 = heatGenerator(ballsHeat3);
+        ballsHeat3 = heatGenerator(ballsHeat3);*/
     }
 
     private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
         ArrayList<Ball> usedBalls = new ArrayList<>();
         for (Ball b : balls) {
+            System.out.println("test");
             usedBalls.add(b);
+            System.out.println(b.getPlacement());
             if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor() == Color.orange))){
                 //ball to goal
                 if(b.getGoalRoute() == null){
@@ -134,7 +136,10 @@ public class RoutePlanerFaseTwo {
                     goal.setEnd(goalFakeBall);
                     ArrayList<Ball> btaGoal = balls;
                     btaGoal.remove(b);
+
                     WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(b.getPosVector(), goalFakeBall.getPosVector(), cross, boundry, btaGoal).waypointRoute;
+
+
                     goal.setScore(wrgoal.getScore());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
@@ -268,6 +273,7 @@ public class RoutePlanerFaseTwo {
         Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy(Math.PI/2);
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
+        goalFakeBall = new Ball(goalWaypoint0);
     }
 
     public Vector2Dv1 getGoalWaypoint0() {
