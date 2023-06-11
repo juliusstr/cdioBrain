@@ -314,6 +314,30 @@ public class NavAlgoPhaseTwoTest {
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
         System.out.println("number of waypoints: " + waypointGenerator.waypointRoute.getRoute().size());
     }
+
+    @Test
+    @DisplayName("waypointgenerator V2 5 flyvende bolde test med stor gruppe 2 og gruppe ved target")
+    void waypointV2Bold5FlyvendeBoldeStorgruppe2medgruppevedtarget() throws NoRouteException, TimeoutException {
+        simulator simulator = new simulator();
+        ballsToAvoid.add(new Ball(new Vector2Dv1(337, 330)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(200, 120)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(190, 256)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(330, 256)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(440, 180)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(506, 118)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(441, 285)));
+        ballsToAvoid.add(new Ball(new Vector2Dv1(390, 55)));
+        WaypointGenerator waypointGenerator = new WaypointGenerator(target.getPosVector(),simulationRobot.getPosVector(),cross,boundry,ballsToAvoid);
+        CommandGenerator commandGenerator = new CommandGenerator(simulationRobot,waypointGenerator.waypointRoute.getRoute());
+        int iterationCount = 1000;
+        String command = "";
+        do {
+            command = commandGenerator.nextCommand();
+        } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
+        assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
+        System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
+        System.out.println("number of waypoints: " + waypointGenerator.waypointRoute.getRoute().size());
+    }
     @Test
     @DisplayName("ZoneGroupeId balls next to cross & away from cross")
     void zoneGroupeIdTest() throws TimeoutException {
