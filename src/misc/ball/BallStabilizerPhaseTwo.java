@@ -27,6 +27,7 @@ public class BallStabilizerPhaseTwo {
     }
 
     public void stabilizeBalls(ArrayList<Ball> balls) throws TypeException {
+        this.balls.clear();
         for (Ball ball :
                 balls) {
             stabilizeBall(ball);
@@ -52,6 +53,9 @@ public class BallStabilizerPhaseTwo {
     }
 
     private void stabilizeBall(Ball ball) throws TypeException {
+        addBallToBalls(ball);
+        return;
+        /*
         if(ball.getType() == Ball.Type.UNKNOWN){
             BallClassifierPhaseTwo.classify(ball);
         }
@@ -75,6 +79,8 @@ public class BallStabilizerPhaseTwo {
         ballPosHis.add(0,relation.getPoint());
         relation.setPos(ball.getPoint());
         relation.zeroLastSeenAlive();
+        */
+
     }
     // returns the ball that the ball relates to the input ball. throws exception if it fails.
     public Ball relates(Ball ball) throws NoDataException, BadDataException {
@@ -132,10 +138,10 @@ public class BallStabilizerPhaseTwo {
             if(balls.get(i).getStatus() != PrimitiveBall.Status.ROBOT)
                 continue;
 
-            if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
+            /*if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
                 balls.remove(i--);
                 continue;
-            }
+            }*/
             //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
 
             ballsToReturn.add(balls.get(i));

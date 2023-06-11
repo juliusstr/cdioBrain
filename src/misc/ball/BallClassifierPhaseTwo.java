@@ -11,8 +11,8 @@ public class BallClassifierPhaseTwo {
 
     public static final Color BLACK = new Color(81, 83, 82);
     public static final Color GREEN = new Color(61, 143, 100);
-    public static final Color WHITE = new Color(255, 255, 255);
-    public static final Color ORANGE = new Color(253, 97, 60);
+    public static final Color WHITE = new Color(240, 237, 213);
+    public static final Color ORANGE = new Color(246, 162, 93);
     public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE, ORANGE};
 
 
@@ -26,7 +26,7 @@ public class BallClassifierPhaseTwo {
 
     public static void classify(Ball ball){
         ball.setColor(colorCorection(ball.getColor()));
-        if(ball.getColor().equals(WHITE)){
+        if(ball.getColor().equals(WHITE) || ball.getColor().equals(ORANGE)){
             ball.setType(Ball.Type.BALL);
         } else if (ball.getColor().equals(GREEN)) {
             ball.setType(Ball.Type.ROBOT_FRONT);

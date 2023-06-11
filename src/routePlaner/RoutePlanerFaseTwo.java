@@ -1,13 +1,18 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import exceptions.BadDataException;
+import exceptions.NoDataException;
 import exceptions.NoRouteException;
+import exceptions.TypeException;
+import imageRecognition.ImgRecFaseTwo;
 import misc.Boundry;
 import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
+import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
@@ -392,7 +397,7 @@ public class RoutePlanerFaseTwo {
         return goalWaypoint1;
     }
 
-    public void run(PrintWriter out, BufferedReader in){
+    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer){
         Ball lastBall = null;
         while (ballsHeat1.size() != 0){
             //finde route from robot to ball
@@ -416,6 +421,18 @@ public class RoutePlanerFaseTwo {
             //run to ball
             CommandGenerator commandGenerator = new CommandGenerator(robot,routToBall);
             while (routToBall.size() != 0){
+                ArrayList<Ball> balls = imgRec.captureBalls();
+                try {
+                    stabilizer.stabilizeBalls(balls);
+                } catch (TypeException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+                    robot.updatePos(robotBalls.get(0), robotBalls.get(1));
+                } catch (BadDataException e) {
+                    throw new RuntimeException(e);
+                }
                 out.println(commandGenerator.nextCommand(true));
             }
             //collect
@@ -436,6 +453,18 @@ public class RoutePlanerFaseTwo {
         routeToGoal.add(getGoalWaypoint1());
         CommandGenerator commandGenerator = new CommandGenerator(robot,routeToGoal);
         while (routeToGoal.size() != 0){
+            ArrayList<Ball> balls = imgRec.captureBalls();
+            try {
+                stabilizer.stabilizeBalls(balls);
+            } catch (TypeException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+                robot.updatePos(robotBalls.get(0), robotBalls.get(1));
+            } catch (BadDataException e) {
+                throw new RuntimeException(e);
+            }
             out.println(commandGenerator.nextCommand(false));
         }
         out.println(StandardSettings.DROP_OFF_COMMAND);
