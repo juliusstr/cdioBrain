@@ -337,6 +337,7 @@ public class NavAlgoPhaseTwoTest {
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
         System.out.println("number of waypoints: " + waypointGenerator.waypointRoute.getRoute().size());
+        //todo check how many waypoints have been generated in total
     }
     @Test
     @DisplayName("ZoneGroupeId balls next to cross & away from cross")

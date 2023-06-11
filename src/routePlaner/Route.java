@@ -11,14 +11,14 @@ public class Route {
     private Ball end = null;
     private Vector2Dv1 startPoint = null;
     private List<Vector2Dv1> waypoints = null;
-    private int score = 0;
+    private double score = 0;
 
     public Route(Vector2Dv1 v){ startPoint = v; }
-    public void setScore(int s){ score = s; }
+    public void setScore(double s){ score = s; }
     public void setWaypoints(List<Vector2Dv1> r){ waypoints = r; }
     public void setEnd(Ball e){ end = e; }
 
-    public int getScore(){
+    public double getScore(){
         return score;
     }
 

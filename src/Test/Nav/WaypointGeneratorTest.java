@@ -3,7 +3,6 @@ package Test.Nav;
 import exceptions.NoRouteException;
 import misc.*;
 import misc.ball.Ball;
-import nav.CommandGenerator;
 import nav.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +56,7 @@ public class WaypointGeneratorTest {
     void waypointGenTest() throws NoRouteException, TimeoutException {
         WaypointGenerator.WaypointRoute wr = new WaypointGenerator(start, target, cross, boundry, ballsToAvoid).waypointRoute;
         System.out.println(wr.getRoute());
-        System.err.println(wr.getScore());
+        System.err.println(wr.getCost());
         assertTrue(true);
     }
 

@@ -6,6 +6,7 @@ import exceptions.NoRouteException;
 import misc.*;
 import misc.ball.Ball;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,9 +33,9 @@ public class WaypointGenerator {
     public class WaypointRoute{
         protected ArrayList<Vector2Dv1> route = null;
 
-        protected int score = -1;
+        protected double cost = -1;
 
-        public int getScore(){ return score; }
+        public double getCost(){ return cost; }
         public ArrayList<Vector2Dv1> getRoute(){ return route; }
     }
 
@@ -180,9 +181,9 @@ public class WaypointGenerator {
         }
         //todo add check to se if a waypoint is out of bound
         waypointRoute = new WaypointRoute();
-
-        waypointRoute.route = shortestRoute();
-        waypointRoute.score = waypointRoute.route.size();
+        //todo check if
+        waypointRoute.route = getCheapestRoute();
+        waypointRoute.cost = getRouteCost(waypointRoute.route);
     }
 
     private void wayPointGeneratorRecursive(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) throws TimeoutException {
@@ -270,27 +271,14 @@ public class WaypointGenerator {
             });
         }
     }
-    private ArrayList<Vector2Dv1> shortestRoute() throws NoRouteException {
-        int index = -1;
-        double smallest_length = Double.MAX_VALUE;
-
-
-        for(int i = 0; i < routes.size(); i++){
-            double length = start.distance(routes.get(i).get(0));
-            for(int j = 1; j < routes.get(i).size(); j++){
-                length+=routes.get(i).get(j-1).distance(routes.get(i).get(j));
+    private ArrayList<Vector2Dv1> getCheapestRoute() {
+        ArrayList<Vector2Dv1> returnRoute = null;
+        double smallestCost = Double.MAX_VALUE;
+            for (ArrayList<Vector2Dv1> route : this.routes) {
+                if (getRouteCost(route) < smallestCost) returnRoute = route;
             }
-            if(length<smallest_length){
-                smallest_length = length;
-                index = i;
-            }
+                return returnRoute;
         }
-        try {
-            return routes.get(index);
-        } catch (IndexOutOfBoundsException e){
-            throw new NoRouteException("No rout was found!");
-        }
-    }
 
     /**
      * Turn dir until out of Cross or and critical zone on cross.
@@ -402,4 +390,19 @@ public class WaypointGenerator {
         }
         maxGroupeId = currentMaxId;
     };
+
+    /**
+     * Gets the cost of a route.
+     * @param waypoints the route we need the calculation of
+     * @return the cost to take the route
+     */
+    //todo make it so this adds cost of turning
+    public double getRouteCost(ArrayList<Vector2Dv1> waypoints){
+        double cost;
+        cost=this.start.getSubtracted(waypoints.get(0)).getLength();
+        for (int cnt = 1; cnt < waypoints.size(); cnt++) {
+            cost+=waypoints.get(cnt).getSubtracted(waypoints.get(cnt-1)).getLength();
+        }
+        return cost;
+    }
 }
