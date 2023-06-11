@@ -63,7 +63,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(waypointGenerator.waypointRoute.getRoute().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
     }
@@ -77,8 +77,8 @@ public class NavAlgoPhaseTwoTest {
         waypoints.add(waypoint);
         CommandGenerator commandGenerator = new CommandGenerator(simulationRobot,waypoints);
         int iterationCount = 1000;
-        while(simulator.updatePosSimple(waypoint, simulationRobot, commandGenerator.nextCommand(), waypoint) && iterationCount-- > 0);
-        assertEquals(false, simulator.updatePosSimple(waypoint, simulationRobot, commandGenerator.nextCommand(), waypoint));
+        while(simulator.updatePosSimple(waypoint, simulationRobot, commandGenerator.nextCommand(true), waypoint) && iterationCount-- > 0);
+        assertEquals(false, simulator.updatePosSimple(waypoint, simulationRobot, commandGenerator.nextCommand(true), waypoint));
     }
 
     /**
@@ -106,7 +106,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -124,7 +124,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -140,7 +140,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -156,7 +156,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -174,7 +174,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -190,7 +190,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println(waypointGenerator.waypointRoute.getRoute());
@@ -208,7 +208,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -226,7 +226,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -245,7 +245,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -265,7 +265,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -286,7 +286,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -308,7 +308,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
@@ -332,7 +332,7 @@ public class NavAlgoPhaseTwoTest {
         int iterationCount = 1000;
         String command = "";
         do {
-            command = commandGenerator.nextCommand();
+            command = commandGenerator.nextCommand(true);
         } while(simulator.updatePosSimple(commandGenerator.getWaypoints().get(0), simulationRobot, command,target.getPosVector()) && iterationCount-- > 0);
         assertEquals(simulator.updatePosSimple(target.getPosVector(), simulationRobot, command,target.getPosVector()), false);
         System.out.println("The route: " + waypointGenerator.waypointRoute.getRoute());
