@@ -28,12 +28,18 @@ public class WaypointGenerator {
     private Vector2Dv1 start;
     private Vector2Dv1 target;
 
-    private ArrayList<ArrayList<Vector2Dv1>> routes = null;
+    private ArrayList<WaypointRoute> routes = null;
 
     public class WaypointRoute{
         protected ArrayList<Vector2Dv1> route = null;
 
         protected double cost = -1;
+
+        WaypointRoute(ArrayList<Vector2Dv1> route, double cost){
+            this.route = route;
+            this.cost = cost;
+        }
+        WaypointRoute(){};
 
         public double getCost(){ return cost; }
         public ArrayList<Vector2Dv1> getRoute(){ return route; }
@@ -183,10 +189,8 @@ public class WaypointGenerator {
             }
         }
         //todo add check to se if a waypoint is out of bound
-        waypointRoute = new WaypointRoute();
-        //todo check if
-        waypointRoute.route = getCheapestRoute();
-        waypointRoute.cost = getRouteCost(waypointRoute.route);
+        waypointRoute = getCheapestRoute();
+
     }
 
     private void wayPointGeneratorRecursive(ArrayList<Vector2Dv1> pastRoute, RotateDirection rotateDirection) throws TimeoutException {
@@ -203,7 +207,7 @@ public class WaypointGenerator {
         hitToTarget = hitOnAllFromPosToTarget(pos);
         if(hitToTarget == null){
             pastRoute.add(target);
-            routes.add(pastRoute);
+            routes.add( new WaypointRoute((ArrayList<Vector2Dv1>) pastRoute.clone(), getRouteCost(pastRoute)));
             if(StandardSettings.NAV_WAYPOINT_GENERATOR_SPEED_SEARCH)
                 lowestWaypointCount = pastRoute.size();
             return;
@@ -274,11 +278,13 @@ public class WaypointGenerator {
             });
         }
     }
-    private ArrayList<Vector2Dv1> getCheapestRoute() {
-        ArrayList<Vector2Dv1> returnRoute = null;
+    private WaypointRoute getCheapestRoute() {
+        WaypointRoute returnRoute = null;
         double smallestCost = Double.MAX_VALUE;
-            for (ArrayList<Vector2Dv1> route : this.routes) {
-                if (getRouteCost(route) < smallestCost) returnRoute = route;
+            for (WaypointRoute route : this.routes) {
+                if (route.cost < smallestCost)
+                    smallestCost = route.cost;
+                    returnRoute = route;
             }
                 return returnRoute;
         }
