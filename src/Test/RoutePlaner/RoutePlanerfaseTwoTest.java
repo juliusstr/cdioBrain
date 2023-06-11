@@ -167,7 +167,7 @@ public class RoutePlanerfaseTwoTest {
             }
         }
 
-        best_route = hg.heatGenerator(ball_list);
+        best_route = hg.heat1Generator(ball_list);
        // System.out.println(ball_list);
         for(int l = 0; l < best_route.size(); l++){
             System.out.println("\n x:"+best_route.get(l).getxPos()+" y:"+best_route.get(l).getyPos());

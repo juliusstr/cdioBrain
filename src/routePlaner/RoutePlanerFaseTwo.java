@@ -88,11 +88,10 @@ public class RoutePlanerFaseTwo {
         for (Ball b: removeballs) {
             ballsHeat1.remove(b);
         }
-        ballsHeat1 = heatGenerator(ballsHeat1);
+        ballsHeat1 = heat1Generator(ballsHeat1);
         for (Ball b: ballsHeat1) {
             balls.remove(b);
-        }
-        /*
+        }/*
         //heat 2
         try {
             ballRoutes(false, 4, false, goalFakeBall.getPosVector());
@@ -102,16 +101,18 @@ public class RoutePlanerFaseTwo {
             throw new RuntimeException(e);
         }
         ballsHeat2 = (ArrayList<Ball>)balls.clone();
-        for (Ball b: ballsHeat1) {
+        removeballs.clear();
+        for (Ball b: ballsHeat2) {
             if(b.getRoutes().size() == 0){
-                ballsHeat2.remove(b);
+                removeballs.add(b);
             }
         }
-        ballsHeat2 = heatGenerator(ballsHeat2);
-        for (Ball b: balls) {
-            if(ballsHeat2.contains(b)){
-                balls.remove(b);
-            }
+        for (Ball b: removeballs) {
+            ballsHeat2.remove(b);
+        }
+        ballsHeat2 = heat2Generator(ballsHeat2);
+        for (Ball b: ballsHeat2) {
+            balls.remove(b);
         }
         //heat 3
         try {
@@ -122,7 +123,19 @@ public class RoutePlanerFaseTwo {
             throw new RuntimeException(e);
         }
         ballsHeat3 = (ArrayList<Ball>)balls.clone();
-        ballsHeat3 = heatGenerator(ballsHeat3);*/
+        removeballs.clear();
+        for (Ball b: ballsHeat3) {
+            if(b.getRoutes().size() == 0){
+                removeballs.add(b);
+            }
+        }
+        for (Ball b: removeballs) {
+            ballsHeat3.remove(b);
+        }
+        ballsHeat3 = heat3Generator(ballsHeat3);
+        for (Ball b: ballsHeat3) {
+            balls.remove(b);
+        }*/
     }
 
     private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
@@ -130,6 +143,14 @@ public class RoutePlanerFaseTwo {
 
         ArrayList<Ball> outerBalls = (ArrayList<Ball>) balls.clone();
         ArrayList<Ball> innerBalls = (ArrayList<Ball>) balls.clone();
+        int free = 0;
+        for (Ball b : outerBalls) {
+            if(b.getPlacement() == Ball.Placement.FREE){
+                free++;
+            }
+        }
+        if(free < minAmount)
+            difficultBalls = true;
         for (Ball b : outerBalls) {
             usedBalls.add(b);
             if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor() == BallClassifierPhaseTwo.ORANGE))){
@@ -140,7 +161,7 @@ public class RoutePlanerFaseTwo {
                     ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
                     btaGoal.remove(b);
 
-                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(b.getPosVector(), goalFakeBall.getPosVector(), cross, boundry, btaGoal).waypointRoute;
+                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPosVector(), cross, boundry, btaGoal).waypointRoute;
                     goal.setScore(wrgoal.getCost());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
@@ -151,7 +172,7 @@ public class RoutePlanerFaseTwo {
                 robotRoute.setEnd(b);
                 ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
                 btaRobot.remove(b);
-                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(robotPos, b.getPosVector(), cross, boundry, btaRobot).waypointRoute;
+                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getPosVector(), robotPos, cross, boundry, btaRobot).waypointRoute;
                 robotRoute.setScore(wrRobot.getCost());
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
@@ -163,7 +184,7 @@ public class RoutePlanerFaseTwo {
                         ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
                         bta.remove(b);
                         bta.remove(b2);
-                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b.getPosVector(), b2.getPosVector(), cross, boundry, bta).waypointRoute;
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getPosVector(), b.getPosVector(), cross, boundry, bta).waypointRoute;
                         r1.setScore(wr.getCost());
                         ArrayList<Vector2Dv1> waypoints = wr.getRoute();
                         r1.setWaypoints(waypoints);
@@ -186,18 +207,15 @@ public class RoutePlanerFaseTwo {
     }
 
 
-    public ArrayList<Ball> heatGenerator(ArrayList<Ball> ball_list) {
+    public ArrayList<Ball> heat1Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
         ArrayList<Ball> best_heat = new ArrayList<>();
 
         double score1 = 0;
         double score2 = 0;
-        double orange_score = 0;
         double temp_score = 0;
         double best_score = -1;
-        int i, j ,k;
-        int orange_ball_index = 0;
         Ball orangeBall = null;
         boolean orange_flag = true;
         // find orange ball
@@ -243,6 +261,96 @@ public class RoutePlanerFaseTwo {
                         best_heat.add(b2);
                         best_heat.add(b3);
                         best_heat.add(orangeBall);
+                        best_score = temp_score;
+                    }
+                }
+            }
+        }
+        return best_heat;
+    }
+
+    public ArrayList<Ball> heat2Generator(ArrayList<Ball> ball_list) {
+
+        //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+        ArrayList<Ball> best_heat = new ArrayList<>();
+
+        double score1 = 0;
+        double score2 = 0;
+        double score3 = 0;
+        double temp_score = 0;
+        double best_score = -1;
+        for (Ball b1: ball_list) {
+            // Add score from robot to b1 to temp_score
+            for (Route rRobot: robot.getRoutes(1)) {
+                if(rRobot.getEnd() == b1){
+                    score1 = rRobot.getScore();
+                    break;
+                }
+            }
+            for (Route r2 :b1.getRoutes()) {
+                Ball b2 = r2.getEnd();
+                if(b2 == b1)
+                    continue;
+                score2 = r2.getScore();
+                for (Route r3: b2.getRoutes()) {
+                    Ball b3 = r3.getEnd();
+                    if(b3 == b2 || b3 == b1)
+                        continue;
+                    score3 = r3.getScore();
+                    for (Route r4: b3.getRoutes()) {
+                        Ball b4 = r4.getEnd();
+                        if(b4 == b3 || b4 == b2 || b4 == b1)
+                            continue;
+                        temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
+                        // Set best_heat and best_score
+                        if(best_score < 0 || best_score > temp_score){
+                            best_heat.clear();
+                            best_heat.add(b1);
+                            best_heat.add(b2);
+                            best_heat.add(b3);
+                            best_heat.add(b4);
+                            best_score = temp_score;
+                        }
+                    }
+                }
+            }
+        }
+        return best_heat;
+    }
+
+    public ArrayList<Ball> heat3Generator(ArrayList<Ball> ball_list) {
+
+        //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+        ArrayList<Ball> best_heat = new ArrayList<>();
+
+        double score1 = 0;
+        double score2 = 0;
+        double temp_score = 0;
+        double best_score = -1;
+        for (Ball b1: ball_list) {
+            // Add score from robot to b1 to temp_score
+            for (Route rRobot: robot.getRoutes(1)) {
+                if(rRobot.getEnd() == b1){
+                    score1 = rRobot.getScore();
+                    break;
+                }
+            }
+            for (Route r2 :b1.getRoutes()) {
+                Ball b2 = r2.getEnd();
+                if(b2 == b1)
+                    continue;
+                score2 = r2.getScore();
+                for (Route r3: b2.getRoutes()) {
+                    Ball b3 = r3.getEnd();
+                    if(b3 == b2 || b3 == b1)
+                        continue;
+                    temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();
+                    // Set best_heat and best_score
+                    if(best_score < 0 || best_score > temp_score){
+                        best_heat.clear();
+                        best_heat.add(b1);
+                        best_heat.add(b2);
+                        best_heat.add(b3);
                         best_score = temp_score;
                     }
                 }
