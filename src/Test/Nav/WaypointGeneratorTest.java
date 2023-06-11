@@ -48,6 +48,8 @@ public class WaypointGeneratorTest {
     void simpleWaypointGenTest() throws NoRouteException, TimeoutException {
         target.set(20, target.y+1);
         WaypointGenerator.WaypointRoute wr = new WaypointGenerator(start, target, cross, boundry, ballsToAvoid).waypointRoute;
+        System.out.println(wr.getRoute());
+        System.err.println(wr.getCost());
         assertTrue(true);
     }
 

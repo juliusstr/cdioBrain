@@ -150,6 +150,9 @@ public class WaypointGenerator {
         hitToTarget = hitOnAllFromPosToTarget(start);
         if(hitToTarget == null){
             waypoints.add(target);
+            waypointRoute = new WaypointRoute();
+            waypointRoute.route = (ArrayList<Vector2Dv1>) waypoints.clone();
+            waypointRoute.cost = getRouteCost(waypointRoute.route);
             return;
         }
 
