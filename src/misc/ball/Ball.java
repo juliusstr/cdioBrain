@@ -117,7 +117,7 @@ public class Ball extends PrimitiveBall{
     public String toString() {
         return "Ball{" +
                 "radius=" + radius +
-                ", color=" + color +
+                ", type=" + type +
                 ", isInPx=" + isInPx +
                 ", xPos=" + xPos +
                 ", yPos=" + yPos +
