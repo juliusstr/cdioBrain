@@ -341,7 +341,8 @@ public class WaypointGenerator {
                 dir.rotateBy(SEARCH_RAD_TO_TURN * step * (rotateDirection.ordinal()-1));
             }
         } while (waypoint == null);
-        //todo check if rout form pos to waypoint hits critical-zone closer to robot.
+        // todo check if waypoint is outside of boundary
+        // todo check if rout form pos to waypoint hits critical-zone closer to robot.
         pastRoute.add(waypoint);
 
         if(pastRoute.size() < lowestWaypointCount) {

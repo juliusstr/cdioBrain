@@ -401,13 +401,13 @@ public class RoutePlanerFaseTwo {
         System.out.println("heats : " + ballsHeat1);
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
         ballsToAvoid.addAll(ballsHeat1);
-        ballsToAvoid.addAll(ballsHeat2);
-        ballsToAvoid.addAll(ballsHeat3);
+        //ballsToAvoid.addAll(ballsHeat2);
+        //ballsToAvoid.addAll(ballsHeat3);
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         while (ballsHeat1.size() != 0){
             //finde route from robot to ball
-            ballsToAvoid.remove(0);
+            ballsToAvoid.remove(lastBall);
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
             if(ballsHeat1.size() == 4){
                 for (int i = 0; i < robot.getRoutes(1).size(); i++) {
