@@ -56,10 +56,10 @@ public class RoutePlanerFaseTwo {
         this.balls = balls;
     }
 
-    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry) {
+    public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry, Cross c) {
         balls = (ArrayList<Ball>) b.clone();
         robot = r;
-        cross = null;
+        cross = c;
         this.boundry = boundry;
         initGoalWaypoints();
     }
