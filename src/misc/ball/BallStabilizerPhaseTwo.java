@@ -53,6 +53,7 @@ public class BallStabilizerPhaseTwo {
     }
 
     private void stabilizeBall(Ball ball) throws TypeException {
+        BallClassifierPhaseTwo.classify(ball);
         addBallToBalls(ball);
         return;
         /*
@@ -109,18 +110,20 @@ public class BallStabilizerPhaseTwo {
 
     //gets only stabel balls
     public ArrayList<Ball> getStabelBalls() throws NoDataException {
+        System.out.println(balls);
         ArrayList<Ball> ballsToReturn = new ArrayList<>();
 
         for (int i = 0; i < balls.size(); i++) {
             if(balls.get(i).getType() != Ball.Type.BALL)
                 continue;
 
-            if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
+            /*if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
                 balls.remove(i--);
                 continue;
             }
-            //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
 
+             */
+            //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
             ballsToReturn.add(balls.get(i));
         }
 

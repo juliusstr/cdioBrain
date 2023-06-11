@@ -22,9 +22,9 @@ public class Robotv1 {
         angelSpeed = 0;
     }
 
-    private List<Route> heat1Routes = new ArrayList<>();
-    private List<Route> heat2Routes = new ArrayList<>();
-    private List<Route> heat3Routes = new ArrayList<>();
+    private ArrayList<Route> heat1Routes = new ArrayList<>();
+    private ArrayList<Route> heat2Routes = new ArrayList<>();
+    private ArrayList<Route> heat3Routes = new ArrayList<>();
 
     private int heatRouteNum = 1;
 
@@ -32,7 +32,7 @@ public class Robotv1 {
         heatRouteNum++;
     }
 
-    public List<Route> getRoutes(int heat) {
+    public ArrayList<Route> getRoutes(int heat) {
         switch (heat){
             case 1:
                 return heat1Routes;

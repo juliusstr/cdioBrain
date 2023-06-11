@@ -158,7 +158,7 @@ public class RoutePlanerFaseTwo {
             difficultBalls = true;
         for (Ball b : outerBalls) {
             usedBalls.add(b);
-            if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor() == BallClassifierPhaseTwo.ORANGE))){
+            if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))){
                 //ball to goal
                 if(b.getGoalRoute() == null){
                     Route goal = new Route(b.getPosVector());
@@ -225,7 +225,7 @@ public class RoutePlanerFaseTwo {
         // find orange ball
         if(orange_flag){
             for (Ball b: ball_list) {
-                if(b.getColor() == BallClassifierPhaseTwo.ORANGE){
+                if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
                     orangeBall = b;
                     break;
                 }
@@ -397,21 +397,44 @@ public class RoutePlanerFaseTwo {
     }
 
     public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer){
+        System.out.println("heats : " + ballsHeat1);
+        ArrayList<Ball> ballsToAvoid = new ArrayList<>();
+        ballsToAvoid.addAll(ballsHeat1);
+        //ballsToAvoid.addAll(ballsHeat2);
+        //ballsToAvoid.addAll(ballsHeat3);
+        WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         while (ballsHeat1.size() != 0){
             //finde route from robot to ball
+            ballsToAvoid.remove(lastBall);
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
             if(ballsHeat1.size() == 4){
                 for (int i = 0; i < robot.getRoutes(1).size(); i++) {
                     if(ballsHeat1.get(0) == robot.getRoutes(1).get(i).getEnd()){
-                        routToBall = robot.getRoutes(1).get(i).getWaypoints();
+                        //routToBall = robot.getRoutes(1).get(i).getWaypoints();
+                        try {
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(0).getPosVector(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+                        } catch (NoRouteException e) {
+                            throw new RuntimeException(e);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                        routToBall = waypointGenerator.waypointRoute.getRoute();
                         break;
                     }
                 }
             } else {
                 for (int i = 0; i < lastBall.getRoutes().size(); i++) {
                     if(lastBall.getRoutes().get(i).getEnd() == ballsHeat1.get(0)){
-                        routToBall = lastBall.getRoutes().get(i).getWaypoints();
+                        //routToBall = lastBall.getRoutes().get(i).getWaypoints();
+                        try {
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(0).getPosVector(),lastBall.getPosVector(),cross, boundry, ballsToAvoid);
+                        } catch (NoRouteException e) {
+                            throw new RuntimeException(e);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                        routToBall = waypointGenerator.waypointRoute.getRoute();
                         break;
                     }
                 }
@@ -430,9 +453,14 @@ public class RoutePlanerFaseTwo {
                     ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
                     robot.updatePos(robotBalls.get(0), robotBalls.get(1));
                 } catch (BadDataException e) {
-                    throw new RuntimeException(e);
+                    //throw new RuntimeException(e);
                 }
-                out.println(commandGenerator.nextCommand(true));
+                String command = commandGenerator.nextCommand(true);
+                if(command.contains("ball")){
+                    out.println("stop -d -t");
+                    routToBall.clear();
+                }
+                out.println(command);
             }
             //collect
             switch (ballsHeat1.get(0).getPlacement()){
@@ -445,10 +473,18 @@ public class RoutePlanerFaseTwo {
             }
             lastBall = ballsHeat1.get(0);
             ballsHeat1.remove(0);
+            ballsToAvoid.remove(0);
 
         }
         //go to goal and do a drop-off
-        ArrayList<Vector2Dv1> routeToGoal = lastBall.getGoalRoute().getWaypoints();
+        try {
+            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+        } catch (NoRouteException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        ArrayList<Vector2Dv1> routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
         routeToGoal.add(getGoalWaypoint1());
         CommandGenerator commandGenerator = new CommandGenerator(robot,routeToGoal);
         while (routeToGoal.size() != 0){
@@ -462,13 +498,18 @@ public class RoutePlanerFaseTwo {
                 ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
                 robot.updatePos(robotBalls.get(0), robotBalls.get(1));
             } catch (BadDataException e) {
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
             }
-            out.println(commandGenerator.nextCommand(false));
+            String command = commandGenerator.nextCommand(false);
+            if(command.contains("ball")){
+                routeToGoal.clear();
+            }
+            out.println(command);
         }
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
+
 
     private void wait(int millis){
         try {

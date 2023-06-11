@@ -52,12 +52,12 @@ public class CommandGenerator {
         if(isTargetBall && distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On ball\n");
-            return "stop -d -t";
+            return "On ball\n";
         }
         if(!isTargetBall && distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On waypoint\n");
-            return "stop -d -t";
+            return "On waypoint\n";
         }
 
 

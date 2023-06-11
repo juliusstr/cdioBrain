@@ -12,6 +12,7 @@ import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.Core;
+import routePlaner.Route;
 import routePlaner.RoutePlanerFaseTwo;
 
 import java.io.BufferedReader;
@@ -49,6 +50,7 @@ public class MainClient {
         ArrayList<Ball> routeBalls = new ArrayList<>();
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
+            System.out.println("balls1 = " + balls1);
             for (Ball ball : balls1) {
                 BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
                 System.out.println(ball.toString());
@@ -56,11 +58,16 @@ public class MainClient {
             }
             //robotBalls = stabilizer.getStabelRobotCirce();
         } catch (NoDataException e) {
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
 
         }
-        robotBalls.add(initBall);
-        robotBalls.add(initBall2);
+        try {
+            robotBalls = stabilizer.getStabelRobotCirce();
+        } catch (BadDataException e) {
+            robotBalls.add(initBall);
+            robotBalls.add(initBall2);
+        }
+
 
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
@@ -75,7 +82,14 @@ public class MainClient {
         out = new PrintWriter(s.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
+        System.out.println("Robot pos = \t" + robotv1.getPosVector().toString());
+
+
+        System.out.println();
+
         System.out.println("Press enter to start!");
+
+
         Scanner inputWait = new Scanner(System.in);
         inputWait.nextLine();
 
