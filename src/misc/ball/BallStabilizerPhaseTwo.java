@@ -27,7 +27,7 @@ public class BallStabilizerPhaseTwo {
     }
 
     public void stabilizeBalls(ArrayList<Ball> balls) throws TypeException {
-        balls.clear();
+        this.balls.clear();
         for (Ball ball :
                 balls) {
             stabilizeBall(ball);
@@ -54,7 +54,8 @@ public class BallStabilizerPhaseTwo {
 
     private void stabilizeBall(Ball ball) throws TypeException {
         addBallToBalls(ball);
-
+        return;
+        /*
         if(ball.getType() == Ball.Type.UNKNOWN){
             BallClassifierPhaseTwo.classify(ball);
         }
@@ -78,6 +79,8 @@ public class BallStabilizerPhaseTwo {
         ballPosHis.add(0,relation.getPoint());
         relation.setPos(ball.getPoint());
         relation.zeroLastSeenAlive();
+        */
+
     }
     // returns the ball that the ball relates to the input ball. throws exception if it fails.
     public Ball relates(Ball ball) throws NoDataException, BadDataException {
