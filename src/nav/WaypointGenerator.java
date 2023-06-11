@@ -278,7 +278,14 @@ public class WaypointGenerator {
         ArrayList<Vector2Dv1> returnRoute = null;
         double smallestCost = Double.MAX_VALUE;
             for (ArrayList<Vector2Dv1> route : this.routes) {
-                if (getRouteCost(route) < smallestCost) returnRoute = route;
+                System.out.println(getRouteCost(route));
+                if (getRouteCost(route) < smallestCost)
+                {
+                    System.out.println(getRouteCost(route));
+                    smallestCost = getRouteCost(route);
+                    returnRoute = route;
+                }
+
             }
                 return returnRoute;
         }
