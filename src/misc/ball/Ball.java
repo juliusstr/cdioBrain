@@ -38,15 +38,15 @@ public class Ball extends PrimitiveBall{
 
     private Placement placement;
 
-    private List<Route> routes = new ArrayList<>();
+    private ArrayList<Route> routes = new ArrayList<>();
     private Route goalRoute = null;
 
 
-    public List<Route> getRoutes() {
+    public ArrayList<Route> getRoutes() {
         return routes;
     }
 
-    public void setRoutes(List<Route> routes) {
+    public void setRoutes(ArrayList<Route> routes) {
         this.routes = routes;
     }
     public Route getGoalRoute() {

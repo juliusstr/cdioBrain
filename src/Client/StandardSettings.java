@@ -55,5 +55,8 @@ public class StandardSettings {
     public static final double TARGET_DISTANCE_ERROR = 45;
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
 
+    public static final String COLLECT_COMMAND = "collect -s2 -g4";
+    public static final String DROP_OFF_COMMAND = "drop";
+
 
 }

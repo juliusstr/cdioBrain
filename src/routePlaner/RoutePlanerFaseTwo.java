@@ -283,8 +283,60 @@ public class RoutePlanerFaseTwo {
     }
 
     public void run(PrintWriter out, BufferedReader in){
+        Ball lastBall = null;
         while (ballsHeat1.size() != 0){
+            //finde route from robot to ball
+            ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
+            if(ballsHeat1.size() == 4){
+                for (int i = 0; i < robot.getRoutes(1).size(); i++) {
+                    if(ballsHeat1.get(0) == robot.getRoutes(1).get(i).getEnd()){
+                        routToBall = robot.getRoutes(1).get(i).getWaypoints();
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < lastBall.getRoutes().size(); i++) {
+                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat1.get(0)){
+                        routToBall = lastBall.getRoutes().get(i).getWaypoints();
+                        break;
+                    }
+                }
 
+            }
+            //run to ball
+            CommandGenerator commandGenerator = new CommandGenerator(robot,routToBall);
+            while (routToBall.size() != 0){
+                out.println(commandGenerator.nextCommand(true));
+            }
+            //collect
+            switch (ballsHeat1.get(0).getPlacement()){
+                case FREE:
+                    out.println(StandardSettings.COLLECT_COMMAND);
+                    wait(500);
+                    break;
+                default:
+                    out.println("stop -t -d");
+            }
+            lastBall = ballsHeat1.get(0);
+            ballsHeat1.remove(0);
+
+        }
+        //go to goal and do a drop-off
+        ArrayList<Vector2Dv1> routeToGoal = lastBall.getGoalRoute().getWaypoints();
+        routeToGoal.add(getGoalWaypoint1());
+        CommandGenerator commandGenerator = new CommandGenerator(robot,routeToGoal);
+        while (routeToGoal.size() != 0){
+            out.println(commandGenerator.nextCommand(false));
+        }
+        out.println("DROP_OFF_COMMAND");
+        wait(500);
+    }
+
+    private void wait(int millis){
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

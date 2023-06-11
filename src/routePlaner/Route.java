@@ -10,19 +10,19 @@ import java.util.List;
 public class Route {
     private Ball end = null;
     private Vector2Dv1 startPoint = null;
-    private List<Vector2Dv1> waypoints = null;
+    private ArrayList<Vector2Dv1> waypoints = null;
     private double score = 0;
 
     public Route(Vector2Dv1 v){ startPoint = v; }
     public void setScore(double s){ score = s; }
-    public void setWaypoints(List<Vector2Dv1> r){ waypoints = r; }
+    public void setWaypoints(ArrayList<Vector2Dv1> r){ waypoints = r; }
     public void setEnd(Ball e){ end = e; }
 
     public double getScore(){
         return score;
     }
 
-    public List<Vector2Dv1> getWaypoints(){
+    public ArrayList<Vector2Dv1> getWaypoints(){
         return waypoints;
     }
 
