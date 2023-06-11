@@ -50,6 +50,8 @@ public class MainClient {
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
             for (Ball ball : balls1) {
+                BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
+                System.out.println(ball.toString());
                 routeBalls.add(ball);
             }
             //robotBalls = stabilizer.getStabelRobotCirce();
@@ -62,7 +64,7 @@ public class MainClient {
 
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
-
+        System.out.println(routeBalls);
         System.out.println("Mapping route...");
         routePlanerFaseTwo.getHeats();
         System.out.println("Mapping route complete!");
