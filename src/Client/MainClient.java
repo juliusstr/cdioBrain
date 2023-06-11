@@ -79,7 +79,7 @@ public class MainClient {
         Scanner inputWait = new Scanner(System.in);
         inputWait.nextLine();
 
-        routePlanerFaseTwo.run(out, in);
+        routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
     }
 }
 
