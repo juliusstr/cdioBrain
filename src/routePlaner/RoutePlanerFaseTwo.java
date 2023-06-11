@@ -211,7 +211,6 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
-
     public ArrayList<Ball> heat1Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();

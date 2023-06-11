@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ImageClickPosition {
 
-    public static ArrayList<Vector2Dv1> pos = new ArrayList<>();
+    public static ArrayList<Vector2Dv1> pos = null;
 
     private static int amount = -1;
 
@@ -19,8 +19,8 @@ public class ImageClickPosition {
 
     private static String title = "";
 
-    public ImageClickPosition(int amount, Image image, String title){
-        this.pos.clear();
+    public ImageClickPosition(int amount, Image image, String title, ArrayList<Vector2Dv1> pos){
+        this.pos = pos;
         this.amount = amount;
         this.image = image;
         this.title = title;
