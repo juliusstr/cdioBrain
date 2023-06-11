@@ -132,7 +132,7 @@ public class RoutePlanerFaseTwo {
         ArrayList<Ball> innerBalls = (ArrayList<Ball>) balls.clone();
         for (Ball b : outerBalls) {
             usedBalls.add(b);
-            if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor() == Color.orange))){
+            if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor() == BallClassifierPhaseTwo.ORANGE))){
                 //ball to goal
                 if(b.getGoalRoute() == null){
                     Route goal = new Route(b.getPosVector());
@@ -203,7 +203,7 @@ public class RoutePlanerFaseTwo {
         // find orange ball
         if(orange_flag){
             for (Ball b: ball_list) {
-                if(b.getColor() == Color.ORANGE){
+                if(b.getColor() == BallClassifierPhaseTwo.ORANGE){
                     orangeBall = b;
                     break;
                 }
@@ -330,7 +330,7 @@ public class RoutePlanerFaseTwo {
         while (routeToGoal.size() != 0){
             out.println(commandGenerator.nextCommand(false));
         }
-        out.println("DROP_OFF_COMMAND");
+        out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
 
