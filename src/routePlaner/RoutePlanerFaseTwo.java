@@ -56,13 +56,16 @@ public class RoutePlanerFaseTwo {
     }
 
     public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry) {
-        balls = b;
+        balls = (ArrayList<Ball>) b.clone();
         robot = r;
         cross = null;
         this.boundry = boundry;
         initGoalWaypoints();
     }
 
+    /**
+     *
+     */
     private void generateheats(){
         //heat 1
         try {
@@ -72,7 +75,7 @@ public class RoutePlanerFaseTwo {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-        ballsHeat1 = balls;
+        ballsHeat1 = (ArrayList<Ball>) balls.clone();
         for (Ball b: ballsHeat1) {
             if(b.getRoutes().size() == 0){
                 ballsHeat1.remove(b);
@@ -93,7 +96,7 @@ public class RoutePlanerFaseTwo {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-        ballsHeat2 = balls;
+        ballsHeat2 = (ArrayList<Ball>)balls.clone();
         for (Ball b: ballsHeat1) {
             if(b.getRoutes().size() == 0){
                 ballsHeat2.remove(b);
@@ -113,7 +116,7 @@ public class RoutePlanerFaseTwo {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-        ballsHeat3 = balls;
+        ballsHeat3 = (ArrayList<Ball>)balls.clone();
         ballsHeat3 = heatGenerator(ballsHeat3);
     }
 
@@ -191,8 +194,55 @@ public class RoutePlanerFaseTwo {
         int best_score = -1;
         int i, j ,k;
         int orange_ball_index = 0;
+        Ball orangeBall = null;
         boolean orange_flag = true;
-
+        // find orange ball
+        if(orange_flag){
+            for (Ball b: ball_list) {
+                if(b.getColor() == Color.ORANGE){
+                    orangeBall = b;
+                    ball_list.remove(b);
+                }
+            }
+        }
+        for (Ball b1: ball_list) {
+            // Add score from robot to b1 to temp_score
+            for (Route rRobot: robot.getRoutes(1)) {
+                if(rRobot.getEnd() == b1){
+                    score1 = rRobot.getScore();
+                    break;
+                }
+            }
+            for (Route r2 :b1.getRoutes()) {
+                Ball b2 = r2.getEnd();
+                if(b2 == b1 || b2 == orangeBall)
+                    continue;
+                score2 = r2.getScore();
+                for (Route r3: b2.getRoutes()) {
+                    Ball b3 = r3.getEnd();
+                    if(b3 == b2 || b3 == b1 || b3 == orangeBall)
+                        continue;
+                    temp_score = score1 + score2;
+                    temp_score += r3.getScore();
+                    // find route to orangeBall
+                    for (Route r4: b3.getRoutes()) {
+                        if(r4.getEnd() == orangeBall){
+                            temp_score += r4.getScore();
+                            break;
+                        }
+                    }
+                    // Set best_heat and best_score
+                    if(best_score < 0 || best_score > temp_score){
+                        best_heat.clear();
+                        best_heat.add(b1);
+                        best_heat.add(b2);
+                        best_heat.add(b3);
+                        best_score = temp_score;
+                    }
+                }
+            }
+        }
+/*
         for (i = 0; i < ball_list.size(); i++){
             if(ball_list.get(i).getColor() == Color.orange)
                 i++;
@@ -230,7 +280,7 @@ public class RoutePlanerFaseTwo {
                     }
                 }
             }
-        }
+        }*/
         return best_heat;
     }
 
