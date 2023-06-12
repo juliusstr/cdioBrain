@@ -57,6 +57,8 @@ public class StandardSettings {
 
     public static final String COLLECT_COMMAND = "collect -s2 -g4";
     public static final String DROP_OFF_COMMAND = "drop";
+    public static final String COLLECT_EDGE_COMMAND = "corner";
+    public static final String COLLECT_CORNER_COMMAND = "corner";
 
 
 }
