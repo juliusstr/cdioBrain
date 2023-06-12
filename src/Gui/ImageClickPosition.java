@@ -24,6 +24,7 @@ public class ImageClickPosition {
         this.amount = amount;
         this.image = image;
         this.title = title;
+        //
     }
     public void run() {
         SwingUtilities.invokeLater(ImageClickPosition::createAndShowGUI);
