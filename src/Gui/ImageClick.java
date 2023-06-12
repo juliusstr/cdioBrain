@@ -17,7 +17,8 @@ import java.util.ArrayList;
 
 public class ImageClick {
 
-    public static ArrayList<Pixel> pixels = null;
+    public static ArrayList<Vector2Dv1> pos = null;
+    public static ArrayList<Color> color = null;
 
     private static int amount = -1;
     private static BufferedImage imageBuffered = null;
@@ -26,8 +27,9 @@ public class ImageClick {
 
     private static String title = "";
 
-    public ImageClick(int amount, Mat mat, String title, ArrayList<Pixel> pixels){
-        this.pixels = pixels;
+    public ImageClick(int amount, Mat mat, String title, ArrayList<Vector2Dv1> v, ArrayList<Color> c){
+        this.pos = v;
+        this.color = c;
         this.amount = amount;
         this.title = title;
         // Convert Mat to MatOfByte
@@ -66,11 +68,12 @@ public class ImageClick {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                pixels.add(new Pixel(new Vector2Dv1(x,y), new Color(imageBuffered.getRGB(x, y))));
-                Color mycolor = null;
-                mycolor = new Color(imageBuffered.getRGB(x, y));
-                System.out.println("Red " + mycolor.getRed() + "Green" + mycolor.getGreen() + "Blue" + mycolor.getBlue());
-                System.out.println("Clicked at position: (" + x + ", " + y + ")");
+                pos.add(new Vector2Dv1(x,y));
+                color.add(new Color(imageBuffered.getRGB(x, y)));
+                //Color mycolor = null;
+                //mycolor = new Color(imageBuffered.getRGB(x, y));
+                //System.out.println("Red " + mycolor.getRed() + "Green" + mycolor.getGreen() + "Blue" + mycolor.getBlue());
+                //System.out.println("Clicked at position: (" + x + ", " + y + ")");
                 amount--;
                 if(amount == 0){
                     frame.dispose();
@@ -83,7 +86,6 @@ public class ImageClick {
 
         // Add the image label to the frame
         frame.getContentPane().add(imageLabel);
-
         frame.pack();
         frame.setVisible(true);
     }
