@@ -1,6 +1,8 @@
 package Client;
 
 
+import Gui.GUI_Menu;
+import Gui.GuiData;
 import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.TypeException;
@@ -12,9 +14,11 @@ import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import routePlaner.Route;
 import routePlaner.RoutePlanerFaseTwo;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,6 +41,19 @@ public class MainClient {
 
         ArrayList<Ball> balls = new ArrayList<>();
         RoutePlanerFaseTwo routePlanerFaseTwo = null;
+
+        //vars for GUI
+        Mat m = imgRec.getFrame();
+        ArrayList<Vector2Dv1> boundryConorsGUI = new ArrayList<>();
+        ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
+        ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
+        ArrayList<Color> robotColorsGUI = new ArrayList<>();
+        GuiData gd = new GuiData();
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd);
+        System.out.println("Press enter to end config!");
+        Scanner inputWaitConfig = new Scanner(System.in);
+        inputWaitConfig.nextLine();
+
 
         // init balls for robot, to not have exception..
         Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);

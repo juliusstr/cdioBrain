@@ -1,6 +1,8 @@
 package Test.Gui;
 
-import Gui.Pixel;
+import Gui.GUI_Menu;
+import Gui.GuiData;
+import misc.Vector2Dv1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import Gui.ImageClick;
@@ -18,24 +20,47 @@ public class ImageClickTest {
 
     @Test
     @DisplayName("test")
-    void getTest(){
+    void menuTest(){
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        ArrayList<Pixel> testArray = new ArrayList<>();
         ImageIcon tImage = new ImageIcon("C:\\Users\\John\\Desktop\\input1.jpg");
         Mat mat = imageIconToMat(tImage);
-
-        ImageClick test = new ImageClick(4, mat, "Test", testArray);
-        test.run();
-        while(testArray.size() < 4){
+        ArrayList<Vector2Dv1> boundryConorsGUI = new ArrayList<>();
+        ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
+        ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
+        ArrayList<Color> robotColorsGUI = new ArrayList<>();
+        GuiData gd = new GuiData();
+        new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd);
+        while(boundryConorsGUI.size() < 4){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(testArray.size());
+            System.out.println(boundryConorsGUI.size());
         }
-        System.out.println("Test");
+        System.out.println(boundryConorsGUI);
+    }
+    @Test
+    @DisplayName("test")
+    void getTest(){
+
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        ArrayList<Vector2Dv1> v = new ArrayList<>();
+        ArrayList<Color> c = new ArrayList<>();
+        ImageIcon tImage = new ImageIcon("C:\\Users\\John\\Desktop\\input1.jpg");
+        Mat mat = imageIconToMat(tImage);
+
+        ImageClick test = new ImageClick(4, mat, "Test", v, c);
+
+        while(v.size() < 4){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(v.size());
+        }
     }
     private static Mat imageIconToMat(ImageIcon imageIcon) {
         // Convert ImageIcon to BufferedImage
