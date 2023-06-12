@@ -294,8 +294,6 @@ public class RoutePlanerfaseTwoTest {
         for (Ball b: best_route) {
             System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
         }
-
-
     }
 
     @Test

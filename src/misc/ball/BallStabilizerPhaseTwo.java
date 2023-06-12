@@ -56,12 +56,12 @@ public class BallStabilizerPhaseTwo {
 
     private void stabilizeBall(Ball ball) throws TypeException {
         BallClassifierPhaseTwo.classify(ball);
-        if(ball.status == PrimitiveBall.Status.ROBOT){
-            ballPrecision.CompensateRobot(ball);
-        }
-        else {
-            ballPrecision.CompensateBall(ball);
-        }
+        //if(ball.status == PrimitiveBall.Status.ROBOT){
+            //ballPrecision.CompensateRobot(ball);
+        //}
+        //else {
+            //ballPrecision.CompensateBall(ball);
+        //}
         addBallToBalls(ball);
         return;
         /*
