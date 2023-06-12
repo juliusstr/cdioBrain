@@ -38,7 +38,7 @@ public class StandardSettings {
      * BallClassifierPhaseTwo
      * -----------------------------
      */
-    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 60;
+    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 70;
 
     /**
      * -----------------------------

@@ -44,7 +44,7 @@ public class CommandGenerator {
         double angleDelta;
 
         //*** Close enough ***
-        if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() != 1){
+        if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() > 1){
             System.err.println("On waypoint");
             waypoints.remove(0);
             return "stop -t -d";

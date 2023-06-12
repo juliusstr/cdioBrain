@@ -107,7 +107,7 @@ public class RoutePlanerFaseTwo {
      * The calculated heats are stored in separate lists.
      */
     public void getHeats(){
-        int heat = 2;
+        int heat = 3;
         //heat 1
         try {
             ballRoutes(false, 4, true, robot.getPosVector());
@@ -216,12 +216,12 @@ public class RoutePlanerFaseTwo {
             if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))){
                 //ball to goal
                 if(b.getGoalRoute() == null){
-                    Route goal = new Route(b.getLineUpPoint());
+                    Route goal = new Route(b.getPickUpPoint());
                     goal.setEnd(goalFakeBall);
                     ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
                     btaGoal.remove(b);
 
-                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getLineUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
                     goal.setScore(wrgoal.getCost());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
@@ -232,19 +232,19 @@ public class RoutePlanerFaseTwo {
                 robotRoute.setEnd(b);
                 ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
                 btaRobot.remove(b);
-                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getLineUpPoint(), robotPos, cross, boundry, btaRobot).waypointRoute;
+                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getPickUpPoint(), robotPos, cross, boundry, btaRobot).waypointRoute;
                 robotRoute.setScore(wrRobot.getCost());
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
                 for (Ball b2: innerBalls) {
                     if(!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
-                        Route r1 = new Route(b.getLineUpPoint());
+                        Route r1 = new Route(b.getPickUpPoint());
                         r1.setEnd(b2);
                         ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
                         bta.remove(b);
                         bta.remove(b2);
-                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getLineUpPoint(), b.getLineUpPoint(), cross, boundry, bta).waypointRoute;
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getPickUpPoint(), b.getPickUpPoint(), cross, boundry, bta).waypointRoute;
                         r1.setScore(wr.getCost());
                         ArrayList<Vector2Dv1> waypoints = wr.getRoute();
                         r1.setWaypoints(waypoints);
@@ -255,7 +255,7 @@ public class RoutePlanerFaseTwo {
                         for (int i = waypoints.size()-1; i > 0; i--) {
                             r2Waypoints.add(waypoints.get(i));
                         }
-                        r2Waypoints.add(b.getLineUpPoint());
+                        r2Waypoints.add(b.getPickUpPoint());
                         r2.setScore(r1.getScore());
                         r2.setWaypoints(r2Waypoints);
                         b2.addRoute(r2);
@@ -571,7 +571,7 @@ public class RoutePlanerFaseTwo {
                     if(ballsHeat1.get(0) == robot.getRoutes(1).get(i).getEnd()){
                         //routToBall = robot.getRoutes(1).get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getLineUpPoint(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getPickUpPoint(),robot.getPosVector(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
@@ -583,10 +583,10 @@ public class RoutePlanerFaseTwo {
                 }
             } else {
                 for (int i = 0; i < lastBall.getRoutes().size(); i++) {
-                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat1.get(0)){
+                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat1.get(j)){
                         //routToBall = lastBall.getRoutes().get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getLineUpPoint(),lastBall.getLineUpPoint(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getPickUpPoint(),lastBall.getPickUpPoint(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
@@ -623,24 +623,36 @@ public class RoutePlanerFaseTwo {
                 if(command.contains("ball")){
                     out.println("stop -d -t");
                     routToBall.clear();
+                } else {
+                    out.println(command);
                 }
-                out.println(command);
             }
             //collect
-            switch (ballsHeat1.get(0).getPlacement()){
+            switch (ballsHeat1.get(j).getPlacement()){
                 case FREE:
                     out.println(StandardSettings.COLLECT_COMMAND);
                     wait(500);
                     break;
+                case EDGE:
+                    out.println(StandardSettings.COLLECT_EDGE_COMMAND);
+                    wait(500);
+                    break;
+                case CORNER:
+                    out.println(StandardSettings.COLLECT_CORNER_COMMAND);
+                    wait(500);
+                    break;
                 default:
                     out.println("stop -t -d");
+                    wait(500);
+                    break;
             }
-            lastBall = ballsHeat1.get(0);
+            lastBall = ballsHeat1.get(j);
 
         }
         //go to goal and do a drop-off
+        wait(2000);
         try {
-            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),lastBall.getLineUpPoint(),cross, boundry, ballsToAvoid);
+            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),robot.getPosVector(),cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
@@ -680,15 +692,15 @@ public class RoutePlanerFaseTwo {
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
             ballsToAvoid.remove(ballsHeat2.get(j));
             if(ballsHeat2.size() == 4){
-                for (int i = 0; i < robot.getRoutes(1).size(); i++) {
-                    if(ballsHeat2.get(0) == robot.getRoutes(1).get(i).getEnd()){
+                for (int i = 0; i < robot.getRoutes(2).size(); i++) {
+                    if(ballsHeat2.get(0) == robot.getRoutes(2).get(i).getEnd()){
                         //routToBall = robot.getRoutes(1).get(i).getWaypoints();
                         try {
                             Vector2Dv1 targetWaypoint;
                             if(ballsHeat2.get(j).getPlacement() == Ball.Placement.FREE){
                                 targetWaypoint = ballsHeat2.get(j).getPosVector();
                             } else {
-                                targetWaypoint = ballsHeat2.get(j).getLineUpPoint();
+                                targetWaypoint = ballsHeat2.get(j).getPickUpPoint();
                             }
                             waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
 
@@ -699,21 +711,21 @@ public class RoutePlanerFaseTwo {
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
                         if(ballsHeat2.get(j).getPlacement() != Ball.Placement.FREE){
-                            routToBall.add(ballsHeat2.get(j).getPickUpPoint());
+                            routToBall.add(ballsHeat2.get(j).getLineUpPoint());
                         }
                         break;
                     }
                 }
             } else {
                 for (int i = 0; i < lastBall.getRoutes().size(); i++) {
-                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat2.get(0)){
+                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat2.get(j)){
                         //routToBall = lastBall.getRoutes().get(i).getWaypoints();
                         try {
                             Vector2Dv1 targetWaypoint;
                             if(ballsHeat2.get(j).getPlacement() == Ball.Placement.FREE){
                                 targetWaypoint = ballsHeat2.get(j).getPosVector();
                             } else {
-                                targetWaypoint = ballsHeat2.get(j).getLineUpPoint();
+                                targetWaypoint = ballsHeat2.get(j).getPickUpPoint();
                             }
                             waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
@@ -723,7 +735,7 @@ public class RoutePlanerFaseTwo {
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
                         if(ballsHeat2.get(j).getPlacement() != Ball.Placement.FREE){
-                            routToBall.add(ballsHeat2.get(j).getPickUpPoint());
+                            routToBall.add(ballsHeat2.get(j).getLineUpPoint());
                         }
                         break;
                     }
@@ -755,11 +767,12 @@ public class RoutePlanerFaseTwo {
                 if(command.contains("ball") || command.contains("waypoint")){
                     out.println("stop -d -t");
                     routToBall.clear();
+                } else {
+                    out.println(command);
                 }
-                out.println(command);
             }
             //collect
-            switch (ballsHeat2.get(0).getPlacement()){
+            switch (ballsHeat2.get(j).getPlacement()){
                 case FREE:
                     out.println(StandardSettings.COLLECT_COMMAND);
                     wait(500);
@@ -777,7 +790,150 @@ public class RoutePlanerFaseTwo {
                     wait(500);
                     break;
             }
-            lastBall = ballsHeat2.get(0);
+            lastBall = ballsHeat2.get(j);
+
+        }
+        //go to goal and do a drop-off
+        try {
+            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+        } catch (NoRouteException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
+        routeToGoal.add(getGoalWaypoint1());
+        commandGenerator = new CommandGenerator(robot,routeToGoal);
+        while (routeToGoal.size() != 0){
+            ArrayList<Ball> balls = imgRec.captureBalls();
+            try {
+                stabilizer.stabilizeBalls(balls);
+            } catch (TypeException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+                robot.updatePos(robotBalls.get(0), robotBalls.get(1));
+            } catch (BadDataException e) {
+                //throw new RuntimeException(e);
+            }
+            String command = commandGenerator.nextCommand(false);
+            if(command.contains("waypoint")){
+                routeToGoal.clear();
+            }
+            out.println(command);
+        }
+        out.println(StandardSettings.DROP_OFF_COMMAND);
+        wait(500);
+        /**
+         * -------------
+         * heat 3
+         * -------------
+         */
+        for (int j = 0; j < ballsHeat3.size(); j++){
+            //finde route from robot to ball
+            ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
+            ballsToAvoid.remove(ballsHeat3.get(j));
+            if(ballsHeat3.size() == 3){
+                for (int i = 0; i < robot.getRoutes(3).size(); i++) {
+                    if(ballsHeat3.get(0) == robot.getRoutes(3).get(i).getEnd()){
+                        //routToBall = robot.getRoutes(1).get(i).getWaypoints();
+                        try {
+                            Vector2Dv1 targetWaypoint;
+                            if(ballsHeat3.get(j).getPlacement() == Ball.Placement.FREE){
+                                targetWaypoint = ballsHeat3.get(j).getPosVector();
+                            } else {
+                                targetWaypoint = ballsHeat3.get(j).getPickUpPoint();
+                            }
+                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
+
+                        } catch (NoRouteException e) {
+                            throw new RuntimeException(e);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                        routToBall = waypointGenerator.waypointRoute.getRoute();
+                        if(ballsHeat3.get(j).getPlacement() != Ball.Placement.FREE){
+                            routToBall.add(ballsHeat3.get(j).getLineUpPoint());
+                        }
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < lastBall.getRoutes().size(); i++) {
+                    if(lastBall.getRoutes().get(i).getEnd() == ballsHeat3.get(j)){
+                        //routToBall = lastBall.getRoutes().get(i).getWaypoints();
+                        try {
+                            Vector2Dv1 targetWaypoint;
+                            if(ballsHeat3.get(j).getPlacement() == Ball.Placement.FREE){
+                                targetWaypoint = ballsHeat3.get(j).getPosVector();
+                            } else {
+                                targetWaypoint = ballsHeat3.get(j).getPickUpPoint();
+                            }
+                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
+                        } catch (NoRouteException e) {
+                            throw new RuntimeException(e);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                        routToBall = waypointGenerator.waypointRoute.getRoute();
+                        if(ballsHeat3.get(j).getPlacement() != Ball.Placement.FREE){
+                            routToBall.add(ballsHeat3.get(j).getLineUpPoint());
+                        }
+                        break;
+                    }
+                }
+
+            }
+            //run to ball
+            commandGenerator = new CommandGenerator(robot,routToBall);
+            boolean isBallNotWaypoint;
+            if(ballsHeat3.get(j).getPlacement() == Ball.Placement.FREE){
+                isBallNotWaypoint = true;
+            } else {
+                isBallNotWaypoint = false;
+            }
+            while (routToBall.size() != 0){
+                ArrayList<Ball> balls = imgRec.captureBalls();
+                try {
+                    stabilizer.stabilizeBalls(balls);
+                } catch (TypeException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+                    robot.updatePos(robotBalls.get(0), robotBalls.get(1));
+                } catch (BadDataException e) {
+                    //throw new RuntimeException(e);
+                }
+                String command = commandGenerator.nextCommand(isBallNotWaypoint);
+                if(command.contains("ball") || command.contains("waypoint")){
+                    out.println("stop -d -t");
+                    routToBall.clear();
+                } else {
+                    out.println(command);
+                }
+            }
+            //collect
+            switch (ballsHeat3.get(j).getPlacement()){
+                case FREE:
+                    out.println(StandardSettings.COLLECT_COMMAND);
+                    wait(500);
+                    break;
+                case EDGE:
+                    out.println(StandardSettings.COLLECT_EDGE_COMMAND);
+                    wait(500);
+                    break;
+                case CORNER:
+                    out.println(StandardSettings.COLLECT_CORNER_COMMAND);
+                    wait(500);
+                    break;
+                default:
+                    out.println("stop -t -d");
+                    wait(500);
+                    break;
+            }
+            lastBall = ballsHeat3.get(j);
 
         }
         //go to goal and do a drop-off
@@ -813,6 +969,7 @@ public class RoutePlanerFaseTwo {
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
+
 
     /**
      * Pauses the execution for the specified number of milliseconds.
