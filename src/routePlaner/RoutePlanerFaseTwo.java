@@ -557,6 +557,11 @@ public class RoutePlanerFaseTwo {
         //ballsToAvoid.addAll(ballsHeat3);
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
+        /**
+         * -------------
+         * heat 1
+         * -------------
+         */
         for (int j = 0; j < ballsHeat1.size(); j++){
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
@@ -659,8 +664,11 @@ public class RoutePlanerFaseTwo {
         }
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
-
-        //heat 2
+        /**
+         * -------------
+         * heat 2
+         * -------------
+         */
         for (int j = 0; j < ballsHeat2.size(); j++){
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
@@ -670,13 +678,23 @@ public class RoutePlanerFaseTwo {
                     if(ballsHeat2.get(0) == robot.getRoutes(1).get(i).getEnd()){
                         //routToBall = robot.getRoutes(1).get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat2.get(j).getPosVector(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+                            Vector2Dv1 targetWaypoint;
+                            if(ballsHeat2.get(j).getPlacement() == Ball.Placement.FREE){
+                                targetWaypoint = ballsHeat2.get(j).getPosVector();
+                            } else {
+                                targetWaypoint = ballsHeat2.get(j).getLineUpPoint();
+                            }
+                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
+
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        if(ballsHeat2.get(j).getPlacement() != Ball.Placement.FREE){
+                            routToBall.add(ballsHeat2.get(j).getPickUpPoint());
+                        }
                         break;
                     }
                 }
@@ -685,13 +703,22 @@ public class RoutePlanerFaseTwo {
                     if(lastBall.getRoutes().get(i).getEnd() == ballsHeat2.get(0)){
                         //routToBall = lastBall.getRoutes().get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat2.get(j).getPosVector(),lastBall.getPosVector(),cross, boundry, ballsToAvoid);
+                            Vector2Dv1 targetWaypoint;
+                            if(ballsHeat2.get(j).getPlacement() == Ball.Placement.FREE){
+                                targetWaypoint = ballsHeat2.get(j).getPosVector();
+                            } else {
+                                targetWaypoint = ballsHeat2.get(j).getLineUpPoint();
+                            }
+                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        if(ballsHeat2.get(j).getPlacement() != Ball.Placement.FREE){
+                            routToBall.add(ballsHeat2.get(j).getPickUpPoint());
+                        }
                         break;
                     }
                 }
@@ -725,8 +752,18 @@ public class RoutePlanerFaseTwo {
                     out.println(StandardSettings.COLLECT_COMMAND);
                     wait(500);
                     break;
+                case EDGE:
+                    out.println(StandardSettings.COLLECT_EDGE_COMMAND);
+                    wait(500);
+                    break;
+                case CORNER:
+                    out.println(StandardSettings.COLLECT_CORNER_COMMAND);
+                    wait(500);
+                    break;
                 default:
                     out.println("stop -t -d");
+                    wait(500);
+                    break;
             }
             lastBall = ballsHeat2.get(0);
 

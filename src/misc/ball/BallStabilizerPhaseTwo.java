@@ -19,6 +19,8 @@ public class BallStabilizerPhaseTwo {
     private ArrayList<Ball> balls;
     private int nextId;
 
+    private BallPrecision ballPrecision = new BallPrecision();
+
 
 
     public BallStabilizerPhaseTwo(){
@@ -54,6 +56,12 @@ public class BallStabilizerPhaseTwo {
 
     private void stabilizeBall(Ball ball) throws TypeException {
         BallClassifierPhaseTwo.classify(ball);
+        if(ball.status == PrimitiveBall.Status.ROBOT){
+            ballPrecision.CompensateRobot(ball);
+        }
+        else {
+            ballPrecision.CompensateBall(ball);
+        }
         addBallToBalls(ball);
         return;
         /*
