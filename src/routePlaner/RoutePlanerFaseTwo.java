@@ -216,12 +216,12 @@ public class RoutePlanerFaseTwo {
             if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))){
                 //ball to goal
                 if(b.getGoalRoute() == null){
-                    Route goal = new Route(b.getPosVector());
+                    Route goal = new Route(b.getLineUpPoint());
                     goal.setEnd(goalFakeBall);
                     ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
                     btaGoal.remove(b);
 
-                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPosVector(), cross, boundry, btaGoal).waypointRoute;
+                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getLineUpPoint(), cross, boundry, btaGoal).waypointRoute;
                     goal.setScore(wrgoal.getCost());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
@@ -232,19 +232,19 @@ public class RoutePlanerFaseTwo {
                 robotRoute.setEnd(b);
                 ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
                 btaRobot.remove(b);
-                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getPosVector(), robotPos, cross, boundry, btaRobot).waypointRoute;
+                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getLineUpPoint(), robotPos, cross, boundry, btaRobot).waypointRoute;
                 robotRoute.setScore(wrRobot.getCost());
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
                 for (Ball b2: innerBalls) {
                     if(!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
-                        Route r1 = new Route(b.getPosVector());
+                        Route r1 = new Route(b.getLineUpPoint());
                         r1.setEnd(b2);
                         ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
                         bta.remove(b);
                         bta.remove(b2);
-                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getPosVector(), b.getPosVector(), cross, boundry, bta).waypointRoute;
+                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getLineUpPoint(), b.getLineUpPoint(), cross, boundry, bta).waypointRoute;
                         r1.setScore(wr.getCost());
                         ArrayList<Vector2Dv1> waypoints = wr.getRoute();
                         r1.setWaypoints(waypoints);
@@ -255,7 +255,7 @@ public class RoutePlanerFaseTwo {
                         for (int i = waypoints.size()-1; i > 0; i--) {
                             r2Waypoints.add(waypoints.get(i));
                         }
-                        r2Waypoints.add(b.getPosVector());
+                        r2Waypoints.add(b.getLineUpPoint());
                         r2.setScore(r1.getScore());
                         r2.setWaypoints(r2Waypoints);
                         b2.addRoute(r2);
@@ -504,7 +504,7 @@ public class RoutePlanerFaseTwo {
         Vector2Dv1 corner1 = new Vector2Dv1(boundry.points.get(index1));
         Vector2Dv1 corner2 = new Vector2Dv1(boundry.points.get(index2));
         Vector2Dv1 midVector = corner1.getMidVector(corner2);
-        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy((Math.PI/2)*(-1));
+        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy((Math.PI/2));
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
         goalFakeBall = new Ball(goalWaypoint0);
@@ -571,7 +571,7 @@ public class RoutePlanerFaseTwo {
                     if(ballsHeat1.get(0) == robot.getRoutes(1).get(i).getEnd()){
                         //routToBall = robot.getRoutes(1).get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getPosVector(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getLineUpPoint(),robot.getPosVector(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
@@ -586,7 +586,7 @@ public class RoutePlanerFaseTwo {
                     if(lastBall.getRoutes().get(i).getEnd() == ballsHeat1.get(0)){
                         //routToBall = lastBall.getRoutes().get(i).getWaypoints();
                         try {
-                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getPosVector(),lastBall.getPosVector(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(ballsHeat1.get(j).getLineUpPoint(),lastBall.getLineUpPoint(),cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
@@ -600,6 +600,12 @@ public class RoutePlanerFaseTwo {
             }
             //run to ball
             CommandGenerator commandGenerator = new CommandGenerator(robot,routToBall);
+            boolean isBallNotWaypoint;
+            if(ballsHeat1.get(j).getPlacement() == Ball.Placement.FREE){
+                isBallNotWaypoint = true;
+            } else {
+                isBallNotWaypoint = false;
+            }
             while (routToBall.size() != 0){
                 ArrayList<Ball> balls = imgRec.captureBalls();
                 try {
@@ -613,7 +619,7 @@ public class RoutePlanerFaseTwo {
                 } catch (BadDataException e) {
                     //throw new RuntimeException(e);
                 }
-                String command = commandGenerator.nextCommand(true);
+                String command = commandGenerator.nextCommand(isBallNotWaypoint);
                 if(command.contains("ball")){
                     out.println("stop -d -t");
                     routToBall.clear();
@@ -634,7 +640,7 @@ public class RoutePlanerFaseTwo {
         }
         //go to goal and do a drop-off
         try {
-            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),lastBall.getLineUpPoint(),cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
@@ -726,6 +732,12 @@ public class RoutePlanerFaseTwo {
             }
             //run to ball
             commandGenerator = new CommandGenerator(robot,routToBall);
+            boolean isBallNotWaypoint;
+            if(ballsHeat2.get(j).getPlacement() == Ball.Placement.FREE){
+                isBallNotWaypoint = true;
+            } else {
+                isBallNotWaypoint = false;
+            }
             while (routToBall.size() != 0){
                 ArrayList<Ball> balls = imgRec.captureBalls();
                 try {
@@ -739,8 +751,8 @@ public class RoutePlanerFaseTwo {
                 } catch (BadDataException e) {
                     //throw new RuntimeException(e);
                 }
-                String command = commandGenerator.nextCommand(true);
-                if(command.contains("ball")){
+                String command = commandGenerator.nextCommand(isBallNotWaypoint);
+                if(command.contains("ball") || command.contains("waypoint")){
                     out.println("stop -d -t");
                     routToBall.clear();
                 }

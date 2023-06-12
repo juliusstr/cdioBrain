@@ -1,5 +1,7 @@
 package misc;
 
+import Client.StandardSettings;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -51,7 +53,7 @@ public class Boundry {
         //todo add scale avg to C-D and y axis
         //scale = 1800/a.distance(b);
 
-        a.x *= scale;
+        /*a.x *= scale;
         a.y *= scale;
         b.x *= scale;
         b.y *= scale;
@@ -59,6 +61,7 @@ public class Boundry {
         c.y *= scale;
         d.x *= scale;
         d.y *= scale;
+         */
 
         points = new ArrayList<>();
 
