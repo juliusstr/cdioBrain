@@ -47,6 +47,7 @@ public class ImageClick {
             imageBuffered = null;
         }
         icon = new ImageIcon(imageBuffered);
+        run();
     }
     public void run() {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);

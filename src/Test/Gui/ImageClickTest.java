@@ -26,7 +26,6 @@ public class ImageClickTest {
         Mat mat = imageIconToMat(tImage);
 
         ImageClick test = new ImageClick(4, mat, "Test", testArray);
-        test.run();
         while(testArray.size() < 4){
             try {
                 Thread.sleep(1000);
