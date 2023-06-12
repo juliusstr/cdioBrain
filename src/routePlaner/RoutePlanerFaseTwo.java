@@ -28,7 +28,7 @@ public class RoutePlanerFaseTwo {
     private ArrayList<Ball> balls = null;
     public ArrayList<Ball> ballsHeat1 = null;
     public ArrayList<Ball> ballsHeat2 = null;
-    private ArrayList<Ball> ballsHeat3 = null;
+    public ArrayList<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
     Cross cross;
@@ -38,14 +38,28 @@ public class RoutePlanerFaseTwo {
     private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
     private Vector2Dv1 goalWaypoint1;
 
-
+    /**
+     * Sets the boundary for the route planner.
+     *
+     * @param b The boundary to set.
+     */
     public void setBoundry(Boundry b){
         this.boundry = b;
     }
+    /**
+     * Sets the cross for the route planner.
+     *
+     * @param c The cross to set.
+     */
     public void setCross(Cross c){
         this.cross = c;
     }
-
+    /**
+     * Gets the goal waypoint for the specified index.
+     *
+     * @param i The index of the goal waypoint.
+     * @return The goal waypoint vector.
+     */
     public Vector2Dv1 getGoalWaypoint(int i){
         switch (i){
             case 0:
@@ -55,14 +69,30 @@ public class RoutePlanerFaseTwo {
         }
         return null;
     }
+    /**
+     * Gets the list of balls.
+     *
+     * @return The list of balls.
+     */
     public ArrayList<Ball> getBalls() {
         return balls;
     }
-
+    /**
+     * Sets the list of balls.
+     *
+     * @param balls The list of balls to set.
+     */
     public void setBalls(ArrayList<Ball> balls) {
         this.balls = balls;
     }
-
+    /**
+     * Initializes a new instance of the RoutePlanerFaseTwo class.
+     *
+     * @param r       The robot for the route planner.
+     * @param b       The list of balls for the route planner.
+     * @param boundry The boundary for the route planner.
+     * @param c       The cross for the route planner.
+     */
     public RoutePlanerFaseTwo(Robotv1 r, ArrayList<Ball> b, Boundry boundry, Cross c) {
         balls = (ArrayList<Ball>) b.clone();
         robot = r;
@@ -72,7 +102,9 @@ public class RoutePlanerFaseTwo {
     }
 
     /**
-     *
+     * Calculates the heats for the balls.
+     * This method calculates the routes for three different heats based on the balls' positions.
+     * The calculated heats are stored in separate lists.
      */
     public void getHeats(){
         //heat 1
@@ -151,6 +183,16 @@ public class RoutePlanerFaseTwo {
         }*/
     }
 
+    /**
+     * Calculates the routes for the balls based on the given parameters.
+     *
+     * @param difficultBalls Indicates whether to consider difficult balls or not.
+     * @param minAmount      The minimum amount of free balls required.
+     * @param orange         Indicates whether to consider orange balls or not.
+     * @param robotPos       The position of the robot.
+     * @throws NoRouteException   If no route is found.
+     * @throws TimeoutException   If the calculation exceeds the time limit.
+     */
     private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
         ArrayList<Ball> usedBalls = new ArrayList<>();
 
@@ -219,6 +261,12 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
+    /**
+     * Generates a heat 1 configuration by finding the best combination of balls based on scores.
+     *
+     * @param ball_list The list of balls to generate the configuration from.
+     * @return An ArrayList containing the best combination of balls for the heat 1 configuration.
+     */
     public ArrayList<Ball> heat1Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
@@ -281,6 +329,12 @@ public class RoutePlanerFaseTwo {
         return best_heat;
     }
 
+    /**
+     * Generates a heat 2 configuration by finding the best combination of balls based on scores.
+     *
+     * @param ball_list The list of balls to generate the configuration from.
+     * @return An ArrayList containing the best combination of balls for the heat 2 configuration.
+     */
     public ArrayList<Ball> heat2Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
@@ -330,6 +384,12 @@ public class RoutePlanerFaseTwo {
         return best_heat;
     }
 
+    /**
+     * Generates a heat 3 configuration by finding the best combination of balls based on scores.
+     *
+     * @param ball_list The list of balls to generate the configuration from.
+     * @return An ArrayList containing the best combination of balls for the heat 3 configuration.
+     */
     public ArrayList<Ball> heat3Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
@@ -371,6 +431,11 @@ public class RoutePlanerFaseTwo {
         return best_heat;
     }
 
+    /**
+     * Initializes the goal waypoints used for navigation.
+     * Calculates the coordinates of two goal waypoints based on the boundary points.
+     * Sets the goalWaypoint0, goalWaypoint1, and goalFakeBall variables.
+     */
     public void initGoalWaypoints(){
         int index1 = -1, index2 = -1;
         int minX = Integer.MAX_VALUE;
@@ -396,14 +461,45 @@ public class RoutePlanerFaseTwo {
         goalFakeBall = new Ball(goalWaypoint0);
     }
 
+    /**
+     * Returns the goal waypoint 0.
+     *
+     * @return The goal waypoint 0 as a Vector2Dv1 object.
+     */
     public Vector2Dv1 getGoalWaypoint0() {
         return goalWaypoint0;
     }
 
+    /**
+     * Returns the goal waypoint 1.
+     *
+     * @return The goal waypoint 1 as a Vector2Dv1 object.
+     */
     public Vector2Dv1 getGoalWaypoint1() {
         return goalWaypoint1;
     }
 
+    /**
+     * Executes the main run logic for the robot.
+     * Performs the following steps:
+     * 1. Prints the heats information.
+     * 2. Prepares a list of balls to avoid during navigation.
+     * 3. Iterates over the heat1 balls and performs the following sub-steps:
+     *    a. Finds the route from the robot to the ball.
+     *    b. Runs to the ball using waypoint navigation and captures ball images.
+     *    c. Collects the ball if it is in a free placement.
+     *    d. Updates the lastBall variable.
+     * 4. Navigates to the goal and performs a drop-off.
+     * 5. Iterates over the heat2 balls and performs the same sub-steps as in step 3.
+     * 6. Navigates to the goal again and performs a drop-off.
+     * 7. Iterates over the heat3 balls and performs the same sub-steps as in step 3.
+     * 8. Navigates to the goal again and performs a drop-off.
+     *
+     * @param out         PrintWriter object for sending commands.
+     * @param in          BufferedReader object for receiving responses.
+     * @param imgRec      ImgRecFaseTwo object for capturing ball images.
+     * @param stabilizer  BallStabilizerPhaseTwo object for stabilizing balls.
+     */
     public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer){
         System.out.println("heats : " + ballsHeat1);
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
@@ -620,7 +716,11 @@ public class RoutePlanerFaseTwo {
         wait(500);
     }
 
-
+    /**
+     * Pauses the execution for the specified number of milliseconds.
+     *
+     * @param millis  The number of milliseconds to wait.
+     */
     private void wait(int millis){
         try {
             Thread.sleep(millis);
