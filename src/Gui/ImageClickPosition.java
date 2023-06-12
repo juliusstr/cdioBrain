@@ -15,11 +15,11 @@ public class ImageClickPosition {
 
     private static int amount = -1;
 
-    private static Image image = null;
+    private static ImageIcon image = null;
 
     private static String title = "";
 
-    public ImageClickPosition(int amount, Image image, String title, ArrayList<Vector2Dv1> pos){
+    public ImageClickPosition(int amount, ImageIcon image, String title, ArrayList<Vector2Dv1> pos){
         this.pos = pos;
         this.amount = amount;
         this.image = image;
@@ -34,8 +34,8 @@ public class ImageClickPosition {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Load an image
-        Image imageIcon = image;
-        JLabel imageLabel = new JLabel((Icon) imageIcon);
+        ImageIcon imageIcon = image;
+        JLabel imageLabel = new JLabel(imageIcon);
 
         // Create a custom mouse adapter to handle mouse click events
         MouseAdapter mouseAdapter = new MouseAdapter() {
