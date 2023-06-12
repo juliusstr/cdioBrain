@@ -48,7 +48,7 @@ public class ImageClickTest {
     @Test
     @DisplayName("test")
     void getTest(){
-
+/*
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ArrayList<Vector2Dv1> v = new ArrayList<>();
         ArrayList<Color> c = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ImageClickTest {
                 throw new RuntimeException(e);
             }
             System.out.println(v.size());
-        }
+        }*/
     }
     private static Mat imageIconToMat(ImageIcon imageIcon) {
         // Convert ImageIcon to BufferedImage

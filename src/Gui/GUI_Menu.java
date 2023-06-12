@@ -56,6 +56,9 @@ public class GUI_Menu {
 
         //Buttons
         JButton jButton1 = new JButton("Choose corners Button");
+        JButton jButton2 = new JButton("Choose Cross Button");
+        JButton jButton3 = new JButton("Choose Balls Button");
+        JButton jButton4 = new JButton("Choose Robot color Button");
 
         //add labels
         jPanel.add(labelCorners);
@@ -72,24 +75,15 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 boundryPos.clear();
-                new ImageClick(4, image, "Choose boundry corners", boundryPos, c);
+                new ImageClick(4, image, "Choose boundry corners", boundryPos, c, jTableCorner, false);
             }
         });
-        jButton1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ArrayList<Color> c = new ArrayList<>();
-                boundryPos.clear();
-                new ImageClick(4, image, "Choose boundry corners", boundryPos, c);
-            }
-        });
-        /*
         jButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 crossPos.clear();
-                new ImageClick(4, image, "Choose Cross", crossPos, c);
+                new ImageClick(4, image, "Choose Cross", crossPos, c, jTableCorner, false);
             }
         });
         jButton3.addActionListener(new ActionListener() {
@@ -97,7 +91,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 balls.clear();
-                new ImageClick(4, image, "Choose balls(orange first)", balls, c);
+                new ImageClick(4, image, "Choose balls(orange first)", balls, c, jTableCorner, false);
             }
         });
         jButton4.addActionListener(new ActionListener() {
@@ -105,9 +99,9 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Vector2Dv1> v = new ArrayList<>();
                 robotColor.clear();
-                new ImageClick(4, image, "Choose robot colors", v, robotColor);
+                new ImageClick(4, image, "Choose robot colors", v, robotColor, jTableCorner, false);
             }
-        });*/
+        });
         //Show jFrame
         jFrame.add(jPanel);
 

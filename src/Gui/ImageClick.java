@@ -27,11 +27,17 @@ public class ImageClick {
 
     private static String title = "";
 
-    public ImageClick(int amount, Mat mat, String title, ArrayList<Vector2Dv1> v, ArrayList<Color> c){
+    private static JTable jt = null;
+
+    private static Boolean colorbool = false;
+
+    public ImageClick(int amount, Mat mat, String title, ArrayList<Vector2Dv1> v, ArrayList<Color> c, JTable jt, Boolean color){
         this.pos = v;
         this.color = c;
         this.amount = amount;
         this.title = title;
+        this.jt = jt;
+        this.colorbool = color;
         // Convert Mat to MatOfByte
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", mat, matOfByte);
@@ -76,6 +82,21 @@ public class ImageClick {
                 //System.out.println("Clicked at position: (" + x + ", " + y + ")");
                 amount--;
                 if(amount == 0){
+                    int i = 0;
+                    if(colorbool){
+                        for (Color c: color) {
+                            jt.getModel().setValueAt(String.valueOf(c.getRed()), i, 1);
+                            jt.getModel().setValueAt(String.valueOf(c.getGreen()), i, 2);
+                            jt.getModel().setValueAt(String.valueOf(c.getBlue()), i, 3);
+                            i++;
+                        }
+                    } else {
+                        for (Vector2Dv1 v: pos) {
+                            jt.getModel().setValueAt(String.valueOf(v.x),i,1);
+                            jt.getModel().setValueAt(String.valueOf(v.y),i,2);
+                            i++;
+                        }
+                    }
                     frame.dispose();
                 }
             }
