@@ -94,7 +94,10 @@ public class MainClient {
         gd.boundryLength = 161;
         gd.crossLength = 1;
         gd.robotLength = 1;
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd);
+        ArrayList<Vector2Dv1> caliGUI = new ArrayList<>();
+        caliGUI.add(new Vector2Dv1(1,1));
+        caliGUI.add(new Vector2Dv1(1,1));
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();

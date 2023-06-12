@@ -31,10 +31,31 @@ public class ImageClickTest {
         boundryConorsGUI.add(new Vector2Dv1(1,1));
         boundryConorsGUI.add(new Vector2Dv1(1,1));
         ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
+        crossPosGUI.add(new Vector2Dv1(1,1));
+        crossPosGUI.add(new Vector2Dv1(1,1));
+        crossPosGUI.add(new Vector2Dv1(1,1));
+        crossPosGUI.add(new Vector2Dv1(1,1));
         ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
+        ballsGUI.add(new Vector2Dv1(1,1));
         ArrayList<Color> robotColorsGUI = new ArrayList<>();
+        robotColorsGUI.add(Color.BLACK);
+        robotColorsGUI.add(Color.GREEN);
         GuiData gd = new GuiData();
-        new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd);
+
+        ArrayList<Vector2Dv1> caliGUI = new ArrayList<>();
+        caliGUI.add(new Vector2Dv1(1,1));
+        caliGUI.add(new Vector2Dv1(1,1));
+        new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd,caliGUI);
         while(boundryConorsGUI.size() < 5){
             try {
                 Thread.sleep(100000);
