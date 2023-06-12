@@ -261,6 +261,8 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
+    ///TODO: use difficult balls after free balls
+
     /**
      * Generates a heat 1 configuration by finding the best combination of balls based on scores.
      *
