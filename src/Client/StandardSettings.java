@@ -45,7 +45,7 @@ public class StandardSettings {
      * RoutPlanerPhaseTwo
      * -----------------------------
      */
-    public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 80;
+    public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 75;
     public static final int ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP = 30;
 
     /**
