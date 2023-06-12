@@ -107,6 +107,7 @@ public class RoutePlanerFaseTwo {
      * The calculated heats are stored in separate lists.
      */
     public void getHeats(){
+        int heat = 2;
         //heat 1
         try {
             ballRoutes(false, 4, true, robot.getPosVector());
@@ -129,6 +130,8 @@ public class RoutePlanerFaseTwo {
         for (Ball b: ballsHeat1) {
             balls.remove(b);
         }
+        if(heat < 2)
+            return;
         for (Ball b: balls) {
             b.setRoutes(new ArrayList<>());
             b.setGoalRoute(null);
@@ -154,7 +157,9 @@ public class RoutePlanerFaseTwo {
         ballsHeat2 = heat2Generator(ballsHeat2);
         for (Ball b: ballsHeat2) {
             balls.remove(b);
-        }/*
+        }
+        if(heat < 3)
+            return;
         for (Ball b: balls) {
             b.setRoutes(new ArrayList<>());
             b.setGoalRoute(null);
@@ -180,7 +185,7 @@ public class RoutePlanerFaseTwo {
         ballsHeat3 = heat3Generator(ballsHeat3);
         for (Ball b: ballsHeat3) {
             balls.remove(b);
-        }*/
+        }
     }
 
     /**
@@ -261,8 +266,6 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
-    ///TODO: use difficult balls after free balls
-
     /**
      * Generates a heat 1 configuration by finding the best combination of balls based on scores.
      *
@@ -290,7 +293,17 @@ public class RoutePlanerFaseTwo {
             }
             ball_list.remove(orangeBall);
         }
+        Boolean difficult = false;
+        int iDiff = 0;
+        for (Ball b: ball_list) {
+            if(b.getPlacement() == Ball.Placement.FREE)
+                iDiff++;
+        }
+        if(iDiff < 3)
+            difficult = true;
         for (Ball b1: ball_list) {
+            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+                continue;
             // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(1)) {
                 if(rRobot.getEnd() == b1){
@@ -300,11 +313,15 @@ public class RoutePlanerFaseTwo {
             }
             for (Route r2 :b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
+                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                    continue;
                 if(b2 == b1 || b2 == orangeBall)
                     continue;
                 score2 = r2.getScore();
                 for (Route r3: b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
+                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                        continue;
                     if(b3 == b2 || b3 == b1 || b3 == orangeBall)
                         continue;
                     temp_score = score1 + score2;
@@ -347,7 +364,17 @@ public class RoutePlanerFaseTwo {
         double score3 = 0;
         double temp_score = 0;
         double best_score = -1;
+        Boolean difficult = false;
+        int iDiff = 0;
+        for (Ball b: ball_list) {
+            if(b.getPlacement() == Ball.Placement.FREE)
+                iDiff++;
+        }
+        if(iDiff < 4)
+            difficult = true;
         for (Ball b1: ball_list) {
+            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+                continue;
             // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(2)) {
                 if(rRobot.getEnd() == b1){
@@ -357,16 +384,22 @@ public class RoutePlanerFaseTwo {
             }
             for (Route r2 :b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
+                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                    continue;
                 if(b2 == b1)
                     continue;
                 score2 = r2.getScore();
                 for (Route r3: b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
+                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                        continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
                     score3 = r3.getScore();
                     for (Route r4: b3.getRoutes()) {
                         Ball b4 = r4.getEnd();
+                        if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
+                            continue;
                         if(b4 == b3 || b4 == b2 || b4 == b1)
                             continue;
                         temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
@@ -401,7 +434,17 @@ public class RoutePlanerFaseTwo {
         double score2 = 0;
         double temp_score = 0;
         double best_score = -1;
+        Boolean difficult = false;
+        int iDiff = 0;
+        for (Ball b: ball_list) {
+            if(b.getPlacement() == Ball.Placement.FREE)
+                iDiff++;
+        }
+        if(iDiff < 4)
+            difficult = true;
         for (Ball b1: ball_list) {
+            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+                continue;
             // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(3)) {
                 if(rRobot.getEnd() == b1){
@@ -411,11 +454,15 @@ public class RoutePlanerFaseTwo {
             }
             for (Route r2 :b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
+                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                    continue;
                 if(b2 == b1)
                     continue;
                 score2 = r2.getScore();
                 for (Route r3: b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
+                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                        continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
                     temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();

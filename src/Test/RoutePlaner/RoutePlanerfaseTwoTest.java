@@ -289,11 +289,6 @@ public class RoutePlanerfaseTwoTest {
         for (Ball b: best_route) {
             System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
         }
-        best_route = hg.ballsHeat3;
-        System.out.println(simulationRobot.getRoutes(3).size());
-        for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
-        }
 
 
     }
@@ -316,10 +311,10 @@ public class RoutePlanerfaseTwoTest {
         Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
         Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
 
-        ball1.setPlacement(Ball.Placement.FREE);
-        ball2.setPlacement(Ball.Placement.FREE);
-        ball3.setPlacement(Ball.Placement.FREE);
-        ball4.setPlacement(Ball.Placement.FREE);
+        ball1.setPlacement(Ball.Placement.CORNER);
+        ball2.setPlacement(Ball.Placement.CORNER);
+        ball3.setPlacement(Ball.Placement.CORNER);
+        ball4.setPlacement(Ball.Placement.CORNER);
         ball5.setPlacement(Ball.Placement.FREE);
         ball6.setPlacement(Ball.Placement.FREE);
         ball7.setPlacement(Ball.Placement.FREE);
@@ -327,6 +322,18 @@ public class RoutePlanerfaseTwoTest {
         ball9.setPlacement(Ball.Placement.FREE);
         ball10.setPlacement(Ball.Placement.FREE);
         ball11.setPlacement(Ball.Placement.FREE);
+
+        ball1.setId(1);
+        ball2.setId(2);
+        ball3.setId(3);
+        ball4.setId(4);
+        ball5.setId(5);
+        ball6.setId(6);
+        ball7.setId(7);
+        ball8.setId(8);
+        ball9.setId(9);
+        ball10.setId(10);
+        ball11.setId(11);
 
         ArrayList<Ball> ball_list = new ArrayList<>();
         ball_list.add(ball1);
@@ -346,14 +353,19 @@ public class RoutePlanerfaseTwoTest {
 
         hg.getHeats();
         best_route = hg.ballsHeat1;
-        System.out.println(simulationRobot.getRoutes(1).size());
+        System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());
         for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
         }
         best_route = hg.ballsHeat2;
-        System.out.println(simulationRobot.getRoutes(2).size());
+        System.out.println("-----------------" + "\n Heat 2 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(2).size());
         for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+        }
+        best_route = hg.ballsHeat3;
+        System.out.println("-----------------" + "\n Heat 3 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(3).size());
+        for (Ball b: best_route) {
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
         }
 
 
