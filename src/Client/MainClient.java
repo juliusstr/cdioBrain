@@ -45,6 +45,10 @@ public class MainClient {
         //vars for GUI
         Mat m = imgRec.getFrame();
         ArrayList<Vector2Dv1> boundryConorsGUI = new ArrayList<>();
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
         ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
         ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
         ArrayList<Color> robotColorsGUI = new ArrayList<>();

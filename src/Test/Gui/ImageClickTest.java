@@ -26,14 +26,18 @@ public class ImageClickTest {
         ImageIcon tImage = new ImageIcon("C:\\Users\\John\\Desktop\\input1.jpg");
         Mat mat = imageIconToMat(tImage);
         ArrayList<Vector2Dv1> boundryConorsGUI = new ArrayList<>();
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
+        boundryConorsGUI.add(new Vector2Dv1(1,1));
         ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
         ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
         ArrayList<Color> robotColorsGUI = new ArrayList<>();
         GuiData gd = new GuiData();
         new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd);
-        while(boundryConorsGUI.size() < 4){
+        while(boundryConorsGUI.size() < 5){
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

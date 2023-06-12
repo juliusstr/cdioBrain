@@ -46,38 +46,22 @@ public class GUI_Menu {
         jPanel.setLayout(new GridLayout(5,1));
 
         //Labels
-        //JLabel labelCorners = new JLabel("Corner calibrate to", SwingConstants.LEFT);
+        JLabel labelCorners = new JLabel("Corner calibrate to", SwingConstants.LEFT);
 
         // Tables
         String[][] data = getCornerInfo();
         String[] columnNames = {"Corner","X position","Y position"};
         JTable jTableCorner = new JTable(data,columnNames);
-        //jTableCorner.setSize(400,400);
-
         JScrollPane sp=new JScrollPane(jTableCorner);
-        //System.out.println(jTableCorner.getColumnName(0));
-        //System.out.println(sp.getColumnHeader());
-        //sp.setViewportView(jTableCorner);
-        //jPanel.add(sp);
-        jFrame.add(sp);
-
-
-
 
         //Buttons
         JButton jButton1 = new JButton("Choose corners Button");
-        //jButton1.setBounds(50,100,95,30);
-
-
 
         //add labels
-        //jPanel.add(labelCorners);
-
-        jPanel.add(jTableCorner);
+        jPanel.add(labelCorners);
+        jPanel.add(sp);
 
         //add buttons
-        //jButton1.setVerticalAlignment(JButton.CENTER);
-        //jFrame.add(jButton1);
         jPanel.add(jButton1);
 
 
@@ -90,7 +74,16 @@ public class GUI_Menu {
                 boundryPos.clear();
                 new ImageClick(4, image, "Choose boundry corners", boundryPos, c);
             }
-        });/*
+        });
+        jButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Color> c = new ArrayList<>();
+                boundryPos.clear();
+                new ImageClick(4, image, "Choose boundry corners", boundryPos, c);
+            }
+        });
+        /*
         jButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,10 +119,10 @@ public class GUI_Menu {
 
     public static String[][] getCornerInfo(){
         String[][] data = {
-                {"Corner A","1","2"},
-                {"Corner B","3","4"},
-                {"Corner C","5","6"},
-                {"Corner D","7","8"}
+                {"Corner A",String.valueOf(boundryPos.get(0).x),String.valueOf(boundryPos.get(0).x)},
+                {"Corner B",String.valueOf(boundryPos.get(1).x),String.valueOf(boundryPos.get(1).x)},
+                {"Corner C",String.valueOf(boundryPos.get(2).x),String.valueOf(boundryPos.get(2).x)},
+                {"Corner D",String.valueOf(boundryPos.get(3).x),String.valueOf(boundryPos.get(3).x)}
         };
         return data;
     }
