@@ -215,6 +215,7 @@ public class RoutePlanerFaseTwo {
             usedBalls.add(b);
             if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))){
                 //ball to goal
+                /*
                 if(b.getGoalRoute() == null){
                     Route goal = new Route(b.getPosVector());
                     goal.setEnd(goalFakeBall);
@@ -226,7 +227,7 @@ public class RoutePlanerFaseTwo {
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
                     b.setGoalRoute(goal);
-                }
+                }*/
                 //ball to robot
                 Route robotRoute = new Route(robotPos);
                 robotRoute.setEnd(b);
@@ -266,6 +267,8 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
+    
+    /// TODO: Generate route to goal in HeatGenerators
     /**
      * Generates a heat 1 configuration by finding the best combination of balls based on scores.
      *
@@ -402,6 +405,7 @@ public class RoutePlanerFaseTwo {
                             continue;
                         if(b4 == b3 || b4 == b2 || b4 == b1)
                             continue;
+
                         temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
                         // Set best_heat and best_score
                         if(best_score < 0 || best_score > temp_score){
