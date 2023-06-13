@@ -18,6 +18,16 @@ public class Vector2Dv1 {
         set(v);
     }
 
+    public Vector2Dv1(Point p){
+        x = p.x;
+        y = p.y;
+    }
+
+    public Vector2Dv1(double angle){
+        x = Math.cos(angle);
+        y = Math.sin(angle);
+    }
+
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
@@ -30,6 +40,9 @@ public class Vector2Dv1 {
 
     public Point getPoint(){
         return new Point((int) Math.round(this.x), (int)Math.round(this.y));
+    }
+    public org.opencv.core.Point PointOpenCV(){
+        return new org.opencv.core.Point(this.x, this.y);
     }
 
     public void setZero() {
@@ -249,5 +262,21 @@ public class Vector2Dv1 {
     @Override
     public String toString() {
         return "Vector2d[" + x + ", " + y + "]";
+    }
+
+    public boolean samePos(Vector2Dv1 vector2Dv1) {
+        if(x == vector2Dv1.x){
+            if (y == vector2Dv1.y){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Vector2Dv1 getMidVector(Vector2Dv1 dir2) {
+        double x = this.x + dir2.x;
+        double y = this.y + dir2.y;
+        Vector2Dv1 v = new Vector2Dv1(x,y);
+        return v.getMultiplied(0.5);
     }
 }

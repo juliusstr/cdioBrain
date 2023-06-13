@@ -4,7 +4,6 @@ import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.*;
 import org.opencv.core.Point;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -69,7 +68,7 @@ public class ImgRecFaseOne {
             int b = (int) colorDoubleArray[0]; // blue value
             int g = (int) colorDoubleArray[1]; // green value
             int r = (int) colorDoubleArray[2]; // red value
-            balls.add(new Ball((int) center.x, (int) center.y, radius, new Color(r,g,b), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN));
+            balls.add(new Ball((int) center.x, (int) center.y, radius, new Color(r,g,b), true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN));
             Imgproc.circle(frame, center, radius, new Scalar(0, 0, 255), 2);
             Imgproc.circle(grayImage, center, radius, new Scalar(0, 0, 255), 2);
             //System.out.println("  x: " + center.x + "  y: " + center.y + "  color: " + new Color(r,g,b).toString());

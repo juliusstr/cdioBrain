@@ -1,7 +1,13 @@
 package misc;
 
+import Client.StandardSettings;
 import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
+import routePlaner.Route;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Robotv1 {
     private double xPos,
@@ -18,6 +24,41 @@ public class Robotv1 {
         angelSpeed = 0;
     }
 
+    private ArrayList<Route> heat1Routes = new ArrayList<>();
+    private ArrayList<Route> heat2Routes = new ArrayList<>();
+    private ArrayList<Route> heat3Routes = new ArrayList<>();
+
+    private int heatRouteNum = 1;
+
+    public void endHeatRoutes(){
+        heatRouteNum++;
+    }
+
+    public ArrayList<Route> getRoutes(int heat) {
+        switch (heat){
+            case 1:
+                return heat1Routes;
+            case 2:
+                return heat2Routes;
+            case 3:
+                return heat3Routes;
+        }
+        return null;
+    }
+
+    public void addRoute(Route r) {
+        switch (heatRouteNum){
+            case 1:
+                this.heat1Routes.add(r);
+            break;
+            case 2:
+                this.heat2Routes.add(r);
+            break;
+            case 3:
+                this.heat3Routes.add(r);
+            break;
+        }
+    }
 
     public double getxPos() {
         return xPos;
@@ -41,6 +82,10 @@ public class Robotv1 {
 
     public Vector2Dv1 getDirection() {
         return directionVector;
+    }
+
+    public Vector2Dv1 getPosVector(){
+        return new Vector2Dv1(xPos,yPos);
     }
 
     public void setDirection(Vector2Dv1 directionVector) {
@@ -76,4 +121,5 @@ public class Robotv1 {
         dir.subtract(new Vector2Dv1(back.getxPos(), back.getyPos()));
         setDirection(dir);
     }
+
 }

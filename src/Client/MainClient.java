@@ -12,7 +12,8 @@ import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.Core;
-import routePlaner.RoutePlanerFaseOne;
+import routePlaner.Route;
+import routePlaner.RoutePlanerFaseTwo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainClient {
 
@@ -34,80 +36,64 @@ public class MainClient {
         ImgRecFaseTwo imgRec = new ImgRecFaseTwo();
 
         ArrayList<Ball> balls = new ArrayList<>();
-        RoutePlanerFaseOne routePlanerFaseOne = new RoutePlanerFaseOne();
+        RoutePlanerFaseTwo routePlanerFaseTwo = null;
 
-        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.RED,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UKNOWN);
+        // init balls for robot, to not have exception..
+        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
 
         Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
-
-        routePlanerFaseOne.setRobot(robotv1);
-
-        Socket s = new Socket("192.168.1.102",6666);
-
-        System.err.println("Wating on server");
-        out = new PrintWriter(s.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        String greeting;
-        String respons = "NA";
-
         balls = imgRec.captureBalls();
         BallStabilizerPhaseTwo stabilizer = new BallStabilizerPhaseTwo();
-        routePlanerFaseOne.clearBalls();
         stabilizer.stabilizeBalls(balls);
-
-        ArrayList<Ball> roBall = new ArrayList<>();
+        ArrayList<Ball> robotBalls = new ArrayList<>();
+        ArrayList<Ball> routeBalls = new ArrayList<>();
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
+            System.out.println("balls1 = " + balls1);
             for (Ball ball : balls1) {
-                routePlanerFaseOne.addBallToList(ball);
+                BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
+                System.out.println(ball.toString());
+                routeBalls.add(ball);
             }
-            //roBall = stabilizer.getStabelRobotCirce();
+            //robotBalls = stabilizer.getStabelRobotCirce();
         } catch (NoDataException e) {
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
 
         }
-        roBall.add(initBall);
-        roBall.add(initBall2);
-
-        robotv1.updatePos(roBall.get(0), roBall.get(1));
-
-        routePlanerFaseOne.addBallToList(initBall);
-        routePlanerFaseOne.init();
-
-        do {
-            greeting = in.readLine();
-            if (greeting != null)
-                System.out.println("in: " + greeting);
-            if ("Got it".equals(greeting)) {
-
-                balls = imgRec.captureBalls();
-                stabilizer.stabilizeBalls(balls);
-                routePlanerFaseOne.clearBalls();
-
-                try {
-                    ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
-                    for (Ball ball : balls1) {
-                        routePlanerFaseOne.addBallToList(ball);
-                    }
-                    roBall = stabilizer.getStabelRobotCirce();
-                    robotv1.updatePos(roBall.get(0), roBall.get(1));
-                    respons = routePlanerFaseOne.nextCommand();
-                } catch (NoDataException e) {
-                    respons = "stop -d -t";
-                } catch (IndexOutOfBoundsException e){
-                    respons = "turn -r -s0.02";
-                } catch (BadDataException e) {
-                    respons = "stop -d -t";
-                }
+        try {
+            robotBalls = stabilizer.getStabelRobotCirce();
+        } catch (BadDataException e) {
+            robotBalls.add(initBall);
+            robotBalls.add(initBall2);
+        }
 
 
-                out.println(respons);
-                System.out.println("sendt : \"" + respons + "\" end.");
-            } else {
-                out.println("unrecognised greeting");
-            }
-        } while (!respons.equals("exit"));
+        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
+        routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+        System.out.println(routeBalls);
+        System.out.println("Mapping route...");
+        routePlanerFaseTwo.getHeats();
+        System.out.println("Mapping route complete!");
+
+        Socket s = new Socket("192.168.1.102",6666);
+        System.err.println("Wating on server...");
+
+        out = new PrintWriter(s.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+        System.out.println("Robot pos = \t" + robotv1.getPosVector().toString());
+
+
+        System.out.println();
+
+        System.out.println("Press enter to start!");
+
+
+        Scanner inputWait = new Scanner(System.in);
+        inputWait.nextLine();
+
+        routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
     }
 }
 

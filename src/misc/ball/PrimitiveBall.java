@@ -83,6 +83,10 @@ public class PrimitiveBall {
         return new Point(xPos, yPos);
     }
 
+    /**
+     * Gets a new Vector2Dv1 pointing at ball.
+     * @return Vector2Dv1 pointing at ball.
+     */
     public Vector2Dv1 getPosVector() {
         return new Vector2Dv1(xPos, yPos);
     }

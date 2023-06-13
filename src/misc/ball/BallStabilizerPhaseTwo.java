@@ -11,13 +11,15 @@ import java.util.ArrayList;
 public class BallStabilizerPhaseTwo {
 
 
-    public static final double MAX_DISTANCE_FOR_RELATION = 5;
-    public static final int TIME_TO_LIVE = 15;
+    public static final double MAX_DISTANCE_FOR_RELATION = 12;
+    public static final int TIME_TO_LIVE = 30;
     public static final int AGE_TO_GONE = 1;
 
 
     private ArrayList<Ball> balls;
     private int nextId;
+
+    private BallPrecision ballPrecision = new BallPrecision();
 
 
 
@@ -27,6 +29,7 @@ public class BallStabilizerPhaseTwo {
     }
 
     public void stabilizeBalls(ArrayList<Ball> balls) throws TypeException {
+        this.balls.clear();
         for (Ball ball :
                 balls) {
             stabilizeBall(ball);
@@ -38,7 +41,7 @@ public class BallStabilizerPhaseTwo {
                 if(ball.getStatus() != PrimitiveBall.Status.ROBOT){
                     ball.setStatus(PrimitiveBall.Status.IN_PLAY);
                 } else {
-                    if (ball.getColor().equals(BallClassifierPhaseTwo.RED) || ball.getColor().equals(BallClassifierPhaseTwo.BLACK)){
+                    if (ball.getColor().equals(BallClassifierPhaseTwo.GREEN) || ball.getColor().equals(BallClassifierPhaseTwo.BLACK)){
                         ball.setStatus(PrimitiveBall.Status.ROBOT);
                     } else {
                         ball.setStatus(PrimitiveBall.Status.IN_PLAY);
@@ -52,10 +55,20 @@ public class BallStabilizerPhaseTwo {
     }
 
     private void stabilizeBall(Ball ball) throws TypeException {
-        if(ball.getType() == Ball.Type.UKNOWN){
+        BallClassifierPhaseTwo.classify(ball);
+        //if(ball.status == PrimitiveBall.Status.ROBOT){
+            //ballPrecision.CompensateRobot(ball);
+        //}
+        //else {
+            //ballPrecision.CompensateBall(ball);
+        //}
+        addBallToBalls(ball);
+        return;
+        /*
+        if(ball.getType() == Ball.Type.UNKNOWN){
             BallClassifierPhaseTwo.classify(ball);
         }
-        if(ball.getType() == Ball.Type.UKNOWN){
+        if(ball.getType() == Ball.Type.UNKNOWN){
             throw new TypeException("Ball have no type.");
         }
         Ball relation = null;
@@ -75,8 +88,9 @@ public class BallStabilizerPhaseTwo {
         ballPosHis.add(0,relation.getPoint());
         relation.setPos(ball.getPoint());
         relation.zeroLastSeenAlive();
-    }
+        */
 
+    }
     // returns the ball that the ball relates to the input ball. throws exception if it fails.
     public Ball relates(Ball ball) throws NoDataException, BadDataException {
         if (balls.isEmpty())
@@ -104,18 +118,20 @@ public class BallStabilizerPhaseTwo {
 
     //gets only stabel balls
     public ArrayList<Ball> getStabelBalls() throws NoDataException {
+        System.out.println(balls);
         ArrayList<Ball> ballsToReturn = new ArrayList<>();
 
         for (int i = 0; i < balls.size(); i++) {
             if(balls.get(i).getType() != Ball.Type.BALL)
                 continue;
 
-            if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
+            /*if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
                 balls.remove(i--);
                 continue;
             }
-            //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
 
+             */
+            //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
             ballsToReturn.add(balls.get(i));
         }
 
@@ -133,17 +149,17 @@ public class BallStabilizerPhaseTwo {
             if(balls.get(i).getStatus() != PrimitiveBall.Status.ROBOT)
                 continue;
 
-            if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
+            /*if(balls.get(i).getLastSeenAlive() > TIME_TO_LIVE) {
                 balls.remove(i--);
                 continue;
-            }
+            }*/
             //todo maybe run through the posHis to determine if the ball moves. For now i will just say they are stabel when they are in the list.
 
             ballsToReturn.add(balls.get(i));
         }
 
         if (ballsToReturn.size() != 2)
-            throw new BadDataException("No stabel balls");
+            throw new BadDataException("No stable robot balls. Balls to return size: " + ballsToReturn.size() + "   Number of balls in list: " + balls.size());
 
         return ballsToReturn;
     }
