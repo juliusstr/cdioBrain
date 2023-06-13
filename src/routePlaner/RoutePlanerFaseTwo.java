@@ -267,8 +267,6 @@ public class RoutePlanerFaseTwo {
         robot.endHeatRoutes();
     }
 
-    
-    /// TODO: Generate route to goal in HeatGenerators
     /**
      * Generates a heat 1 configuration by finding the best combination of balls based on scores.
      *
@@ -405,7 +403,25 @@ public class RoutePlanerFaseTwo {
                             continue;
                         if(b4 == b3 || b4 == b2 || b4 == b1)
                             continue;
-
+                        Route goal = new Route(b4.getPickUpPoint());
+                        goal.setEnd(goalFakeBall);
+                        ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
+                        btaGoal.remove(b1);
+                        btaGoal.remove(b2);
+                        btaGoal.remove(b3);
+                        btaGoal.remove(b4);
+                        WaypointGenerator.WaypointRoute wrgoal = null;
+                        try {
+                            wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b4.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                        } catch (NoRouteException e) {
+                            continue;
+                        } catch (TimeoutException e) {
+                            continue;
+                        }
+                        goal.setScore(wrgoal.getCost());
+                        ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
+                        goal.setWaypoints(goalwaypoints);
+                        b4.setGoalRoute(goal);
                         temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
                         // Set best_heat and best_score
                         if(best_score < 0 || best_score > temp_score){
@@ -469,6 +485,24 @@ public class RoutePlanerFaseTwo {
                         continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
+                    Route goal = new Route(b3.getPickUpPoint());
+                    goal.setEnd(goalFakeBall);
+                    ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
+                    btaGoal.remove(b1);
+                    btaGoal.remove(b2);
+                    btaGoal.remove(b3);
+                    WaypointGenerator.WaypointRoute wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b3.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    goal.setScore(wrgoal.getCost());
+                    ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
+                    goal.setWaypoints(goalwaypoints);
+                    b3.setGoalRoute(goal);
                     temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();
                     // Set best_heat and best_score
                     if(best_score < 0 || best_score > temp_score){
