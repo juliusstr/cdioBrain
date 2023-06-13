@@ -98,7 +98,7 @@ public class MainClient {
         caliGUI.add(new Vector2Dv1(1,1));
         caliGUI.add(new Vector2Dv1(1,1));
         new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI);
-        System.out.println("Press enter to end config!");
+        System.out.println("Manuel Config of system..\n\nPress enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
 
@@ -112,10 +112,8 @@ public class MainClient {
                 System.out.println(ball.toString());
                 routeBalls.add(ball);
             }
-            //robotBalls = stabilizer.getStabelRobotCirce();
         } catch (NoDataException e) {
             throw new RuntimeException(e);
-
         }
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
@@ -124,6 +122,12 @@ public class MainClient {
         routePlanerFaseTwo.getHeats();
         System.out.println("Mapping route complete!");
 
+        System.out.println();
+
+        System.out.println("Press enter to Connect to server/robot:");
+        Scanner inputWait = new Scanner(System.in);
+        inputWait.nextLine();
+
         Socket s = new Socket("192.168.1.102",6666);
         System.err.println("Wating on server...");
 
@@ -131,16 +135,10 @@ public class MainClient {
         in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
         System.out.println("Robot pos = \t" + robotv1.getPosVector().toString());
-
-
-        System.out.println();
-
-        System.out.println("Press enter to start!");
-
-
-        Scanner inputWait = new Scanner(System.in);
+        System.out.println("\nPress enter to start!");
         inputWait.nextLine();
 
+        System.out.println("Starting run...");
         routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
     }
 }
