@@ -2,7 +2,11 @@ package Test.Gui;
 
 import Gui.GUI_Menu;
 import Gui.GuiData;
+import misc.Boundry;
+import misc.Cross;
 import misc.Vector2Dv1;
+import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import Gui.ImageClick;
@@ -23,18 +27,21 @@ public class ImageClickTest {
     void menuTest(){
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        ImageIcon tImage = new ImageIcon("C:\\Users\\John\\Desktop\\input1.jpg");
+        ImageIcon tImage = new ImageIcon("C:\\Users\\charl\\IdeaProjects\\cdioBrain\\test_img\\colorpickerTest.JPEG");
         Mat mat = imageIconToMat(tImage);
+
         ArrayList<Vector2Dv1> boundryConorsGUI = new ArrayList<>();
         boundryConorsGUI.add(new Vector2Dv1(1,1));
         boundryConorsGUI.add(new Vector2Dv1(1,1));
         boundryConorsGUI.add(new Vector2Dv1(1,1));
         boundryConorsGUI.add(new Vector2Dv1(1,1));
+
         ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
         crossPosGUI.add(new Vector2Dv1(1,1));
         crossPosGUI.add(new Vector2Dv1(1,1));
         crossPosGUI.add(new Vector2Dv1(1,1));
         crossPosGUI.add(new Vector2Dv1(1,1));
+
         ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
         ballsGUI.add(new Vector2Dv1(1,1));
         ballsGUI.add(new Vector2Dv1(1,1));
@@ -47,15 +54,35 @@ public class ImageClickTest {
         ballsGUI.add(new Vector2Dv1(1,1));
         ballsGUI.add(new Vector2Dv1(1,1));
         ballsGUI.add(new Vector2Dv1(1,1));
+
         ArrayList<Color> robotColorsGUI = new ArrayList<>();
         robotColorsGUI.add(Color.BLACK);
         robotColorsGUI.add(Color.GREEN);
+        System.out.println("1. sort " + BallClassifierPhaseTwo.BLACK + "\n");
+        System.out.println("1. green" + BallClassifierPhaseTwo.GREEN + "\n");
         GuiData gd = new GuiData();
 
         ArrayList<Vector2Dv1> caliGUI = new ArrayList<>();
         caliGUI.add(new Vector2Dv1(1,1));
         caliGUI.add(new Vector2Dv1(1,1));
+
         new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd,caliGUI);
+
+        Boundry boundry = new Boundry(boundryConorsGUI);
+        Cross cross = new Cross(boundryConorsGUI.get(0), boundryConorsGUI.get(1));
+
+
+
+        /*Robot Robot = new Robot();
+        Boundry boundry = new Boundry();
+
+        robotColorsGUI.addAll(robotColorsGUI);*/
+        //ArrayList<Ball> routeBalls = new ArrayList<>();
+
+
+
+
+
         while(boundryConorsGUI.size() < 5){
             try {
                 Thread.sleep(100000);
