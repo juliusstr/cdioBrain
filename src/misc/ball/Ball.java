@@ -4,11 +4,9 @@ import Client.StandardSettings;
 import misc.Vector2Dv1;
 import misc.Zone;
 import routePlaner.Route;
-import routePlaner.RoutePlanerFaseTwo;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Ball extends PrimitiveBall{
 
@@ -34,7 +32,7 @@ public class Ball extends PrimitiveBall{
     private ArrayList<Point> ballPosHis;
     private int zoneGroupId;
 
-    private Vector2Dv1 pickUpVector;
+    private Vector2Dv1 pickUpVector = null;
 
     private Placement placement;
 
@@ -230,6 +228,9 @@ public class Ball extends PrimitiveBall{
     }
 
     public Vector2Dv1 getPickUpPoint(){
+
+        if(pickUpVector == null)
+            return this.getPosVector();
         return getPosVector().getAdded(pickUpVector);
     }
 

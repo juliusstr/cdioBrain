@@ -188,6 +188,9 @@ public class WaypointGenerator {
                 throw new RuntimeException(e);
             }
         }
+        if(routes.size() == 0){
+            throw new NoRouteException("No route");
+        }
         //todo add check to se if a waypoint is out of bound
         waypointRoute = getCheapestRoute();
 
