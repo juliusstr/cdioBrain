@@ -181,7 +181,7 @@ public class WaypointGenerator {
         });
         int i = 0;
         while (threadPoolExecutor.getActiveCount()>0){
-            System.err.println("sleep: " + (++i));
+            //System.err.println("sleep: " + (++i));
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

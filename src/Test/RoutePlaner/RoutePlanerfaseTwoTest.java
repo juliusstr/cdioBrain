@@ -352,7 +352,7 @@ public class RoutePlanerfaseTwoTest {
         ArrayList<Ball> best_route = new ArrayList<>();
 
         hg.getHeats();
-        best_route = hg.ballsHeat1;
+        best_route = hg.ballsHeat1;/*
         System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());
         double scoreEnd = 0;
         int i = 1;
@@ -411,7 +411,7 @@ public class RoutePlanerfaseTwoTest {
         }
         System.out.println("\n Score: " + scoreEnd);
         scoreEnd = 0;
-        i = 1;
+        i = 1;*/
 
 
     }
