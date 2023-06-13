@@ -312,30 +312,80 @@ public class RoutePlanerFaseTwo {
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            for (Ball b2 : ball_list) {
+                //Ball b2 = r2.getEnd();
                 if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
                 if(b2 == b1 || b2 == orangeBall)
                     continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPosVector(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+                for (Ball b3: ball_list) {
+                    //Ball b3 = r3.getEnd();
                     if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
                     if(b3 == b2 || b3 == b1 || b3 == orangeBall)
                         continue;
                     temp_score = score1 + score2;
-                    temp_score += r3.getScore();
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPosVector(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    temp_score += wrgoal.getCost();
                     // find route to orangeBall
-                    for (Route r4: b3.getRoutes()) {
+                    /*for (Route r4: b3.getRoutes()) {
                         if(r4.getEnd() == orangeBall){
                             temp_score += r4.getScore();
                             break;
                         }
+                    }*/
+                    bta.remove(orangeBall);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(orangeBall.getPosVector(), b3.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
                     }
+                    temp_score += wrgoal.getCost();
+                    Route goal = new Route(orangeBall.getPickUpPoint());
+                    goal.setEnd(goalFakeBall);
+                    ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
+                    btaGoal.remove(b1);
+                    btaGoal.remove(b2);
+                    btaGoal.remove(b3);
+                    btaGoal.remove(orangeBall);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), orangeBall.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    goal.setScore(wrgoal.getCost());
+                    ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
+                    goal.setWaypoints(goalwaypoints);
+                    temp_score += goal.getScore();
                     // Set best_heat and best_score
                     if(best_score < 0 || best_score > temp_score){
+                        orangeBall.setGoalRoute(goal);
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
@@ -343,7 +393,10 @@ public class RoutePlanerFaseTwo {
                         best_heat.add(orangeBall);
                         best_score = temp_score;
                     }
+                    bta.add(b3);
+                    bta.add(orangeBall);
                 }
+                bta.add(b2);
             }
         }
         return best_heat;
@@ -356,6 +409,130 @@ public class RoutePlanerFaseTwo {
      * @return An ArrayList containing the best combination of balls for the heat 2 configuration.
      */
     public ArrayList<Ball> heat2Generator(ArrayList<Ball> ball_list) {
+
+        //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
+        ArrayList<Ball> best_heat = new ArrayList<>();
+
+        double score1 = 0;
+        double score2 = 0;
+        double score3 = 0;
+        double score4 = 0;
+        double temp_score = 0;
+        double best_score = -1;
+        Boolean difficult = false;
+        int iDiff = 0;
+        for (Ball b: ball_list) {
+            if(b.getPlacement() == Ball.Placement.FREE)
+                iDiff++;
+        }
+        if(iDiff < 4)
+            difficult = true;
+        for (Ball b1: ball_list) {
+            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+                continue;
+            // Add score from robot to b1 to temp_score
+            for (Route rRobot: robot.getRoutes(2)) {
+                if(rRobot.getEnd() == b1){
+                    score1 = rRobot.getScore();
+                    break;
+                }
+            }
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            for (Ball b2 :ball_list) {
+                //Ball b2 = r2.getEnd();
+                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                    continue;
+                if(b2 == b1)
+                    continue;
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPosVector(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+                for (Ball b3: ball_list) {
+                    //Ball b3 = r3.getEnd();
+                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                        continue;
+                    if(b3 == b2 || b3 == b1)
+                        continue;
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPosVector(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    score3 = wrgoal.getCost();
+                    for (Ball b4: ball_list) {
+                        //Ball b4 = r4.getEnd();
+                        if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
+                            continue;
+                        if(b4 == b3 || b4 == b2 || b4 == b1)
+                            continue;
+                        bta.remove(b4);
+                        wrgoal = null;
+                        try {
+                            wrgoal = new WaypointGenerator(b4.getPosVector(), b3.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                        } catch (NoRouteException e) {
+                            continue;
+                        } catch (TimeoutException e) {
+                            continue;
+                        }
+                        score4 = wrgoal.getCost();
+                        Route goal = new Route(b4.getPickUpPoint());
+                        goal.setEnd(goalFakeBall);
+                        ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
+                        btaGoal.remove(b1);
+                        btaGoal.remove(b2);
+                        btaGoal.remove(b3);
+                        btaGoal.remove(b4);
+                        wrgoal = null;
+                        try {
+                            wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b4.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                        } catch (NoRouteException e) {
+                            continue;
+                        } catch (TimeoutException e) {
+                            continue;
+                        }
+                        goal.setScore(wrgoal.getCost());
+                        ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
+                        goal.setWaypoints(goalwaypoints);
+                        temp_score = score1 + score2 + score3 + score4 + goal.getScore();
+                        // Set best_heat and best_score
+                        if(best_score < 0 || best_score > temp_score){
+                            b4.setGoalRoute(goal);
+                            best_heat.clear();
+                            best_heat.add(b1);
+                            best_heat.add(b2);
+                            best_heat.add(b3);
+                            best_heat.add(b4);
+                            best_score = temp_score;
+                        }
+                        bta.add(b4);
+                    }
+                    bta.add(b3);
+                }
+                bta.add(b2);
+            }
+        }
+        return best_heat;
+    }
+
+    /**
+     * Generates a heat 3 configuration by finding the best combination of balls based on scores.
+     *
+     * @param ball_list The list of balls to generate the configuration from.
+     * @return An ArrayList containing the best combination of balls for the heat 3 configuration.
+     */
+    public ArrayList<Ball> heat3Generator(ArrayList<Ball> ball_list) {
 
         //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
         ArrayList<Ball> best_heat = new ArrayList<>();
@@ -377,121 +554,53 @@ public class RoutePlanerFaseTwo {
             if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
                 continue;
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(2)) {
-                if(rRobot.getEnd() == b1){
-                    score1 = rRobot.getScore();
-                    break;
-                }
-            }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
-                    continue;
-                if(b2 == b1)
-                    continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
-                        continue;
-                    if(b3 == b2 || b3 == b1)
-                        continue;
-                    score3 = r3.getScore();
-                    for (Route r4: b3.getRoutes()) {
-                        Ball b4 = r4.getEnd();
-                        if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
-                            continue;
-                        if(b4 == b3 || b4 == b2 || b4 == b1)
-                            continue;
-                        Route goal = new Route(b4.getPickUpPoint());
-                        goal.setEnd(goalFakeBall);
-                        ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
-                        btaGoal.remove(b1);
-                        btaGoal.remove(b2);
-                        btaGoal.remove(b3);
-                        btaGoal.remove(b4);
-                        WaypointGenerator.WaypointRoute wrgoal = null;
-                        try {
-                            wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b4.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
-                        } catch (NoRouteException e) {
-                            continue;
-                        } catch (TimeoutException e) {
-                            continue;
-                        }
-                        goal.setScore(wrgoal.getCost());
-                        ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
-                        goal.setWaypoints(goalwaypoints);
-                        b4.setGoalRoute(goal);
-                        temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
-                        // Set best_heat and best_score
-                        if(best_score < 0 || best_score > temp_score){
-                            best_heat.clear();
-                            best_heat.add(b1);
-                            best_heat.add(b2);
-                            best_heat.add(b3);
-                            best_heat.add(b4);
-                            best_score = temp_score;
-                        }
-                    }
-                }
-            }
-        }
-        return best_heat;
-    }
-
-    /**
-     * Generates a heat 3 configuration by finding the best combination of balls based on scores.
-     *
-     * @param ball_list The list of balls to generate the configuration from.
-     * @return An ArrayList containing the best combination of balls for the heat 3 configuration.
-     */
-    public ArrayList<Ball> heat3Generator(ArrayList<Ball> ball_list) {
-
-        //NavAlgoPhaseTwo nav = new NavAlgoPhaseTwo();
-        ArrayList<Ball> best_heat = new ArrayList<>();
-
-        double score1 = 0;
-        double score2 = 0;
-        double temp_score = 0;
-        double best_score = -1;
-        Boolean difficult = false;
-        int iDiff = 0;
-        for (Ball b: ball_list) {
-            if(b.getPlacement() == Ball.Placement.FREE)
-                iDiff++;
-        }
-        if(iDiff < 4)
-            difficult = true;
-        for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
-                continue;
-            // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(3)) {
                 if(rRobot.getEnd() == b1){
                     score1 = rRobot.getScore();
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            for (Ball b2 : ball_list) {
+                //Ball b2 = r2.getEnd();
                 if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
                 if(b2 == b1)
                     continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPosVector(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+                for (Ball b3: ball_list) {
+                    //Ball b3 = r3.getEnd();
                     if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPosVector(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    score3 = wrgoal.getCost();
                     Route goal = new Route(b3.getPickUpPoint());
                     goal.setEnd(goalFakeBall);
                     ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
                     btaGoal.remove(b1);
                     btaGoal.remove(b2);
                     btaGoal.remove(b3);
-                    WaypointGenerator.WaypointRoute wrgoal = null;
+                    wrgoal = null;
                     try {
                         wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b3.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
                     } catch (NoRouteException e) {
@@ -503,16 +612,19 @@ public class RoutePlanerFaseTwo {
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
                     b3.setGoalRoute(goal);
-                    temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();
+                    temp_score = score1 + score2 + score3 + goal.getScore();
                     // Set best_heat and best_score
                     if(best_score < 0 || best_score > temp_score){
+                        b3.setGoalRoute(goal);
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
                         best_heat.add(b3);
                         best_score = temp_score;
                     }
+                    bta.remove(b3);
                 }
+                bta.remove(b2);
             }
         }
         return best_heat;

@@ -354,19 +354,64 @@ public class RoutePlanerfaseTwoTest {
         hg.getHeats();
         best_route = hg.ballsHeat1;
         System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());
+        double scoreEnd = 0;
+        int i = 1;
         for (Ball b: best_route) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            if(i < best_route.size()){
+                for (Route r: b.getRoutes()) {
+                    if(r.getEnd() == best_route.get(i)){
+                        scoreEnd += r.getScore();
+                        break;
+                    }
+                }
+            } else {
+                scoreEnd += b.getGoalRoute().getScore();
+            }
+            i++;
         }
+        System.out.println("\n Score: " + scoreEnd);
+        scoreEnd = 0;
+        i = 1;
         best_route = hg.ballsHeat2;
-        System.out.println("-----------------" + "\n Heat 2 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(2).size());
+        System.out.println("\n -----------------" + "\n Heat 2 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(2).size());
         for (Ball b: best_route) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            if(i < best_route.size()){
+                for (Route r: b.getRoutes()) {
+                    if(r.getEnd() == best_route.get(i)){
+                        scoreEnd += r.getScore();
+                        break;
+                    }
+                }
+            } else {
+                scoreEnd += b.getGoalRoute().getScore();
+            }
+            i++;
         }
+        System.out.println("\n Score: " + scoreEnd);
+        scoreEnd = 0;
+        i = 1;
+        scoreEnd = 0;
         best_route = hg.ballsHeat3;
         System.out.println("-----------------" + "\n Heat 3 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(3).size());
         for (Ball b: best_route) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            if(i < best_route.size()){
+                for (Route r: b.getRoutes()) {
+                    if(r.getEnd() == best_route.get(i)){
+                        scoreEnd += r.getScore();
+                        break;
+                    }
+                }
+            } else {
+                scoreEnd += b.getGoalRoute().getScore();
+            }
+            i++;
         }
+        System.out.println("\n Score: " + scoreEnd);
+        scoreEnd = 0;
+        i = 1;
 
 
     }
