@@ -1,7 +1,9 @@
 package Gui;
 
+import misc.Boundry;
 import misc.Cross;
 import misc.Vector2Dv1;
+import misc.ball.BallClassifierPhaseTwo;
 import org.opencv.core.Mat;
 
 import javax.swing.*;
@@ -37,6 +39,7 @@ public class GUI_Menu {
         caliPos = calip;
         setUpMenu();
     }
+
     public static void setUpMenu(){
         JFrame jFrame = new JFrame("Calibrate menu");
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,6 +50,8 @@ public class GUI_Menu {
         jPanel.setSize(WIDTH,HEIGHT);
         jPanel.setLayout(new GridLayout(5,1));
 
+        //Labels
+        JLabel labelCorners = new JLabel("Corner calibrate to", SwingConstants.LEFT);
 
         // Boundary corners
         JLabel labelCorner = new JLabel("Corner set to", SwingConstants.LEFT);
@@ -106,14 +111,18 @@ public class GUI_Menu {
                 ArrayList<Color> c = new ArrayList<>();
                 boundryPos.clear();
                 new ImageClick(4, image, "Set boundry corners", boundryPos, c, tableConer, false);
+
+
+
             }
+
         });
         buttonCross.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 crossPos.clear();
-                new ImageClick(4, image, "Set Cross", crossPos, c, tableCross, false);
+                new ImageClick(4, image, "Choose Cross", crossPos, c, tableCross, false);
             }
         });
         buttonBalls.addActionListener(new ActionListener() {
@@ -121,7 +130,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 balls.clear();
-                new ImageClick(4, image, "Set balls(orange first)", balls, c, tableBalls, false);
+                new ImageClick(11, image, "Choose balls(orange first)", balls, c, tableBalls, false);
             }
         });
         buttonRobot.addActionListener(new ActionListener() {

@@ -1,6 +1,7 @@
 package Gui;
 
 import misc.Vector2Dv1;
+import misc.ball.BallClassifierPhaseTwo;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -56,6 +57,7 @@ public class ImageClick {
         }
         icon = new ImageIcon(imageBuffered);
         run();
+
     }
     public void run() {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
@@ -76,10 +78,12 @@ public class ImageClick {
                 int y = e.getY();
                 pos.add(new Vector2Dv1(x,y));
                 color.add(new Color(imageBuffered.getRGB(x, y)));
-                //Color mycolor = null;
-                //mycolor = new Color(imageBuffered.getRGB(x, y));
-                //System.out.println("Red " + mycolor.getRed() + "Green" + mycolor.getGreen() + "Blue" + mycolor.getBlue());
-                //System.out.println("Clicked at position: (" + x + ", " + y + ")");
+                /*Color mycolor = null;
+                mycolor = new Color(imageBuffered.getRGB(x, y));
+                System.out.println("Red " + mycolor.getRed() + "Green" + mycolor.getGreen() + "Blue" + mycolor.getBlue());
+                System.out.println("Clicked at position: (" + x + ", " + y + ")");
+                System.out.println(imageBuffered.getHeight() + "width " + imageBuffered.getWidth());
+                System.out.println(imageLabel.getHeight() + "width " + imageLabel.getWidth());*/
                 amount--;
                 if(amount == 0){
                     int i = 0;
@@ -90,6 +94,7 @@ public class ImageClick {
                             jt.getModel().setValueAt(String.valueOf(c.getBlue()), i, 3);
                             i++;
                         }
+                        BallClassifierPhaseTwo.UpdateColor(color);
                     } else {
                         for (Vector2Dv1 v: pos) {
                             jt.getModel().setValueAt(String.valueOf(v.x),i,1);
@@ -107,6 +112,7 @@ public class ImageClick {
 
         // Add the image label to the frame
         frame.getContentPane().add(imageLabel);
+        //frame.add(imageLabel);
         frame.pack();
         frame.setVisible(true);
     }

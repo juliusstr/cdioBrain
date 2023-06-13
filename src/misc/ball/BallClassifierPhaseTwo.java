@@ -9,13 +9,26 @@ import java.util.List;
 
 public class BallClassifierPhaseTwo {
 
-    public static final Color BLACK = new Color(81, 83, 82);
-    public static final Color GREEN = new Color(61, 143, 100);
+    public static Color BLACK = new Color(81, 83, 82);
+    public static Color GREEN = new Color(61, 143, 100);
     public static final Color WHITE = new Color(240, 237, 213);
     public static final Color ORANGE = new Color(246, 162, 93);
     public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE, ORANGE};
 
+    public static void UpdateColor(ArrayList<Color> colors){
+        //BLACK = new Color(colors.getRGB());
+        //GREEN = colors.get(1);
 
+        //BLACK = new Color(colors.get(0).getRGB());
+        BLACK = new Color(colors.get(0).getRGB());
+        GREEN = new Color(colors.get(1).getRGB());
+
+        System.out.println("2. sort " + BallClassifierPhaseTwo.BLACK + "\n");
+        System.out.println("2. green" + BallClassifierPhaseTwo.GREEN + "\n");
+
+
+
+    }
 
 
     public static void classify(List<Ball> balls){
