@@ -108,83 +108,149 @@ public class RoutePlanerFaseTwo {
      */
     public void getHeats(){
         int heat = 3;
+        ballsHeat1 = new ArrayList<>();
+        ballsHeat2 = new ArrayList<>();
+        ballsHeat3 = new ArrayList<>();
+        Route robotRoute = null;
+        WaypointGenerator.WaypointRoute wrRobot = null;
+        ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
         //heat 1
-        try {
-            ballRoutes(false, 4, true, robot.getPosVector());
-        } catch (NoRouteException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        ballsHeat1 = (ArrayList<Ball>) balls.clone();
-        ArrayList<Ball> removeballs = new ArrayList<>();
-        for (Ball b: ballsHeat1) {
-            if(b.getRoutes().size() == 0){
-                removeballs.add(b);
+        System.out.println("\n-------------" + "\n Calculating Heat1...");
+        for (Ball b : balls) {
+            if(b.getPlacement() == Ball.Placement.FREE && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
+                robotRoute = new Route(robot.getPosVector());
+                robotRoute.setEnd(b);
+                btaRobot.remove(b);
+                try {
+                    wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                robotRoute.setScore(wrRobot.getCost());
+                ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                robotRoute.setWaypoints(robotwaypoints);
+                robot.addRoute(robotRoute);
+                btaRobot.add(b);
+                ballsHeat1.add(b);
+            } else if (b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                ballsHeat1.add(b);
             }
         }
-        for (Ball b: removeballs) {
-            ballsHeat1.remove(b);
+        if(ballsHeat1.size() < 4){
+            for (Ball b: balls) {
+                if(b.getPlacement() != Ball.Placement.FREE && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                    robotRoute = new Route(robot.getPosVector());
+                    robotRoute.setEnd(b);
+                    btaRobot.remove(b);
+                    try {
+                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    robotRoute.setScore(wrRobot.getCost());
+                    ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                    robotRoute.setWaypoints(robotwaypoints);
+                    robot.addRoute(robotRoute);
+                    btaRobot.add(b);
+                    ballsHeat1.add(b);
+                }
+            }
         }
+        robot.endHeatRoutes();
         ballsHeat1 = heat1Generator(ballsHeat1);
+        System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + ballsHeat1.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat1) {
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
+            btaRobot.remove(b);
         }
         if(heat < 2)
             return;
-        for (Ball b: balls) {
-            b.setRoutes(new ArrayList<>());
-            b.setGoalRoute(null);
-        }
         //heat 2
-        try {
-            ballRoutes(false, 4, false, goalFakeBall.getPosVector());
-        } catch (NoRouteException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        ballsHeat2 = (ArrayList<Ball>)balls.clone();
-        removeballs.clear();
-        for (Ball b: ballsHeat2) {
-            if(b.getRoutes().size() == 0){
-                removeballs.add(b);
+        System.out.println("\n-------------" + "\n Calculating Heat 2...");
+        wrRobot = null;
+        for (Ball b : balls) {
+            if(b.getPlacement() == Ball.Placement.FREE){
+                robotRoute = new Route(robot.getPosVector());
+                robotRoute.setEnd(b);
+                btaRobot.remove(b);
+                try {
+                    wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                robotRoute.setScore(wrRobot.getCost());
+                ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                robotRoute.setWaypoints(robotwaypoints);
+                robot.addRoute(robotRoute);
+                btaRobot.add(b);
+                ballsHeat2.add(b);
             }
         }
-        for (Ball b: removeballs) {
-            ballsHeat2.remove(b);
+        if(ballsHeat2.size() < 4){
+            for (Ball b: balls) {
+                if(b.getPlacement() != Ball.Placement.FREE) {
+                    robotRoute = new Route(robot.getPosVector());
+                    robotRoute.setEnd(b);
+                    btaRobot.remove(b);
+                    try {
+                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    robotRoute.setScore(wrRobot.getCost());
+                    ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                    robotRoute.setWaypoints(robotwaypoints);
+                    robot.addRoute(robotRoute);
+                    btaRobot.add(b);
+                    ballsHeat2.add(b);
+                }
+            }
         }
+        robot.endHeatRoutes();
         ballsHeat2 = heat2Generator(ballsHeat2);
+        System.out.println("\nHeat 2 calculated: \n Possible stating balls: " + robot.getRoutes(2).size() + "\n Total score for Heat: " + ballsHeat2.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat2) {
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
-        }
-        if(heat < 3)
-            return;
-        for (Ball b: balls) {
-            b.setRoutes(new ArrayList<>());
-            b.setGoalRoute(null);
+            btaRobot.remove(b);
         }
         //heat 3
-        try {
-            ballRoutes(true, 3, false, goalFakeBall.getPosVector());
-        } catch (NoRouteException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        ballsHeat3 = (ArrayList<Ball>)balls.clone();
-        removeballs.clear();
-        for (Ball b: ballsHeat3) {
-            if(b.getRoutes().size() == 0){
-                removeballs.add(b);
+        System.out.println("\n-------------" + "\n Calculating Heat 3...");
+        wrRobot = null;
+        for (Ball b : balls) {
+            robotRoute = new Route(robot.getPosVector());
+            robotRoute.setEnd(b);
+            btaRobot.remove(b);
+            try {
+                wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+            } catch (NoRouteException e) {
+                continue;
+            } catch (TimeoutException e) {
+                continue;
             }
+            robotRoute.setScore(wrRobot.getCost());
+            ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+            robotRoute.setWaypoints(robotwaypoints);
+            robot.addRoute(robotRoute);
+            btaRobot.add(b);
+            ballsHeat3.add(b);
         }
-        for (Ball b: removeballs) {
-            ballsHeat3.remove(b);
-        }
+        robot.endHeatRoutes();
         ballsHeat3 = heat3Generator(ballsHeat3);
+        System.out.println("\nHeat 3 calculated: \n Possible stating balls: " + robot.getRoutes(3).size() + "\n Total score for Heat: " + ballsHeat3.get(2).getGoalRoute().getScore());
         for (Ball b: ballsHeat3) {
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
+            btaRobot.remove(b);
         }
     }
 
@@ -238,7 +304,7 @@ public class RoutePlanerFaseTwo {
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
-                for (Ball b2: innerBalls) {
+                /*for (Ball b2: innerBalls) {
                     if(!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
                         Route r1 = new Route(b.getPickUpPoint());
                         r1.setEnd(b2);
@@ -261,7 +327,7 @@ public class RoutePlanerFaseTwo {
                         r2.setWaypoints(r2Waypoints);
                         b2.addRoute(r2);
                     }
-                }
+                }*/
             }
         }
         robot.endHeatRoutes();
@@ -312,30 +378,91 @@ public class RoutePlanerFaseTwo {
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            if(best_score < score1 && best_score > 0)
+                continue;
+            for (Ball b2 : ball_list) {
+                //Ball b2 = r2.getEnd();
                 if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
                 if(b2 == b1 || b2 == orangeBall)
                     continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPickUpPoint(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+                if(best_score < score1 + score2 && best_score > 0)
+                    continue;
+                for (Ball b3: ball_list) {
+                    //Ball b3 = r3.getEnd();
                     if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
                     if(b3 == b2 || b3 == b1 || b3 == orangeBall)
                         continue;
                     temp_score = score1 + score2;
-                    temp_score += r3.getScore();
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPickUpPoint(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    temp_score += wrgoal.getCost();
+
+                    if(best_score < temp_score && best_score > 0)
+                        continue;
                     // find route to orangeBall
-                    for (Route r4: b3.getRoutes()) {
+                    /*for (Route r4: b3.getRoutes()) {
                         if(r4.getEnd() == orangeBall){
                             temp_score += r4.getScore();
                             break;
                         }
+                    }*/
+                    bta.remove(orangeBall);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(orangeBall.getPickUpPoint(), b3.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
                     }
+                    temp_score += wrgoal.getCost();
+
+                    if(best_score < temp_score && best_score > 0)
+                        continue;
+                    Route goal = new Route(orangeBall.getPickUpPoint());
+                    goal.setEnd(goalFakeBall);
+                    ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
+                    btaGoal.remove(b1);
+                    btaGoal.remove(b2);
+                    btaGoal.remove(b3);
+                    btaGoal.remove(orangeBall);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), orangeBall.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    goal.setScore(wrgoal.getCost());
+                    ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
+                    goal.setWaypoints(goalwaypoints);
+                    temp_score += goal.getScore();
                     // Set best_heat and best_score
                     if(best_score < 0 || best_score > temp_score){
+                        goal.setScore(temp_score);
+                        orangeBall.setGoalRoute(goal);
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
@@ -343,7 +470,10 @@ public class RoutePlanerFaseTwo {
                         best_heat.add(orangeBall);
                         best_score = temp_score;
                     }
+                    bta.add(b3);
+                    bta.add(orangeBall);
                 }
+                bta.add(b2);
             }
         }
         return best_heat;
@@ -363,6 +493,7 @@ public class RoutePlanerFaseTwo {
         double score1 = 0;
         double score2 = 0;
         double score3 = 0;
+        double score4 = 0;
         double temp_score = 0;
         double best_score = -1;
         Boolean difficult = false;
@@ -383,25 +514,63 @@ public class RoutePlanerFaseTwo {
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            if(best_score < score1 && best_score > 0)
+                continue;
+            for (Ball b2 :ball_list) {
+                //Ball b2 = r2.getEnd();
                 if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
                 if(b2 == b1)
                     continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPickUpPoint(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+                if(best_score < score1 + score2 && best_score > 0)
+                    continue;
+                for (Ball b3: ball_list) {
+                    //Ball b3 = r3.getEnd();
                     if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
-                    score3 = r3.getScore();
-                    for (Route r4: b3.getRoutes()) {
-                        Ball b4 = r4.getEnd();
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPickUpPoint(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    score3 = wrgoal.getCost();
+                    if(best_score < score1 + score2 + score3 && best_score > 0)
+                        continue;
+                    for (Ball b4: ball_list) {
+                        //Ball b4 = r4.getEnd();
                         if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
                             continue;
                         if(b4 == b3 || b4 == b2 || b4 == b1)
+                            continue;
+                        bta.remove(b4);
+                        wrgoal = null;
+                        try {
+                            wrgoal = new WaypointGenerator(b4.getPickUpPoint(), b3.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                        } catch (NoRouteException e) {
+                            continue;
+                        } catch (TimeoutException e) {
+                            continue;
+                        }
+                        score4 = wrgoal.getCost();
+                        if(best_score < score1 + score2 + score3 + score4 && best_score > 0)
                             continue;
                         Route goal = new Route(b4.getPickUpPoint());
                         goal.setEnd(goalFakeBall);
@@ -410,7 +579,7 @@ public class RoutePlanerFaseTwo {
                         btaGoal.remove(b2);
                         btaGoal.remove(b3);
                         btaGoal.remove(b4);
-                        WaypointGenerator.WaypointRoute wrgoal = null;
+                        wrgoal = null;
                         try {
                             wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b4.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
                         } catch (NoRouteException e) {
@@ -421,10 +590,11 @@ public class RoutePlanerFaseTwo {
                         goal.setScore(wrgoal.getCost());
                         ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                         goal.setWaypoints(goalwaypoints);
-                        b4.setGoalRoute(goal);
-                        temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
+                        temp_score = score1 + score2 + score3 + score4 + goal.getScore();
                         // Set best_heat and best_score
                         if(best_score < 0 || best_score > temp_score){
+                            goal.setScore(temp_score);
+                            b4.setGoalRoute(goal);
                             best_heat.clear();
                             best_heat.add(b1);
                             best_heat.add(b2);
@@ -432,8 +602,11 @@ public class RoutePlanerFaseTwo {
                             best_heat.add(b4);
                             best_score = temp_score;
                         }
+                        bta.add(b4);
                     }
+                    bta.add(b3);
                 }
+                bta.add(b2);
             }
         }
         return best_heat;
@@ -452,19 +625,10 @@ public class RoutePlanerFaseTwo {
 
         double score1 = 0;
         double score2 = 0;
+        double score3 = 0;
         double temp_score = 0;
         double best_score = -1;
-        Boolean difficult = false;
-        int iDiff = 0;
-        for (Ball b: ball_list) {
-            if(b.getPlacement() == Ball.Placement.FREE)
-                iDiff++;
-        }
-        if(iDiff < 4)
-            difficult = true;
         for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
-                continue;
             // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(3)) {
                 if(rRobot.getEnd() == b1){
@@ -472,18 +636,41 @@ public class RoutePlanerFaseTwo {
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
-                Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
-                    continue;
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
+            bta.remove(b1);
+            if(best_score < score1 && best_score > 0)
+                continue;
+            for (Ball b2 : ball_list) {
                 if(b2 == b1)
                     continue;
-                score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
-                    Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
-                        continue;
+                bta.remove(b2);
+                WaypointGenerator.WaypointRoute wrgoal = null;
+                try {
+                    wrgoal = new WaypointGenerator(b2.getPickUpPoint(), b1.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                } catch (NoRouteException e) {
+                    continue;
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                score2 = wrgoal.getCost();
+
+                if(best_score < score1 + score2 && best_score > 0)
+                    continue;
+                for (Ball b3: ball_list) {
                     if(b3 == b2 || b3 == b1)
+                        continue;
+                    bta.remove(b3);
+                    wrgoal = null;
+                    try {
+                        wrgoal = new WaypointGenerator(b3.getPickUpPoint(), b2.getPickUpPoint(), cross, boundry, bta).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    score3 = wrgoal.getCost();
+
+                    if(best_score < score3 +score1 +score2 && best_score > 0)
                         continue;
                     Route goal = new Route(b3.getPickUpPoint());
                     goal.setEnd(goalFakeBall);
@@ -491,7 +678,7 @@ public class RoutePlanerFaseTwo {
                     btaGoal.remove(b1);
                     btaGoal.remove(b2);
                     btaGoal.remove(b3);
-                    WaypointGenerator.WaypointRoute wrgoal = null;
+                    wrgoal = null;
                     try {
                         wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b3.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
                     } catch (NoRouteException e) {
@@ -502,17 +689,20 @@ public class RoutePlanerFaseTwo {
                     goal.setScore(wrgoal.getCost());
                     ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
                     goal.setWaypoints(goalwaypoints);
-                    b3.setGoalRoute(goal);
-                    temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();
+                    temp_score = score1 + score2 + score3 + goal.getScore();
                     // Set best_heat and best_score
                     if(best_score < 0 || best_score > temp_score){
+                        goal.setScore(temp_score);
+                        b3.setGoalRoute(goal);
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
                         best_heat.add(b3);
                         best_score = temp_score;
                     }
+                    bta.remove(b3);
                 }
+                bta.remove(b2);
             }
         }
         return best_heat;
