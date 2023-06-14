@@ -279,4 +279,32 @@ public class Vector2Dv1 {
         Vector2Dv1 v = new Vector2Dv1(x,y);
         return v.getMultiplied(0.5);
     }
+    /**
+     * Calculates the angle between this vector and the specified vector.
+     *
+     * @param vec The vector to calculate the angle with.
+     * @return The angle between the two vectors in radians.
+     */
+    public double getAngleBetwen(Vector2Dv1 vec){
+        double dot = Vector2Dv1.dot(this,vec);
+        double magThis = getLength();
+        double magVec = vec.getLength();
+        double cosTheta = dot/(magVec*magThis);
+        return Math.acos(cosTheta);
+    }
+
+    /**
+     * Calculates the angle between two vectors.
+     *
+     * @param vec1 The first vector.
+     * @param vec2 The second vector.
+     * @return The angle between the two vectors in radians.
+     */
+    public static double getAngleBetwen(Vector2Dv1 vec1, Vector2Dv1 vec2){
+        double dot = Vector2Dv1.dot(vec1,vec2);
+        double magVec1 = vec1.getLength();
+        double magVec2 = vec2.getLength();
+        double cosTheta = dot/(magVec1*magVec2);
+        return Math.acos(cosTheta);
+    }
 }
