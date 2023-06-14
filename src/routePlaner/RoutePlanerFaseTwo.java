@@ -2,7 +2,6 @@ package routePlaner;
 
 import Client.StandardSettings;
 import exceptions.BadDataException;
-import exceptions.NoDataException;
 import exceptions.NoRouteException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
@@ -16,12 +15,9 @@ import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.lang.management.MemoryType;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static Client.StandardSettings.ANGLE_ERROR;
@@ -691,7 +687,7 @@ public class RoutePlanerFaseTwo {
     public void initGoalWaypoints() {
         ArrayList<Vector2Dv1> corners = getCornersForGoal();
         Vector2Dv1 midVector = corners.get(0).getMidVector(corners.get(1));
-        Vector2Dv1 dir = corners.get(0).getSubtracted(corners.get(1)).getNormalized().getRotatedBy((Math.PI / 2));
+        Vector2Dv1 dir = corners.get(0).getSubtracted(corners.get(1)).getNormalized().getRotatedBy((Math.PI / 2)*(-1));
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
         goalFakeBall = new Ball(goalWaypoint0);
@@ -741,17 +737,17 @@ public class RoutePlanerFaseTwo {
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
         ballsToAvoid.addAll(ballsHeat1);
         ballsToAvoid.addAll(ballsHeat2);
-        //ballsToAvoid.addAll(ballsHeat3);
+        ballsToAvoid.addAll(ballsHeat3);
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
 
-        heatRunner(ballsHeat1, 1, out, imgRec, stabilizer);
-        heatRunner(ballsHeat2, 2, out, imgRec, stabilizer);
-        heatRunner(ballsHeat3, 3, out, imgRec, stabilizer);
+        heatRunner(ballsHeat1, 1, out, imgRec, stabilizer, ballsToAvoid);
+        heatRunner(ballsHeat2, 2, out, imgRec, stabilizer, ballsToAvoid);
+        heatRunner(ballsHeat3, 3, out, imgRec, stabilizer, ballsToAvoid);
 
     }
 
-    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer) {
+    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         CommandGenerator commandGenerator;
@@ -832,6 +828,7 @@ public class RoutePlanerFaseTwo {
                 String command = commandGenerator.nextCommand(isBallNotWaypoint);
                 if (command.contains("ball") || command.contains("waypoint")) {
                     out.println("stop -d -t");
+                    wait(200);
                     routToBall.clear();
                 } else {
                     out.println(command);
@@ -841,24 +838,33 @@ public class RoutePlanerFaseTwo {
             switch (heat.get(j).getPlacement()) {
                 case FREE:
                     //check if we have the right angle to the target
-                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                    out.println("stop -d -t");
+                    wait(100);
+                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
+                        out.println("stop -d");
                     }
                         out.println(StandardSettings.COLLECT_COMMAND);
                         wait(500);
                     break;
                 case EDGE:
+                    out.println("stop -d -t");
+                    wait(100);
                     //check if we have the right angle to the target
-                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
+                        out.println("stop -d");
                     }
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
                     wait(500);
                     break;
                 case CORNER:
+                    out.println("stop -d -t");
+                    wait(100);
                     //check if we have the right angle to the target
-                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
+                        out.println("stop -d");
                     }
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
                     wait(500);
@@ -891,7 +897,7 @@ public class RoutePlanerFaseTwo {
             out.println(command);
         }
         //check if we have the right angle to the target
-        while(correctAngleToTarget(robot, getGoalPos(), out)){
+        while(!correctAngleToTarget(robot, getGoalPos(), out)){
             updateRobotFromImgRec(imgRec, robot, stabilizer);
         }
         out.println(StandardSettings.DROP_OFF_COMMAND);
@@ -949,10 +955,11 @@ public class RoutePlanerFaseTwo {
             } else {
                 command += "r";
             }
-            double turnSpeed = Math.abs(angleToTarget / 2);
+            double turnSpeed = Math.abs(angleToTarget / 20);
             if (turnSpeed > 0.2)
                 turnSpeed = 0.2;
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
+            System.out.println("Send command: " + command);
             out.println(command);
             return false;
         } else{
@@ -1006,6 +1013,12 @@ public class RoutePlanerFaseTwo {
             }
         }
         returnList.add(new Vector2Dv1(boundry.points.get(index2)));
+        // todo EVT VEND < OM !!!
+        if(returnList.get(0).y < returnList.get(1).y){
+            returnList.set(2, returnList.get(0));
+            returnList.set(0, returnList.get(1));
+            returnList.set(1, returnList.get(2));
+        }
         return  returnList;
     }
 
