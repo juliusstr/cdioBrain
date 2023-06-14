@@ -17,7 +17,7 @@ import routePlaner.RoutePlanerFaseTwo;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RoutePlanerfaseTwoTest {
 
@@ -367,8 +367,37 @@ public class RoutePlanerfaseTwoTest {
         for (Ball b: best_route) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
         }
+    }
+    @Test
+    @DisplayName("Test Angle from pos")
+    void angleFromPosTest(){
+        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
+        Vector2Dv1 vec1 = new Vector2Dv1(1,1);
+        Vector2Dv1 vec2 = new Vector2Dv1(2, 2);
+        double angle = routePlan.angleFromPosVectorToPosVector(vec1, vec2);
+        assertTrue(angle > 0.77 || angle < 0.79);
 
+        vec1 = new Vector2Dv1(0, 1);
+        vec2 = new Vector2Dv1(1, 0);
+        angle = routePlan.angleFromPosVectorToPosVector(vec1, vec2);
+        assertTrue(angle > 0.77 || angle < 0.79);
+    }
+    @Test
+    @DisplayName("Test correct Angle Before Hardcode")
+    void correctAngleBeforeHardcodeTest(){
+        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
+        simulationRobot.setDirection(new Vector2Dv1(1, 1));
+        simulationRobot.setPos(1, 1);
 
+        //tjek for om den regner rigtigt når det passer
+        Vector2Dv1 vec2 = new Vector2Dv1(2, 2);
+        double angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        assertTrue(Math.abs(angle) < 0.01);
+
+        // Tjek for at den regner rigtigt når det ikke passer
+        vec2 = new Vector2Dv1(1, 0);
+        angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        assertTrue(angle > 0.77 || angle < 0.79);
     }
 
 }

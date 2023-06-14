@@ -2,10 +2,10 @@ package routePlaner;
 
 import Client.StandardSettings;
 import exceptions.BadDataException;
-import exceptions.NoDataException;
 import exceptions.NoRouteException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
+//import jdk.incubator.vector.VectorOperators;
 import misc.Boundry;
 import misc.Cross;
 import misc.Robotv1;
@@ -16,13 +16,12 @@ import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.lang.management.MemoryType;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
+
+import static Client.StandardSettings.ANGLE_ERROR;
 
 public class RoutePlanerFaseTwo {
     private ArrayList<Ball> balls = null;
@@ -43,25 +42,27 @@ public class RoutePlanerFaseTwo {
      *
      * @param b The boundary to set.
      */
-    public void setBoundry(Boundry b){
+    public void setBoundry(Boundry b) {
         this.boundry = b;
     }
+
     /**
      * Sets the cross for the route planner.
      *
      * @param c The cross to set.
      */
-    public void setCross(Cross c){
+    public void setCross(Cross c) {
         this.cross = c;
     }
+
     /**
      * Gets the goal waypoint for the specified index.
      *
      * @param i The index of the goal waypoint.
      * @return The goal waypoint vector.
      */
-    public Vector2Dv1 getGoalWaypoint(int i){
-        switch (i){
+    public Vector2Dv1 getGoalWaypoint(int i) {
+        switch (i) {
             case 0:
                 return goalWaypoint0;
             case 1:
@@ -69,6 +70,7 @@ public class RoutePlanerFaseTwo {
         }
         return null;
     }
+
     /**
      * Gets the list of balls.
      *
@@ -77,6 +79,7 @@ public class RoutePlanerFaseTwo {
     public ArrayList<Ball> getBalls() {
         return balls;
     }
+
     /**
      * Sets the list of balls.
      *
@@ -85,6 +88,7 @@ public class RoutePlanerFaseTwo {
     public void setBalls(ArrayList<Ball> balls) {
         this.balls = balls;
     }
+
     /**
      * Initializes a new instance of the RoutePlanerFaseTwo class.
      *
@@ -106,7 +110,7 @@ public class RoutePlanerFaseTwo {
      * This method calculates the routes for three different heats based on the balls' positions.
      * The calculated heats are stored in separate lists.
      */
-    public void getHeats(){
+    public void getHeats() {
         int heat = 3;
         //heat 1
         try {
@@ -118,21 +122,21 @@ public class RoutePlanerFaseTwo {
         }
         ballsHeat1 = (ArrayList<Ball>) balls.clone();
         ArrayList<Ball> removeballs = new ArrayList<>();
-        for (Ball b: ballsHeat1) {
-            if(b.getRoutes().size() == 0){
+        for (Ball b : ballsHeat1) {
+            if (b.getRoutes().size() == 0) {
                 removeballs.add(b);
             }
         }
-        for (Ball b: removeballs) {
+        for (Ball b : removeballs) {
             ballsHeat1.remove(b);
         }
         ballsHeat1 = heat1Generator(ballsHeat1);
-        for (Ball b: ballsHeat1) {
+        for (Ball b : ballsHeat1) {
             balls.remove(b);
         }
-        if(heat < 2)
+        if (heat < 2)
             return;
-        for (Ball b: balls) {
+        for (Ball b : balls) {
             b.setRoutes(new ArrayList<>());
             b.setGoalRoute(null);
         }
@@ -144,23 +148,23 @@ public class RoutePlanerFaseTwo {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-        ballsHeat2 = (ArrayList<Ball>)balls.clone();
+        ballsHeat2 = (ArrayList<Ball>) balls.clone();
         removeballs.clear();
-        for (Ball b: ballsHeat2) {
-            if(b.getRoutes().size() == 0){
+        for (Ball b : ballsHeat2) {
+            if (b.getRoutes().size() == 0) {
                 removeballs.add(b);
             }
         }
-        for (Ball b: removeballs) {
+        for (Ball b : removeballs) {
             ballsHeat2.remove(b);
         }
         ballsHeat2 = heat2Generator(ballsHeat2);
-        for (Ball b: ballsHeat2) {
+        for (Ball b : ballsHeat2) {
             balls.remove(b);
         }
-        if(heat < 3)
+        if (heat < 3)
             return;
-        for (Ball b: balls) {
+        for (Ball b : balls) {
             b.setRoutes(new ArrayList<>());
             b.setGoalRoute(null);
         }
@@ -172,18 +176,18 @@ public class RoutePlanerFaseTwo {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
-        ballsHeat3 = (ArrayList<Ball>)balls.clone();
+        ballsHeat3 = (ArrayList<Ball>) balls.clone();
         removeballs.clear();
-        for (Ball b: ballsHeat3) {
-            if(b.getRoutes().size() == 0){
+        for (Ball b : ballsHeat3) {
+            if (b.getRoutes().size() == 0) {
                 removeballs.add(b);
             }
         }
-        for (Ball b: removeballs) {
+        for (Ball b : removeballs) {
             ballsHeat3.remove(b);
         }
         ballsHeat3 = heat3Generator(ballsHeat3);
-        for (Ball b: ballsHeat3) {
+        for (Ball b : ballsHeat3) {
             balls.remove(b);
         }
     }
@@ -195,8 +199,8 @@ public class RoutePlanerFaseTwo {
      * @param minAmount      The minimum amount of free balls required.
      * @param orange         Indicates whether to consider orange balls or not.
      * @param robotPos       The position of the robot.
-     * @throws NoRouteException   If no route is found.
-     * @throws TimeoutException   If the calculation exceeds the time limit.
+     * @throws NoRouteException If no route is found.
+     * @throws TimeoutException If the calculation exceeds the time limit.
      */
     private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
         ArrayList<Ball> usedBalls = new ArrayList<>();
@@ -205,15 +209,15 @@ public class RoutePlanerFaseTwo {
         ArrayList<Ball> innerBalls = (ArrayList<Ball>) balls.clone();
         int free = 0;
         for (Ball b : outerBalls) {
-            if(b.getPlacement() == Ball.Placement.FREE){
+            if (b.getPlacement() == Ball.Placement.FREE) {
                 free++;
             }
         }
-        if(free < minAmount)
+        if (free < minAmount)
             difficultBalls = true;
         for (Ball b : outerBalls) {
             usedBalls.add(b);
-            if((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))){
+            if ((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))) {
                 //ball to goal
                 /*
                 if(b.getGoalRoute() == null){
@@ -238,8 +242,8 @@ public class RoutePlanerFaseTwo {
                 ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
-                for (Ball b2: innerBalls) {
-                    if(!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
+                for (Ball b2 : innerBalls) {
+                    if (!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)) {
                         Route r1 = new Route(b.getPickUpPoint());
                         r1.setEnd(b2);
                         ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
@@ -253,7 +257,7 @@ public class RoutePlanerFaseTwo {
                         Route r2 = new Route(b2.getPosVector());
                         r2.setEnd(b);
                         ArrayList<Vector2Dv1> r2Waypoints = new ArrayList<>();
-                        for (int i = waypoints.size()-1; i > 0; i--) {
+                        for (int i = waypoints.size() - 1; i > 0; i--) {
                             r2Waypoints.add(waypoints.get(i));
                         }
                         r2Waypoints.add(b.getPickUpPoint());
@@ -285,9 +289,9 @@ public class RoutePlanerFaseTwo {
         Ball orangeBall = null;
         boolean orange_flag = true;
         // find orange ball
-        if(orange_flag){
-            for (Ball b: ball_list) {
-                if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
+        if (orange_flag) {
+            for (Ball b : ball_list) {
+                if (b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
                     orangeBall = b;
                     break;
                 }
@@ -296,46 +300,46 @@ public class RoutePlanerFaseTwo {
         }
         Boolean difficult = false;
         int iDiff = 0;
-        for (Ball b: ball_list) {
-            if(b.getPlacement() == Ball.Placement.FREE)
+        for (Ball b : ball_list) {
+            if (b.getPlacement() == Ball.Placement.FREE)
                 iDiff++;
         }
-        if(iDiff < 3)
+        if (iDiff < 3)
             difficult = true;
-        for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+        for (Ball b1 : ball_list) {
+            if ((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
                 continue;
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(1)) {
-                if(rRobot.getEnd() == b1){
+            for (Route rRobot : robot.getRoutes(1)) {
+                if (rRobot.getEnd() == b1) {
                     score1 = rRobot.getScore();
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
+            for (Route r2 : b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                if ((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
-                if(b2 == b1 || b2 == orangeBall)
+                if (b2 == b1 || b2 == orangeBall)
                     continue;
                 score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
+                for (Route r3 : b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                    if ((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
-                    if(b3 == b2 || b3 == b1 || b3 == orangeBall)
+                    if (b3 == b2 || b3 == b1 || b3 == orangeBall)
                         continue;
                     temp_score = score1 + score2;
                     temp_score += r3.getScore();
                     // find route to orangeBall
-                    for (Route r4: b3.getRoutes()) {
-                        if(r4.getEnd() == orangeBall){
+                    for (Route r4 : b3.getRoutes()) {
+                        if (r4.getEnd() == orangeBall) {
                             temp_score += r4.getScore();
                             break;
                         }
                     }
                     // Set best_heat and best_score
-                    if(best_score < 0 || best_score > temp_score){
+                    if (best_score < 0 || best_score > temp_score) {
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
@@ -367,41 +371,41 @@ public class RoutePlanerFaseTwo {
         double best_score = -1;
         Boolean difficult = false;
         int iDiff = 0;
-        for (Ball b: ball_list) {
-            if(b.getPlacement() == Ball.Placement.FREE)
+        for (Ball b : ball_list) {
+            if (b.getPlacement() == Ball.Placement.FREE)
                 iDiff++;
         }
-        if(iDiff < 4)
+        if (iDiff < 4)
             difficult = true;
-        for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+        for (Ball b1 : ball_list) {
+            if ((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
                 continue;
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(2)) {
-                if(rRobot.getEnd() == b1){
+            for (Route rRobot : robot.getRoutes(2)) {
+                if (rRobot.getEnd() == b1) {
                     score1 = rRobot.getScore();
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
+            for (Route r2 : b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                if ((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
-                if(b2 == b1)
+                if (b2 == b1)
                     continue;
                 score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
+                for (Route r3 : b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                    if ((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
-                    if(b3 == b2 || b3 == b1)
+                    if (b3 == b2 || b3 == b1)
                         continue;
                     score3 = r3.getScore();
-                    for (Route r4: b3.getRoutes()) {
+                    for (Route r4 : b3.getRoutes()) {
                         Ball b4 = r4.getEnd();
-                        if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
+                        if ((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
                             continue;
-                        if(b4 == b3 || b4 == b2 || b4 == b1)
+                        if (b4 == b3 || b4 == b2 || b4 == b1)
                             continue;
                         Route goal = new Route(b4.getPickUpPoint());
                         goal.setEnd(goalFakeBall);
@@ -424,7 +428,7 @@ public class RoutePlanerFaseTwo {
                         b4.setGoalRoute(goal);
                         temp_score = score1 + score2 + score3 + r4.getScore() + b4.getGoalRoute().getScore();
                         // Set best_heat and best_score
-                        if(best_score < 0 || best_score > temp_score){
+                        if (best_score < 0 || best_score > temp_score) {
                             best_heat.clear();
                             best_heat.add(b1);
                             best_heat.add(b2);
@@ -456,34 +460,34 @@ public class RoutePlanerFaseTwo {
         double best_score = -1;
         Boolean difficult = false;
         int iDiff = 0;
-        for (Ball b: ball_list) {
-            if(b.getPlacement() == Ball.Placement.FREE)
+        for (Ball b : ball_list) {
+            if (b.getPlacement() == Ball.Placement.FREE)
                 iDiff++;
         }
-        if(iDiff < 4)
+        if (iDiff < 4)
             difficult = true;
-        for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
+        for (Ball b1 : ball_list) {
+            if ((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
                 continue;
             // Add score from robot to b1 to temp_score
-            for (Route rRobot: robot.getRoutes(3)) {
-                if(rRobot.getEnd() == b1){
+            for (Route rRobot : robot.getRoutes(3)) {
+                if (rRobot.getEnd() == b1) {
                     score1 = rRobot.getScore();
                     break;
                 }
             }
-            for (Route r2 :b1.getRoutes()) {
+            for (Route r2 : b1.getRoutes()) {
                 Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
+                if ((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
                     continue;
-                if(b2 == b1)
+                if (b2 == b1)
                     continue;
                 score2 = r2.getScore();
-                for (Route r3: b2.getRoutes()) {
+                for (Route r3 : b2.getRoutes()) {
                     Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
+                    if ((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
                         continue;
-                    if(b3 == b2 || b3 == b1)
+                    if (b3 == b2 || b3 == b1)
                         continue;
                     Route goal = new Route(b3.getPickUpPoint());
                     goal.setEnd(goalFakeBall);
@@ -505,7 +509,7 @@ public class RoutePlanerFaseTwo {
                     b3.setGoalRoute(goal);
                     temp_score = score1 + score2 + r3.getScore() + b3.getGoalRoute().getScore();
                     // Set best_heat and best_score
-                    if(best_score < 0 || best_score > temp_score){
+                    if (best_score < 0 || best_score > temp_score) {
                         best_heat.clear();
                         best_heat.add(b1);
                         best_heat.add(b2);
@@ -523,26 +527,10 @@ public class RoutePlanerFaseTwo {
      * Calculates the coordinates of two goal waypoints based on the boundary points.
      * Sets the goalWaypoint0, goalWaypoint1, and goalFakeBall variables.
      */
-    public void initGoalWaypoints(){
-        int index1 = -1, index2 = -1;
-        int minX = Integer.MAX_VALUE;
-        for (int i = 0; i < boundry.points.size(); i++) {
-            if(boundry.points.get(i).x < minX){
-                index1 = i;
-                minX = boundry.points.get(i).x;
-            }
-        }
-        minX = Integer.MAX_VALUE;
-        for (int i = 0; i < boundry.points.size(); i++) {
-            if(boundry.points.get(i).x < minX && i != index1){
-                index2 = i;
-                minX = boundry.points.get(i).x;
-            }
-        }
-        Vector2Dv1 corner1 = new Vector2Dv1(boundry.points.get(index1));
-        Vector2Dv1 corner2 = new Vector2Dv1(boundry.points.get(index2));
-        Vector2Dv1 midVector = corner1.getMidVector(corner2);
-        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy((Math.PI/2));
+    public void initGoalWaypoints() {
+        ArrayList<Vector2Dv1> corners = getCornersForGoal();
+        Vector2Dv1 midVector = corners.get(0).getMidVector(corners.get(1));
+        Vector2Dv1 dir = corners.get(0).getSubtracted(corners.get(1)).getNormalized().getRotatedBy((Math.PI / 2));
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
         goalFakeBall = new Ball(goalWaypoint0);
@@ -572,22 +560,22 @@ public class RoutePlanerFaseTwo {
      * 1. Prints the heats information.
      * 2. Prepares a list of balls to avoid during navigation.
      * 3. Iterates over the heat1 balls and performs the following sub-steps:
-     *    a. Finds the route from the robot to the ball.
-     *    b. Runs to the ball using waypoint navigation and captures ball images.
-     *    c. Collects the ball if it is in a free placement.
-     *    d. Updates the lastBall variable.
+     * a. Finds the route from the robot to the ball.
+     * b. Runs to the ball using waypoint navigation and captures ball images.
+     * c. Collects the ball if it is in a free placement.
+     * d. Updates the lastBall variable.
      * 4. Navigates to the goal and performs a drop-off.
      * 5. Iterates over the heat2 balls and performs the same sub-steps as in step 3.
      * 6. Navigates to the goal again and performs a drop-off.
      * 7. Iterates over the heat3 balls and performs the same sub-steps as in step 3.
      * 8. Navigates to the goal again and performs a drop-off.
      *
-     * @param out         PrintWriter object for sending commands.
-     * @param in          BufferedReader object for receiving responses.
-     * @param imgRec      ImgRecFaseTwo object for capturing ball images.
-     * @param stabilizer  BallStabilizerPhaseTwo object for stabilizing balls.
+     * @param out        PrintWriter object for sending commands.
+     * @param in         BufferedReader object for receiving responses.
+     * @param imgRec     ImgRecFaseTwo object for capturing ball images.
+     * @param stabilizer BallStabilizerPhaseTwo object for stabilizing balls.
      */
-    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer){
+    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer) {
         System.out.println("heats : " + ballsHeat1);
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
         ballsToAvoid.addAll(ballsHeat1);
@@ -596,35 +584,41 @@ public class RoutePlanerFaseTwo {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
 
-        heatRunner(ballsHeat1,1,  out, imgRec, stabilizer);
-        heatRunner(ballsHeat2,2,  out, imgRec, stabilizer);
-        heatRunner(ballsHeat3,3,  out, imgRec, stabilizer);
+        heatRunner(ballsHeat1, 1, out, imgRec, stabilizer);
+        heatRunner(ballsHeat2, 2, out, imgRec, stabilizer);
+        heatRunner(ballsHeat3, 3, out, imgRec, stabilizer);
 
     }
 
-    void heatRunner(ArrayList<Ball> heat,int heatNr, PrintWriter out, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer){
+    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer) {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         CommandGenerator commandGenerator;
         ArrayList<Vector2Dv1> routeToGoal;
+        // checksize to have 11 balls ?
+        int checkSize;
+        if(heatNr == 3){
+            checkSize = 3;
+        } else {
+            checkSize = 4;
+        }
 
-
-        for (int j = 0; j < heat.size(); j++){
+        for (int j = 0; j < heat.size(); j++) {
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
             ballsToAvoid.remove(heat.get(j));
-            if(heat.size() == 4){
-                for (int i = 0; i < robot.getRoutes(heatNr).size(); i++) { // todo lav så jeg får heat nummer ud af navnet
-                    if(heat.get(0) == robot.getRoutes(heatNr).get(i).getEnd()){ // todo lav så jeg får heat nummer ud af navnet
+            if (heat.size() == checkSize) {
+                for (int i = 0; i < robot.getRoutes(heatNr).size(); i++) {
+                    if (heat.get(0) == robot.getRoutes(heatNr).get(i).getEnd()) {
                         //routToBall = robot.getRoutes(1).get(i).getWaypoints();
                         try {
                             Vector2Dv1 targetWaypoint;
-                            if(heat.get(j).getPlacement() == Ball.Placement.FREE){
+                            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                                 targetWaypoint = heat.get(j).getPosVector();
                             } else {
                                 targetWaypoint = heat.get(j).getPickUpPoint();
                             }
-                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
 
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
@@ -632,7 +626,7 @@ public class RoutePlanerFaseTwo {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
-                        if(heat.get(j).getPlacement() != Ball.Placement.FREE){
+                        if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
                         break;
@@ -640,23 +634,23 @@ public class RoutePlanerFaseTwo {
                 }
             } else {
                 for (int i = 0; i < lastBall.getRoutes().size(); i++) {
-                    if(lastBall.getRoutes().get(i).getEnd() == heat.get(j)){
+                    if (lastBall.getRoutes().get(i).getEnd() == heat.get(j)) {
                         //routToBall = lastBall.getRoutes().get(i).getWaypoints();
                         try {
                             Vector2Dv1 targetWaypoint;
-                            if(heat.get(j).getPlacement() == Ball.Placement.FREE){
+                            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                                 targetWaypoint = heat.get(j).getPosVector();
                             } else {
                                 targetWaypoint = heat.get(j).getPickUpPoint();
                             }
-                            waypointGenerator = new WaypointGenerator(targetWaypoint,robot.getPosVector(),cross, boundry, ballsToAvoid);
+                            waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
-                        if(heat.get(j).getPlacement() != Ball.Placement.FREE){
+                        if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
                         break;
@@ -665,28 +659,17 @@ public class RoutePlanerFaseTwo {
 
             }
             //run to ball
-            commandGenerator = new CommandGenerator(robot,routToBall);
+            commandGenerator = new CommandGenerator(robot, routToBall);
             boolean isBallNotWaypoint;
-            if(heat.get(j).getPlacement() == Ball.Placement.FREE){
+            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                 isBallNotWaypoint = true;
             } else {
                 isBallNotWaypoint = false;
             }
-            while (routToBall.size() != 0){
-                ArrayList<Ball> balls = imgRec.captureBalls();
-                try {
-                    stabilizer.stabilizeBalls(balls);
-                } catch (TypeException e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
-                    robot.updatePos(robotBalls.get(0), robotBalls.get(1));
-                } catch (BadDataException e) {
-                    //throw new RuntimeException(e);
-                }
+            while (routToBall.size() != 0) {
+                updateRobotFromImgRec(imgRec, robot, stabilizer);
                 String command = commandGenerator.nextCommand(isBallNotWaypoint);
-                if(command.contains("ball") || command.contains("waypoint")){
+                if (command.contains("ball") || command.contains("waypoint")) {
                     out.println("stop -d -t");
                     routToBall.clear();
                 } else {
@@ -694,19 +677,28 @@ public class RoutePlanerFaseTwo {
                 }
             }
             //collect
-            switch (heat.get(j).getPlacement()){
+            switch (heat.get(j).getPlacement()) {
                 case FREE:
-                    // todo tjek vinkel til target
-                    out.println(StandardSettings.COLLECT_COMMAND);
-                    wait(500);
+                    //check if we have the right angle to the target
+                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                        updateRobotFromImgRec(imgRec, robot, stabilizer);
+                    }
+                        out.println(StandardSettings.COLLECT_COMMAND);
+                        wait(500);
                     break;
                 case EDGE:
-                    // todo tjek vinkel til target
+                    //check if we have the right angle to the target
+                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                        updateRobotFromImgRec(imgRec, robot, stabilizer);
+                    }
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
                     wait(500);
                     break;
                 case CORNER:
-                    // todo tjek vinkel til target
+                    //check if we have the right angle to the target
+                    while(correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
+                        updateRobotFromImgRec(imgRec, robot, stabilizer);
+                    }
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
                     wait(500);
                     break;
@@ -720,7 +712,7 @@ public class RoutePlanerFaseTwo {
         }
         //go to goal and do a drop-off
         try {
-            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(),robot.getPosVector(),cross, boundry, ballsToAvoid);
+            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(), robot.getPosVector(), cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
@@ -728,27 +720,19 @@ public class RoutePlanerFaseTwo {
         }
         routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
         routeToGoal.add(getGoalWaypoint1());
-        commandGenerator = new CommandGenerator(robot,routeToGoal);
-        while (routeToGoal.size() != 0){
-            ArrayList<Ball> balls = imgRec.captureBalls();
-            try {
-                stabilizer.stabilizeBalls(balls);
-            } catch (TypeException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
-                robot.updatePos(robotBalls.get(0), robotBalls.get(1));
-            } catch (BadDataException e) {
-                //throw new RuntimeException(e);
-            }
+        commandGenerator = new CommandGenerator(robot, routeToGoal);
+        while (routeToGoal.size() != 0) {
+            updateRobotFromImgRec(imgRec, robot, stabilizer);
             String command = commandGenerator.nextCommand(false);
-            if(command.contains("waypoint")){
+            if (command.contains("waypoint")) {
                 routeToGoal.clear();
             }
             out.println(command);
         }
-        // todo beregn vinkel til target
+        //check if we have the right angle to the target
+        while(correctAngleToTarget(robot, getGoalPos(), out)){
+            updateRobotFromImgRec(imgRec, robot, stabilizer);
+        }
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
@@ -756,13 +740,123 @@ public class RoutePlanerFaseTwo {
     /**
      * Pauses the execution for the specified number of milliseconds.
      *
-     * @param millis  The number of milliseconds to wait.
+     * @param millis The number of milliseconds to wait.
      */
-    private void wait(int millis){
+    private void wait(int millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Gets the angle between two vectors
+     * @param vec1 first vector
+     * @param vec2 second vector
+     * @return the angle
+     */
+    public double angleFromPosVectorToPosVector(Vector2Dv1 vec1, Vector2Dv1 vec2) {
+        return vec2.getSubtracted(vec1).getAngle();
+    }
+
+    /**
+     * Checks the angle between a robot and the target it is supposed to go to.
+     * @param robot The robot
+     * @param target The target
+     * @return How wrong the angle of the robot is to target
+     */
+    public double angleBeforeHardcode(Robotv1 robot, Vector2Dv1 target) {
+        double correctAngle = angleFromPosVectorToPosVector(robot.getPosVector(), target);
+        return correctAngle - robot.getDirection().getAngle();
+    }
+
+    /**
+     * Checks if we have the correct angle to our target, within the constant ANGLE_ERROR
+     * @param robot The robot
+     * @param target The target
+     * @param out The Printwriter to write to robot
+     * @return True if we have the correct angle, false if we dont have the correct angle
+     */
+    public boolean correctAngleToTarget(Robotv1 robot, Vector2Dv1 target, PrintWriter out) {
+        double angleToTarget = angleBeforeHardcode(robot, target);
+        String command = "";
+        if (Math.abs(angleToTarget) > ANGLE_ERROR) {
+            command += "turn -";
+            if (angleToTarget > 0) {
+                command += "l";
+            } else {
+                command += "r";
+            }
+            double turnSpeed = Math.abs(angleToTarget / 2);
+            if (turnSpeed > 0.2)
+                turnSpeed = 0.2;
+            command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
+            out.println(command);
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+    /**
+     * Updates the robots position from image rec
+     * @param imgRec The imgRec used
+     * @param robot The robot to update
+     * @param stabilizer The stabilizer to use
+     */
+    public void updateRobotFromImgRec(ImgRecFaseTwo imgRec, Robotv1 robot, BallStabilizerPhaseTwo stabilizer){
+        ArrayList<Ball> balls = imgRec.captureBalls();
+        try {
+            stabilizer.stabilizeBalls(balls);
+        } catch (TypeException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+            robot.updatePos(robotBalls.get(0), robotBalls.get(1));
+        } catch (BadDataException e) {
+            //throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the corners that is on the small goal boundary
+     * @return List of Vector2D with the coordinates to the corners
+     */
+    public ArrayList<Vector2Dv1> getCornersForGoal(){
+        int index1 = -1, index2 = -1;;
+        int minX = Integer.MAX_VALUE;
+        ArrayList<Vector2Dv1> returnList = new ArrayList<>();
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if (boundry.points.get(i).x < minX) {
+                index1 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        returnList.add(new Vector2Dv1(boundry.points.get(index1)));
+
+        minX = Integer.MAX_VALUE;
+
+        for (int i = 0; i < boundry.points.size(); i++) {
+            if (boundry.points.get(i).x < minX && i != index1) {
+                index2 = i;
+                minX = boundry.points.get(i).x;
+            }
+        }
+        returnList.add(new Vector2Dv1(boundry.points.get(index2)));
+        return  returnList;
+    }
+
+    /**
+     * Gets the goal position as a vector from the corners with the smallest x coordinate
+     * @return Vector2D with the pos of the goal
+     */
+    public Vector2Dv1 getGoalPos(){
+        ArrayList<Vector2Dv1> corners = getCornersForGoal();
+        Vector2Dv1 smallGoal = corners.get(0).getMidVector(corners.get(1));
+        return smallGoal;
+    }
 }
+
+

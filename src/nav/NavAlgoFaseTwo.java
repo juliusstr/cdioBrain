@@ -15,7 +15,7 @@ public class NavAlgoFaseTwo {
 
     private Robotv1 Robot;
 
-    public ArrayList<SafetyCircle> critZones;
+    public ArrayList<Zone> critZones;
     //---------------------------
     //constructor
     //---------------------------
@@ -41,7 +41,7 @@ public class NavAlgoFaseTwo {
         PrimitiveBall Ball1 = new PrimitiveBall(5,5, PrimitiveBall.Status.IN_PLAY);
         PrimitiveBall Ball2 = new PrimitiveBall(1,1, PrimitiveBall.Status.IN_PLAY);
 
-        SafetyCircle safeCircle = new SafetyCircle(nextBall.getPosVector(), 1);
+        Zone safeCircle = new Zone(nextBall.getPosVector(), 1);
 
         Vector2Dv1 dirvec = new Vector2Dv1(0 , 1);
         Vector2Dv1 posvec = new Vector2Dv1(0 , 0);
@@ -49,7 +49,7 @@ public class NavAlgoFaseTwo {
 
        critZones = new ArrayList<>();
         for (int i=0; i<cross.crossPoint.size(); i++){
-            critZones.add(i,new SafetyCircle(cross.crossPoint,1));
+            critZones.add(i,new Zone(cross.pos,1));
         }
 
         
