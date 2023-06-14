@@ -25,6 +25,10 @@ public class ImgRecFaseTwo {
 
     public ImgRecObstacle imgRecObstacle;
 
+    public Mat getFrame(){
+        return frame;
+    }
+
     public ImgRecFaseTwo() {
 
 
