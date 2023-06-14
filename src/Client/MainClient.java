@@ -45,7 +45,7 @@ public class MainClient {
         RoutePlanerFaseTwo routePlanerFaseTwo = null;
 
 
-        Mat m = imgRec.getFrame();
+        Mat m = imgRec.frameGUI;
 
         // init balls for robot, to not have exception..
 
