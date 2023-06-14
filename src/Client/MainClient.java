@@ -171,7 +171,31 @@ public class MainClient {
         robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
+
+
+        System.out.println("\n-----------------------\nInfo to make sim test from");
+        System.out.println("simulationRobot = new Robotv1(" + robotv1.getxPos() + ", " + robotv1.getyPos() +  ", new Vector2Dv1(" + robotv1.getPosVector().getAngle() + "));");
+        System.out.println("cross = new Cross(new Vector2Dv1(" + crossPosGUI.get(0).x + "," + crossPosGUI.get(0).y + "), new Vector2Dv1(" + crossPosGUI.get(1).x + "," + crossPosGUI.get(1).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(0).x + "," + ballsGUI.get(0).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(1).x + "," + ballsGUI.get(1).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(2).x + "," + ballsGUI.get(2).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(3).x + "," + ballsGUI.get(3).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(4).x + "," + ballsGUI.get(4).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(5).x + "," + ballsGUI.get(5).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(6).x + "," + ballsGUI.get(6).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(7).x + "," + ballsGUI.get(7).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(8).x + "," + ballsGUI.get(8).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(9).x + "," + ballsGUI.get(9).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+        System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(10).x + "," + ballsGUI.get(10).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
+
+        System.out.println();
+
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+        routePlanerFaseTwo.setImage(m);
         System.out.println(routeBalls);
         System.out.println("Mapping route...");
         routePlanerFaseTwo.getHeats();
