@@ -17,12 +17,11 @@ public class GUI_Menu {
     private static int WIDTH = 1000;
     private static int HEIGHT = 550;
 
-    private static ArrayList<Vector2Dv1> boundryPos = null;
-
-    private static ArrayList<Vector2Dv1> crossPos = null;
-    private static ArrayList<Vector2Dv1> balls = null;
-    private static ArrayList<Vector2Dv1> caliPos = null;
-    private static ArrayList<Color> robotColor = null;
+    public static ArrayList<Vector2Dv1> boundryPos = null;
+    public static ArrayList<Vector2Dv1> crossPos = null;
+    public static ArrayList<Vector2Dv1> balls = null;
+    public static ArrayList<Vector2Dv1> caliPos = null;
+    public static ArrayList<Color> robotColor = null;
 
     private static GuiData guiData = null;
 
@@ -48,10 +47,8 @@ public class GUI_Menu {
         //Panel
         JPanel jPanel = new JPanel();
         jPanel.setSize(WIDTH,HEIGHT);
-        jPanel.setLayout(new GridLayout(5,1));
+        jPanel.setLayout(new GridLayout(6,1));
 
-        //Labels
-        JLabel labelCorners = new JLabel("Corner calibrate to", SwingConstants.LEFT);
 
         // Boundary corners
         JLabel labelCorner = new JLabel("Corner set to", SwingConstants.LEFT);
@@ -101,7 +98,7 @@ public class GUI_Menu {
 
         // Completed setup
         JButton buttonCompleted = new JButton("Setup completed");
-        //jPanel.add(buttonCompleted);
+        jPanel.add(buttonCompleted);
 
 
         // button ActionListener
@@ -111,18 +108,14 @@ public class GUI_Menu {
                 ArrayList<Color> c = new ArrayList<>();
                 boundryPos.clear();
                 new ImageClick(4, image, "Set boundry corners", boundryPos, c, tableConer, false);
-
-
-
             }
-
         });
         buttonCross.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 crossPos.clear();
-                new ImageClick(4, image, "Choose Cross", crossPos, c, tableCross, false);
+                new ImageClick(4, image, "Set Cross", crossPos, c, tableCross, false);
             }
         });
         buttonBalls.addActionListener(new ActionListener() {
@@ -130,7 +123,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 balls.clear();
-                new ImageClick(11, image, "Choose balls(orange first)", balls, c, tableBalls, false);
+                new ImageClick(11, image, "Set balls(orange first)", balls, c, tableBalls, false);
             }
         });
         buttonRobot.addActionListener(new ActionListener() {
@@ -145,6 +138,15 @@ public class GUI_Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jFrame.dispose();
+            }
+        });
+
+        buttonCali.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Color> c = new ArrayList<>();
+                caliPos.clear();
+                new ImageClick(2, image, "Choose cali blok posses", caliPos, c, tableCali, false);
             }
         });
 

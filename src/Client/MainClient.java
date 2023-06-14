@@ -7,6 +7,8 @@ import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
+import misc.Boundry;
+import misc.Cross;
 import misc.Robotv1;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
@@ -46,19 +48,25 @@ public class MainClient {
         Mat m = imgRec.getFrame();
 
         // init balls for robot, to not have exception..
-        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,false, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.UNKNOWN);
-        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+
         balls = imgRec.captureBalls();
         BallStabilizerPhaseTwo stabilizer = new BallStabilizerPhaseTwo();
-        ArrayList<Ball> robotBalls = new ArrayList<>();
-        try {
-            robotBalls = stabilizer.getStabelRobotCirce();
-        } catch (BadDataException e) {
-            robotBalls.add(initBall);
-            robotBalls.add(initBall2);
+
+
+        //todo add balls if less then 11 / remove if needed
+        while (balls.size() <= 11){
+            balls.add(new Ball(0,0,StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
         }
-        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
+        boolean orangeInBalls = false;
+        for (Ball ball :
+                balls) {
+            if(ball.getColor() == BallClassifierPhaseTwo.ORANGE){
+                orangeInBalls = true;
+                break;
+            }
+        }
+        if(!orangeInBalls)
+            balls.get(0).setColor(BallClassifierPhaseTwo.ORANGE);
 
 
         //vars for GUI
@@ -73,6 +81,9 @@ public class MainClient {
         ArrayList<Vector2Dv1> crossPosGUI = new ArrayList<>();
         crossPosGUI.add(new Vector2Dv1(imgRec.imgRecObstacle.cross.pos.x,imgRec.imgRecObstacle.cross.pos.y));
         crossPosGUI.add(imgRec.imgRecObstacle.cross.vec);
+        //todo remove idf needed
+        crossPosGUI.add(new Vector2Dv1(1,1));
+        crossPosGUI.add(new Vector2Dv1(2,2));
 
         ArrayList<Vector2Dv1> ballsGUI = new ArrayList<>();
 
@@ -116,23 +127,24 @@ public class MainClient {
 
         //call interface
         new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI);
-        System.out.println("Manuel Config of system..\n\nPress enter to end config!");
+        System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
 
 
-        //boundery corner
-
-        //cross mid and direction
-        //cross length of side
-
-
-
+        //inserts clicked data to right places
+        imgRec.imgRecObstacle.boundry = new Boundry(GUI_Menu.boundryPos);
+        imgRec.imgRecObstacle.cross = new Cross(GUI_Menu.crossPos);
+        balls.clear();
+        balls.add(new Ball(GUI_Menu.balls.get(0),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
+        for (int i = 1 ; i < GUI_Menu.balls.size(); i++) {
+            balls.add(new Ball(GUI_Menu.balls.get(i),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
+        }
+        //imgRec.imgRecObstacle.cross = new Cross()
 
 
         stabilizer.stabilizeBalls(balls);
         ArrayList<Ball> routeBalls = new ArrayList<>();
-
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
             System.out.println("balls1 = " + balls1);
@@ -142,9 +154,21 @@ public class MainClient {
                 System.out.println(ball.toString());
                 routeBalls.add(ball);
             }
+            //robotBalls = stabilizer.getStabelRobotCirce();
         } catch (NoDataException e) {
             throw new RuntimeException(e);
         }
+        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+        ArrayList<Ball> robotBalls = new ArrayList<>();
+        try {
+            robotBalls = stabilizer.getStabelRobotCirce();
+        } catch (BadDataException e) {
+            robotBalls.add(initBall);
+            robotBalls.add(initBall2);
+        }
+        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         System.out.println(routeBalls);

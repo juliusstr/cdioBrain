@@ -22,7 +22,7 @@ public class StandardSettings {
      * Depth of search in waypoint generator.
      * Above 10 is not needed. Might be able to get away with 5 or 6.
      */
-    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 6;
+    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 7;
     /**
      * sppeds up nav by 300-400% but does not get best route.
      */

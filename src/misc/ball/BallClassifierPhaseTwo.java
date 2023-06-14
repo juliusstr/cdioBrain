@@ -26,8 +26,6 @@ public class BallClassifierPhaseTwo {
         System.out.println("2. sort " + BallClassifierPhaseTwo.BLACK + "\n");
         System.out.println("2. green" + BallClassifierPhaseTwo.GREEN + "\n");
 
-
-
     }
 
 
