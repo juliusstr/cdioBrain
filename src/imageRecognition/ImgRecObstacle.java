@@ -32,7 +32,7 @@ public class ImgRecObstacle {
 
 
     public void findeObstacle(Mat img) throws BadDataException {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+       /* System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         // Load the input image
         //Imgproc.resize(input, input, new Size(640, 360));
 
@@ -64,6 +64,7 @@ public class ImgRecObstacle {
             //Imgproc.rectangle(input, rect, new Scalar(255, 255, 0), 2);
         }
         //Imgproc.GaussianBlur(input, input, new Size(21, 21), 0, 0);
+
         int index = 0;
         double score = Double.MAX_VALUE;
         for (int i = 0; i < centers.size(); i++) {
@@ -79,6 +80,7 @@ public class ImgRecObstacle {
             }
             System.out.println("center x:" + centers.get(i).x + " y:" + centers.get(i).y);
         }
+
 
         if(centers.size() != 5){
             throw new BadDataException("could not finde all the obstacles");
@@ -107,8 +109,17 @@ public class ImgRecObstacle {
         /*for (java.awt.Point point: cross.crossPoint) {
             System.out.println("" + point.toString());
         }*/
+
+        //override of imgrec
+        ArrayList<Vector2Dv1> centers = new ArrayList<>();
+        centers.add(new Vector2Dv1(1,1));
+        centers.add(new Vector2Dv1(2,2));
+        centers.add(new Vector2Dv1(3,3));
+        centers.add(new Vector2Dv1(4,4));
+        centers.add(new Vector2Dv1(5,5));
         boundry = new Boundry(centers);
         //crossPos.multiply(boundry.scale);//todo hmmm
-        cross = new Cross(new Vector2Dv1(crossPos.x,crossPos.y),new Vector2Dv1(angle));
+        //cross = new Cross(new Vector2Dv1(crossPos.x,crossPos.y),new Vector2Dv1(angle));
+        cross = new Cross(new Vector2Dv1(7,7),new Vector2Dv1(0));
     }
 }

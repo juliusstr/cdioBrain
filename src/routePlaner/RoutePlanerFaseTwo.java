@@ -162,7 +162,7 @@ public class RoutePlanerFaseTwo {
         }
         robot.endHeatRoutes();
         ballsHeat1 = heat1Generator(ballsHeat1);
-        System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + ballsHeat1.get(3).getGoalRoute().getScore());
+        System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + 0/*todo add me ind again  ballsHeat1.get(3).getGoalRoute().getScore()*/);
         for (Ball b: ballsHeat1) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
@@ -732,7 +732,7 @@ public class RoutePlanerFaseTwo {
         Vector2Dv1 corner1 = new Vector2Dv1(boundry.points.get(index1));
         Vector2Dv1 corner2 = new Vector2Dv1(boundry.points.get(index2));
         Vector2Dv1 midVector = corner1.getMidVector(corner2);
-        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy((Math.PI/2));
+        Vector2Dv1 dir = corner1.getSubtracted(corner2).getNormalized().getRotatedBy((Math.PI/2)*(-1));
         goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
         goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
         goalFakeBall = new Ball(goalWaypoint0);

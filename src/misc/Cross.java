@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class Cross {
 
-    public static final int CROSS_LENGTH = 25;
-    public static final int OFFSET_LENGTH = 4;
-    public static final int SHORT_SIDE_LENGTH = CROSS_LENGTH - OFFSET_LENGTH;
+    public static double CROSS_LENGTH = 25;
+    public static double OFFSET_LENGTH = 4;
+    public static double SHORT_SIDE_LENGTH = CROSS_LENGTH - OFFSET_LENGTH;
 
     public ArrayList<Point> crossPoint;
     public ArrayList<Line> crossLines;
@@ -25,6 +25,47 @@ public class Cross {
         this.vec = vec;
         this.pos = pos;
         crossPoint = new ArrayList<>();
+        int i;
+        zoneGroupID = 2;
+
+        for (i = 0; i < 4; i++) {
+            vec.normalize();
+            Vector2Dv1 offsetvec = new Vector2Dv1(vec);
+            vec.multiply(CROSS_LENGTH);
+            offsetvec.multiply(OFFSET_LENGTH);
+            offsetvec.rotateBy(-Math.PI / 2);
+            Vector2Dv1 point = Vector2Dv1.add(offsetvec, Vector2Dv1.add(pos, vec));
+            crossPoint.add(point.getPoint());
+            offsetvec.rotateBy(Math.PI);
+            point = Vector2Dv1.add(offsetvec, Vector2Dv1.add(pos, vec));
+            crossPoint.add(point.getPoint());
+            Vector2Dv1 cornervec = new Vector2Dv1(offsetvec);
+            cornervec.normalize();
+            cornervec.multiply(SHORT_SIDE_LENGTH);
+            cornervec.rotateBy(Math.PI / 2);
+            point = Vector2Dv1.add(cornervec, point);
+            crossPoint.add(point.getPoint());
+            vec.rotateBy(Math.PI / 2);
+        }
+
+        crossLines = new ArrayList<>();
+        for (i = 0; i < crossPoint.size(); i++) {
+            if (i < crossPoint.size() - 1) {
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(i + 1),zoneGroupID));
+            } else {
+                crossLines.add(new Line(crossPoint.get(i), crossPoint.get(0),zoneGroupID));
+            }
+        }
+
+    }
+
+    public Cross(ArrayList<Vector2Dv1> cords) {
+        crossPoint = new ArrayList<>();
+        this.vec = cords.get(0).getSubtracted(cords.get(1));
+        this.pos = cords.get(0);
+        OFFSET_LENGTH = cords.get(1).getSubtracted(cords.get(3)).getLength();
+        CROSS_LENGTH = cords.get(0).getSubtracted(cords.get(1)).getLength();
+        SHORT_SIDE_LENGTH = CROSS_LENGTH - OFFSET_LENGTH;
         int i;
         zoneGroupID = 2;
 
