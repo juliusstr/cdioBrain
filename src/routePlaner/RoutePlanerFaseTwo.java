@@ -142,6 +142,28 @@ public class RoutePlanerFaseTwo {
         }
         if(ballsHeat1.size() < 4){
             for (Ball b: balls) {
+                if(b.getPlacement() == Ball.Placement.PAIR && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                    robotRoute = new Route(robot.getPosVector());
+                    robotRoute.setEnd(b);
+                    btaRobot.remove(b);
+                    try {
+                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    robotRoute.setScore(wrRobot.getCost());
+                    ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                    robotRoute.setWaypoints(robotwaypoints);
+                    robot.addRoute(robotRoute);
+                    btaRobot.add(b);
+                    ballsHeat1.add(b);
+                }
+            }
+        }
+        if(ballsHeat1.size() < 4){
+            for (Ball b: balls) {
                 if(b.getPlacement() != Ball.Placement.FREE && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
                     robotRoute = new Route(robot.getPosVector());
                     robotRoute.setEnd(b);
@@ -193,6 +215,28 @@ public class RoutePlanerFaseTwo {
                 robot.addRoute(robotRoute);
                 btaRobot.add(b);
                 ballsHeat2.add(b);
+            }
+        }
+        if(ballsHeat2.size() < 4){
+            for (Ball b: balls) {
+                if(b.getPlacement() == Ball.Placement.PAIR) {
+                    robotRoute = new Route(robot.getPosVector());
+                    robotRoute.setEnd(b);
+                    btaRobot.remove(b);
+                    try {
+                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                    } catch (NoRouteException e) {
+                        continue;
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    robotRoute.setScore(wrRobot.getCost());
+                    ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
+                    robotRoute.setWaypoints(robotwaypoints);
+                    robot.addRoute(robotRoute);
+                    btaRobot.add(b);
+                    ballsHeat2.add(b);
+                }
             }
         }
         if(ballsHeat2.size() < 4){
@@ -257,87 +301,6 @@ public class RoutePlanerFaseTwo {
     }
 
     /**
-     * Calculates the routes for the balls based on the given parameters.
-     *
-     * @param difficultBalls Indicates whether to consider difficult balls or not.
-     * @param minAmount      The minimum amount of free balls required.
-     * @param orange         Indicates whether to consider orange balls or not.
-     * @param robotPos       The position of the robot.
-     * @throws NoRouteException If no route is found.
-     * @throws TimeoutException If the calculation exceeds the time limit.
-     */
-    private void ballRoutes(Boolean difficultBalls, int minAmount, boolean orange, Vector2Dv1 robotPos) throws NoRouteException, TimeoutException {
-        ArrayList<Ball> usedBalls = new ArrayList<>();
-
-        ArrayList<Ball> outerBalls = (ArrayList<Ball>) balls.clone();
-        ArrayList<Ball> innerBalls = (ArrayList<Ball>) balls.clone();
-        int free = 0;
-        for (Ball b : outerBalls) {
-            if (b.getPlacement() == Ball.Placement.FREE) {
-                free++;
-            }
-        }
-        if (free < minAmount)
-            difficultBalls = true;
-        for (Ball b : outerBalls) {
-            usedBalls.add(b);
-            if ((difficultBalls || b.getPlacement() == Ball.Placement.FREE || (orange && b.getColor().equals(BallClassifierPhaseTwo.ORANGE)))) {
-                //ball to goal
-                /*
-                if(b.getGoalRoute() == null){
-                    Route goal = new Route(b.getPickUpPoint());
-                    goal.setEnd(goalFakeBall);
-                    ArrayList<Ball> btaGoal = (ArrayList<Ball>) balls.clone();
-                    btaGoal.remove(b);
-
-                    WaypointGenerator.WaypointRoute wrgoal = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPickUpPoint(), cross, boundry, btaGoal).waypointRoute;
-                    goal.setScore(wrgoal.getCost());
-                    ArrayList<Vector2Dv1> goalwaypoints = wrgoal.getRoute();
-                    goal.setWaypoints(goalwaypoints);
-                    b.setGoalRoute(goal);
-                }*/
-                //ball to robot
-                Route robotRoute = new Route(robotPos);
-                robotRoute.setEnd(b);
-                ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
-                btaRobot.remove(b);
-                WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getPickUpPoint(), robotPos, cross, boundry, btaRobot).waypointRoute;
-                robotRoute.setScore(wrRobot.getCost());
-                ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
-                robotRoute.setWaypoints(robotwaypoints);
-                robot.addRoute(robotRoute);
-                /*for (Ball b2 : innerBalls) {
-                    if (!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)) {
-                for (Ball b2: innerBalls) {
-                    if(!usedBalls.contains(b2) && (difficultBalls || b2.getPlacement() == Ball.Placement.FREE)){
-                        Route r1 = new Route(b.getPickUpPoint());
-                        r1.setEnd(b2);
-                        ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
-                        bta.remove(b);
-                        bta.remove(b2);
-                        WaypointGenerator.WaypointRoute wr = new WaypointGenerator(b2.getPickUpPoint(), b.getPickUpPoint(), cross, boundry, bta).waypointRoute;
-                        r1.setScore(wr.getCost());
-                        ArrayList<Vector2Dv1> waypoints = wr.getRoute();
-                        r1.setWaypoints(waypoints);
-                        b.addRoute(r1);
-                        Route r2 = new Route(b2.getPosVector());
-                        r2.setEnd(b);
-                        ArrayList<Vector2Dv1> r2Waypoints = new ArrayList<>();
-                        for (int i = waypoints.size() - 1; i > 0; i--) {
-                            r2Waypoints.add(waypoints.get(i));
-                        }
-                        r2Waypoints.add(b.getPickUpPoint());
-                        r2.setScore(r1.getScore());
-                        r2.setWaypoints(r2Waypoints);
-                        b2.addRoute(r2);
-                    }
-                }*/
-            }
-        }
-        robot.endHeatRoutes();
-    }
-
-    /**
      * Generates a heat 1 configuration by finding the best combination of balls based on scores.
      *
      * @param ball_list The list of balls to generate the configuration from.
@@ -364,20 +327,27 @@ public class RoutePlanerFaseTwo {
             }
             ball_list.remove(orangeBall);
         }
-        Boolean difficult = false;
+        int iFree = 0;
+        int iPair = 0;
         int iDiff = 0;
-        for (Ball b : ball_list) {
-            if (b.getPlacement() == Ball.Placement.FREE)
-                iDiff++;
+        for (Ball b: ball_list) {
+            if(b.getPlacement() == Ball.Placement.FREE)
+                iFree++;
         }
-        if (iDiff < 3)
-            difficult = true;
-        for (Ball b1 : ball_list) {
-            if ((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
-                continue;
+        if(iFree < 3){
+            for (Ball b: ball_list) {
+                if(b.getPlacement() == Ball.Placement.PAIR)
+                    iPair++;
+            }
+        }
+        iDiff = iFree+iPair;
+        for (Ball b1: ball_list) {
+            if(iFree > 0 && b1.getPlacement() != Ball.Placement.FREE)
+                if(iDiff > 0 && b1.getPlacement() != Ball.Placement.PAIR)
+                    continue;
             // Add score from robot to b1 to temp_score
-            for (Route rRobot : robot.getRoutes(1)) {
-                if (rRobot.getEnd() == b1) {
+            for (Route rRobot: robot.getRoutes(1)) {
+                if(rRobot.getEnd() == b1){
                     score1 = rRobot.getScore();
                     break;
                 }
@@ -387,9 +357,9 @@ public class RoutePlanerFaseTwo {
             if(best_score < score1 && best_score > 0)
                 continue;
             for (Ball b2 : ball_list) {
-                //Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
-                    continue;
+                if(iFree > 0 && b2.getPlacement() != Ball.Placement.FREE)
+                    if(iDiff > 0 && b2.getPlacement() != Ball.Placement.PAIR)
+                        continue;
                 if(b2 == b1 || b2 == orangeBall)
                     continue;
                 bta.remove(b2);
@@ -406,8 +376,9 @@ public class RoutePlanerFaseTwo {
                     continue;
                 for (Ball b3: ball_list) {
                     //Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
-                        continue;
+                    if(iFree > 0 && b3.getPlacement() != Ball.Placement.FREE)
+                        if(iDiff > 0 && b3.getPlacement() != Ball.Placement.PAIR)
+                            continue;
                     if(b3 == b2 || b3 == b1 || b3 == orangeBall)
                         continue;
                     temp_score = score1 + score2;
@@ -424,13 +395,6 @@ public class RoutePlanerFaseTwo {
 
                     if(best_score < temp_score && best_score > 0)
                         continue;
-                    // find route to orangeBall
-                    /*for (Route r4: b3.getRoutes()) {
-                        if(r4.getEnd() == orangeBall){
-                            temp_score += r4.getScore();
-                            break;
-                        }
-                    }*/
                     bta.remove(orangeBall);
                     wrgoal = null;
                     try {
@@ -500,17 +464,24 @@ public class RoutePlanerFaseTwo {
         double score4 = 0;
         double temp_score = 0;
         double best_score = -1;
-        Boolean difficult = false;
+        int iFree = 0;
+        int iPair = 0;
         int iDiff = 0;
         for (Ball b: ball_list) {
             if(b.getPlacement() == Ball.Placement.FREE)
-                iDiff++;
+                iFree++;
         }
-        if(iDiff < 4)
-            difficult = true;
+        if(iFree < 3){
+            for (Ball b: ball_list) {
+                if(b.getPlacement() == Ball.Placement.PAIR)
+                    iPair++;
+            }
+        }
+        iDiff = iPair+iFree;
         for (Ball b1: ball_list) {
-            if((!difficult || iDiff > 0) && b1.getPlacement() != Ball.Placement.FREE)
-                continue;
+            if(iFree > 0 && b1.getPlacement() != Ball.Placement.FREE)
+                if(iDiff > 0 && b1.getPlacement() != Ball.Placement.PAIR)
+                    continue;
             // Add score from robot to b1 to temp_score
             for (Route rRobot: robot.getRoutes(2)) {
                 if(rRobot.getEnd() == b1){
@@ -523,9 +494,9 @@ public class RoutePlanerFaseTwo {
             if(best_score < score1 && best_score > 0)
                 continue;
             for (Ball b2 :ball_list) {
-                //Ball b2 = r2.getEnd();
-                if((!difficult || iDiff > 1) && b2.getPlacement() != Ball.Placement.FREE)
-                    continue;
+                if(iFree > 1 && b2.getPlacement() != Ball.Placement.FREE)
+                    if(iDiff > 1 && b2.getPlacement() != Ball.Placement.PAIR)
+                        continue;
                 if(b2 == b1)
                     continue;
                 bta.remove(b2);
@@ -541,9 +512,9 @@ public class RoutePlanerFaseTwo {
                 if(best_score < score1 + score2 && best_score > 0)
                     continue;
                 for (Ball b3: ball_list) {
-                    //Ball b3 = r3.getEnd();
-                    if((!difficult || iDiff > 2) && b3.getPlacement() != Ball.Placement.FREE)
-                        continue;
+                    if(iFree > 2 && b3.getPlacement() != Ball.Placement.FREE)
+                        if(iDiff > 2 && b3.getPlacement() != Ball.Placement.PAIR)
+                            continue;
                     if(b3 == b2 || b3 == b1)
                         continue;
                     bta.remove(b3);
@@ -559,9 +530,9 @@ public class RoutePlanerFaseTwo {
                     if(best_score < score1 + score2 + score3 && best_score > 0)
                         continue;
                     for (Ball b4: ball_list) {
-                        //Ball b4 = r4.getEnd();
-                        if((!difficult || iDiff > 3) && b4.getPlacement() != Ball.Placement.FREE)
-                            continue;
+                        if(iFree > 3 && b4.getPlacement() != Ball.Placement.FREE)
+                            if(iDiff > 3 && b4.getPlacement() != Ball.Placement.PAIR)
+                                continue;
                         if(b4 == b3 || b4 == b2 || b4 == b1)
                             continue;
                         bta.remove(b4);
