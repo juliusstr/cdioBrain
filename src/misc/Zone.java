@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Zone {
 
-    public static final int CRITICAL_ZONE_RADIUS = 35;//todo fine tune meeeeeee
+    public static final int CRITICAL_ZONE_RADIUS = 20;//todo fine tune meeeeeee
     public static final int SAFE_ZONE_RADIUS = CRITICAL_ZONE_RADIUS + 10;//todo fine tune meeeeeee
 
     public Vector2Dv1 pos;
