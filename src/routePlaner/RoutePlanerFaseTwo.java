@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.ImageClick;
 import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.NoRouteException;
@@ -15,6 +16,7 @@ import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
+import org.opencv.core.Mat;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -22,6 +24,7 @@ import java.io.PrintWriter;
 import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 public class RoutePlanerFaseTwo {
@@ -31,6 +34,7 @@ public class RoutePlanerFaseTwo {
     public ArrayList<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
     private Ball goalFakeBall = null;
+    private Mat justInCase = null;
     Cross cross;
     Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
@@ -101,6 +105,10 @@ public class RoutePlanerFaseTwo {
         initGoalWaypoints();
     }
 
+    public void setImage(Mat m){
+        justInCase = m;
+    }
+
     /**
      * Calculates the heats for the balls.
      * This method calculates the routes for three different heats based on the balls' positions.
@@ -111,6 +119,7 @@ public class RoutePlanerFaseTwo {
         ballsHeat1 = new ArrayList<>();
         ballsHeat2 = new ArrayList<>();
         ballsHeat3 = new ArrayList<>();
+        ArrayList<Vector2Dv1> manualVec = new ArrayList<>();
         Route robotRoute = null;
         WaypointGenerator.WaypointRoute wrRobot = null;
         ArrayList<Ball> btaRobot = (ArrayList<Ball>) balls.clone();
@@ -118,14 +127,17 @@ public class RoutePlanerFaseTwo {
         System.out.println("\n-------------" + "\n Calculating Heat1...");
         for (Ball b : balls) {
             if(b.getPlacement() == Ball.Placement.FREE && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
+                ballsHeat1.add(b);
                 robotRoute = new Route(robot.getPosVector());
                 robotRoute.setEnd(b);
                 btaRobot.remove(b);
                 try {
                     wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                 } catch (NoRouteException e) {
+                    btaRobot.add(b);
                     continue;
                 } catch (TimeoutException e) {
+                    btaRobot.add(b);
                     continue;
                 }
                 robotRoute.setScore(wrRobot.getCost());
@@ -133,7 +145,6 @@ public class RoutePlanerFaseTwo {
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
                 btaRobot.add(b);
-                ballsHeat1.add(b);
             } else if (b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
                 ballsHeat1.add(b);
             }
@@ -141,14 +152,17 @@ public class RoutePlanerFaseTwo {
         if(ballsHeat1.size() < 4){
             for (Ball b: balls) {
                 if(b.getPlacement() == Ball.Placement.PAIR && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                    ballsHeat1.add(b);
                     robotRoute = new Route(robot.getPosVector());
                     robotRoute.setEnd(b);
                     btaRobot.remove(b);
                     try {
                         wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                     } catch (NoRouteException e) {
+                        btaRobot.add(b);
                         continue;
                     } catch (TimeoutException e) {
+                        btaRobot.add(b);
                         continue;
                     }
                     robotRoute.setScore(wrRobot.getCost());
@@ -156,21 +170,23 @@ public class RoutePlanerFaseTwo {
                     robotRoute.setWaypoints(robotwaypoints);
                     robot.addRoute(robotRoute);
                     btaRobot.add(b);
-                    ballsHeat1.add(b);
                 }
             }
         }
         if(ballsHeat1.size() < 4){
             for (Ball b: balls) {
-                if(b.getPlacement() != Ball.Placement.FREE && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                if(b.getPlacement() != Ball.Placement.FREE && b.getPlacement() != Ball.Placement.PAIR && !b.getColor().equals(BallClassifierPhaseTwo.ORANGE)) {
+                    ballsHeat1.add(b);
                     robotRoute = new Route(robot.getPosVector());
                     robotRoute.setEnd(b);
                     btaRobot.remove(b);
                     try {
                         wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                     } catch (NoRouteException e) {
+                        btaRobot.add(b);
                         continue;
                     } catch (TimeoutException e) {
+                        btaRobot.add(b);
                         continue;
                     }
                     robotRoute.setScore(wrRobot.getCost());
@@ -178,13 +194,42 @@ public class RoutePlanerFaseTwo {
                     robotRoute.setWaypoints(robotwaypoints);
                     robot.addRoute(robotRoute);
                     btaRobot.add(b);
-                    ballsHeat1.add(b);
                 }
             }
         }
         robot.endHeatRoutes();
         ballsHeat1 = heat1Generator(ballsHeat1);
-        System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + 0/*todo add me ind again  ballsHeat1.get(3).getGoalRoute().getScore()*/);
+        if(ballsHeat1.size() < 4){
+            System.err.println("No route found!! \nChoose route by hand");
+            ballsHeat1.clear();
+            manualVec.clear();
+            ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
+            System.out.println("Press enter to end route!");
+            Scanner inputWaitConfig = new Scanner(System.in);
+            inputWaitConfig.nextLine();
+            for (Vector2Dv1 v :manualVec) {
+                Ball closest = null;
+                int closestDis = 0;
+                for (Ball b: balls) {
+                    if(ballsHeat1.contains(b))
+                        continue;
+                    if(closest == null){
+                        closest = b;
+                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        continue;
+                    }
+                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    if(dis < closestDis){
+                        closest = b;
+                        closestDis = dis;
+                    }
+                }
+                ballsHeat1.add(closest);
+            }
+            ballsHeat1.get(3).setGoalRoute(new Route(ballsHeat1.get(3).getPosVector()));
+            ballsHeat1.get(3).getGoalRoute().setScore(-1);
+        }
+        System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + ballsHeat1.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat1) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
@@ -197,14 +242,17 @@ public class RoutePlanerFaseTwo {
         wrRobot = null;
         for (Ball b : balls) {
             if(b.getPlacement() == Ball.Placement.FREE){
+                ballsHeat2.add(b);
                 robotRoute = new Route(robot.getPosVector());
                 robotRoute.setEnd(b);
                 btaRobot.remove(b);
                 try {
                     wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                 } catch (NoRouteException e) {
+                    btaRobot.add(b);
                     continue;
                 } catch (TimeoutException e) {
+                    btaRobot.add(b);
                     continue;
                 }
                 robotRoute.setScore(wrRobot.getCost());
@@ -212,20 +260,22 @@ public class RoutePlanerFaseTwo {
                 robotRoute.setWaypoints(robotwaypoints);
                 robot.addRoute(robotRoute);
                 btaRobot.add(b);
-                ballsHeat2.add(b);
             }
         }
         if(ballsHeat2.size() < 4){
             for (Ball b: balls) {
                 if(b.getPlacement() == Ball.Placement.PAIR) {
-                    robotRoute = new Route(robot.getPosVector());
+                    ballsHeat2.add(b);
+                    robotRoute = new Route(goalFakeBall.getPosVector());
                     robotRoute.setEnd(b);
                     btaRobot.remove(b);
                     try {
-                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                        wrRobot = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                     } catch (NoRouteException e) {
+                        btaRobot.add(b);
                         continue;
                     } catch (TimeoutException e) {
+                        btaRobot.add(b);
                         continue;
                     }
                     robotRoute.setScore(wrRobot.getCost());
@@ -233,21 +283,23 @@ public class RoutePlanerFaseTwo {
                     robotRoute.setWaypoints(robotwaypoints);
                     robot.addRoute(robotRoute);
                     btaRobot.add(b);
-                    ballsHeat2.add(b);
                 }
             }
         }
         if(ballsHeat2.size() < 4){
             for (Ball b: balls) {
-                if(b.getPlacement() != Ball.Placement.FREE) {
-                    robotRoute = new Route(robot.getPosVector());
+                if(b.getPlacement() != Ball.Placement.FREE && b.getPlacement() != Ball.Placement.PAIR ) {
+                    ballsHeat2.add(b);
+                    robotRoute = new Route(goalFakeBall.getPosVector());
                     robotRoute.setEnd(b);
                     btaRobot.remove(b);
                     try {
-                        wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                        wrRobot = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
                     } catch (NoRouteException e) {
+                        btaRobot.add(b);
                         continue;
                     } catch (TimeoutException e) {
+                        btaRobot.add(b);
                         continue;
                     }
                     robotRoute.setScore(wrRobot.getCost());
@@ -255,12 +307,40 @@ public class RoutePlanerFaseTwo {
                     robotRoute.setWaypoints(robotwaypoints);
                     robot.addRoute(robotRoute);
                     btaRobot.add(b);
-                    ballsHeat2.add(b);
                 }
             }
         }
         robot.endHeatRoutes();
         ballsHeat2 = heat2Generator(ballsHeat2);
+        if(ballsHeat2.size() < 4){
+            System.err.println("No route found!! \nChoose route by hand");
+            ballsHeat2.clear();
+            manualVec.clear();
+            ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
+            System.out.println("Press enter to end route!");
+            Scanner inputWaitConfig = new Scanner(System.in);
+            for (Vector2Dv1 v :manualVec) {
+                Ball closest = null;
+                int closestDis = 0;
+                for (Ball b: balls) {
+                    if(ballsHeat2.contains(b))
+                        continue;
+                    if(closest == null){
+                        closest = b;
+                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        continue;
+                    }
+                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    if(dis < closestDis){
+                        closest = b;
+                        closestDis = dis;
+                    }
+                }
+                ballsHeat2.add(closest);
+            }
+            ballsHeat2.get(3).setGoalRoute(new Route(ballsHeat2.get(3).getPosVector()));
+            ballsHeat2.get(3).getGoalRoute().setScore(-1);
+        }
         System.out.println("\nHeat 2 calculated: \n Possible stating balls: " + robot.getRoutes(2).size() + "\n Total score for Heat: " + ballsHeat2.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat2) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
@@ -271,14 +351,17 @@ public class RoutePlanerFaseTwo {
         System.out.println("\n-------------" + "\n Calculating Heat 3...");
         wrRobot = null;
         for (Ball b : balls) {
-            robotRoute = new Route(robot.getPosVector());
+            ballsHeat3.add(b);
+            robotRoute = new Route(goalFakeBall.getPosVector());
             robotRoute.setEnd(b);
             btaRobot.remove(b);
             try {
-                wrRobot = new WaypointGenerator(robot.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
+                wrRobot = new WaypointGenerator(goalFakeBall.getPosVector(), b.getPickUpPoint(), cross, boundry, btaRobot).waypointRoute;
             } catch (NoRouteException e) {
+                btaRobot.add(b);
                 continue;
             } catch (TimeoutException e) {
+                btaRobot.add(b);
                 continue;
             }
             robotRoute.setScore(wrRobot.getCost());
@@ -286,10 +369,42 @@ public class RoutePlanerFaseTwo {
             robotRoute.setWaypoints(robotwaypoints);
             robot.addRoute(robotRoute);
             btaRobot.add(b);
-            ballsHeat3.add(b);
         }
         robot.endHeatRoutes();
         ballsHeat3 = heat3Generator(ballsHeat3);
+        if(ballsHeat3.size() < 3){
+            System.err.println("No route found!! \nChoose route by hand");
+            ballsHeat3.clear();
+            manualVec.clear();
+            manualVec.add(balls.get(0).getPosVector());
+            manualVec.add(balls.get(1).getPosVector());
+            manualVec.add(balls.get(2).getPosVector());
+            ImageClick ic = new ImageClick(3, justInCase, "Choose a route", manualVec);
+            System.out.println("Press enter to end route!");
+            Scanner inputWaitConfig = new Scanner(System.in);
+            inputWaitConfig.nextLine();
+            for (Vector2Dv1 v :manualVec) {
+                Ball closest = null;
+                int closestDis = 0;
+                for (Ball b: balls) {
+                    if(ballsHeat3.contains(b))
+                        continue;
+                    if(closest == null){
+                        closest = b;
+                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        continue;
+                    }
+                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    if(dis < closestDis){
+                        closest = b;
+                        closestDis = dis;
+                    }
+                }
+                ballsHeat3.add(closest);
+            }
+            ballsHeat3.get(2).setGoalRoute(new Route(ballsHeat3.get(2).getPosVector()));
+            ballsHeat3.get(2).getGoalRoute().setScore(-1);
+        }
         System.out.println("\nHeat 3 calculated: \n Possible stating balls: " + robot.getRoutes(3).size() + "\n Total score for Heat: " + ballsHeat3.get(2).getGoalRoute().getScore());
         for (Ball b: ballsHeat3) {
             System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());

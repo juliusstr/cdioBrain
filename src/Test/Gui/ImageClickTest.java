@@ -114,7 +114,7 @@ public class ImageClickTest {
             System.out.println(v.size());
         }*/
     }
-    private static Mat imageIconToMat(ImageIcon imageIcon) {
+    public static Mat imageIconToMat(ImageIcon imageIcon) {
         // Convert ImageIcon to BufferedImage
         BufferedImage bufferedImage = new BufferedImage(
                 imageIcon.getIconWidth(),
