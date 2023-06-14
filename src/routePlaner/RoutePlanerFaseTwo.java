@@ -27,11 +27,11 @@ import java.util.concurrent.TimeoutException;
 import static Client.StandardSettings.ANGLE_ERROR;
 
 public class RoutePlanerFaseTwo {
-    private ArrayList<Ball> balls = null;
+    private ArrayList<Ball> balls;
     public ArrayList<Ball> ballsHeat1 = null;
     public ArrayList<Ball> ballsHeat2 = null;
     public ArrayList<Ball> ballsHeat3 = null;
-    private Robotv1 robot = null;
+    private Robotv1 robot;
     private Ball goalFakeBall = null;
     private Mat justInCase = null;
     Cross cross;
@@ -1139,9 +1139,9 @@ public class RoutePlanerFaseTwo {
         returnList.add(new Vector2Dv1(boundry.points.get(index2)));
         // todo EVT VEND < OM !!!
         if(returnList.get(0).y < returnList.get(1).y){
-            returnList.set(2, returnList.get(0));
-            returnList.set(0, returnList.get(1));
-            returnList.set(1, returnList.get(2));
+            Vector2Dv1 temp = returnList.get(0);
+            returnList.remove(temp);
+            returnList.add(temp);
         }
         return  returnList;
     }

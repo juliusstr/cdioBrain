@@ -125,8 +125,16 @@ public class MainClient {
         caliGUI.add(new Vector2Dv1(1,1));
         caliGUI.add(new Vector2Dv1(1,1));
 
+        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+
+        ArrayList<Vector2Dv1> robotPos = new ArrayList<>();
+        robotPos.add(new Vector2Dv1(1,1));
+        robotPos.add(new Vector2Dv1(1,1));
+
         //call interface
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI);
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI, robotPos);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
@@ -158,19 +166,14 @@ public class MainClient {
         } catch (NoDataException e) {
             throw new RuntimeException(e);
         }
-        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
-        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
-        ArrayList<Ball> robotBalls = new ArrayList<>();
-        try {
-            robotBalls = stabilizer.getStabelRobotCirce();
-        } catch (BadDataException e) {
-            robotBalls.add(initBall);
-            robotBalls.add(initBall2);
-        }
-        robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
-        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
+
+        Ball greenBall = new Ball((int) GUI_Menu.robotPos.get(1).x, (int) GUI_Menu.robotPos.get(1).y,0, BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        Ball blackBall = new Ball((int) GUI_Menu.robotPos.get(0).x, (int) GUI_Menu.robotPos.get(0).y,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
+
+
+        //robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
+        robotv1.updatePos(greenBall, blackBall);
 
 
         System.out.println("\n-----------------------\nInfo to make sim test from");
@@ -193,6 +196,8 @@ public class MainClient {
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(10).x + "," + ballsGUI.get(10).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
 
         System.out.println();
+
+
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);

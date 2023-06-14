@@ -22,13 +22,14 @@ public class GUI_Menu {
     public static ArrayList<Vector2Dv1> balls = null;
     public static ArrayList<Vector2Dv1> caliPos = null;
     public static ArrayList<Color> robotColor = null;
+    public static ArrayList<Vector2Dv1> robotPos = null;
 
     private static GuiData guiData = null;
 
 
     private static Mat image;
 
-    public GUI_Menu(Mat m, ArrayList<Color> rc, ArrayList<Vector2Dv1> bp, ArrayList<Vector2Dv1> cp, ArrayList<Vector2Dv1> balls, GuiData gd, ArrayList<Vector2Dv1> calip){
+    public GUI_Menu(Mat m, ArrayList<Color> rc, ArrayList<Vector2Dv1> bp, ArrayList<Vector2Dv1> cp, ArrayList<Vector2Dv1> balls, GuiData gd, ArrayList<Vector2Dv1> calip, ArrayList<Vector2Dv1> rPos){
         image = m;
         robotColor = rc;
         boundryPos = bp;
@@ -36,6 +37,7 @@ public class GUI_Menu {
         this.balls = balls;
         guiData = gd;
         caliPos = calip;
+        robotPos = rPos;
         setUpMenu();
     }
 
@@ -80,10 +82,10 @@ public class GUI_Menu {
         jPanel.add(buttonBalls);
 
         // Robot colors
-        JLabel labelRobot = new JLabel("Robot colors set to", SwingConstants.LEFT);
-        JTable tableRobot = new JTable(getRobotInfo() , new String[] {"Color","Red","Green","Blue"});
+        JLabel labelRobot = new JLabel("Robot set to", SwingConstants.LEFT);
+        JTable tableRobot = new JTable(getRobotInfo() , new String[] {"Ball vector","X position","Y position"});
         JScrollPane spRobot = new JScrollPane(tableRobot);
-        JButton buttonRobot = new JButton("Set Robot colors");
+        JButton buttonRobot = new JButton("Set Robot");
         jPanel.add(labelRobot);
         jPanel.add(spRobot);
         jPanel.add(buttonRobot);
@@ -129,9 +131,9 @@ public class GUI_Menu {
         buttonRobot.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Vector2Dv1> v = new ArrayList<>();
-                robotColor.clear();
-                new ImageClick(2, image, "Choose robot colors", v, robotColor, tableRobot, true);
+                ArrayList<Color> c = new ArrayList<>();
+                robotPos.clear();
+                new ImageClick(2, image, "Choose robot ", robotPos, c, tableRobot, false);
             }
         });
         buttonCompleted.addActionListener(new ActionListener() {
@@ -197,8 +199,8 @@ public class GUI_Menu {
 
     public static String[][] getRobotInfo(){
         String[][] data = {
-                {"Black",String.valueOf(robotColor.get(0).getRed()),String.valueOf(robotColor.get(0).getGreen()),String.valueOf(robotColor.get(0).getBlue())},
-                {"Green",String.valueOf(robotColor.get(1).getRed()),String.valueOf(robotColor.get(1).getGreen()),String.valueOf(robotColor.get(1).getBlue())}
+                {"Black",String.valueOf(robotPos.get(0).x),String.valueOf(robotPos.get(0).y)},
+                {"Green",String.valueOf(robotPos.get(1).x),String.valueOf(robotPos.get(1).y)}
         };
         return data;
     }
