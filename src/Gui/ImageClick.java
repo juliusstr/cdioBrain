@@ -76,8 +76,14 @@ public class ImageClick {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                pos.add(new Vector2Dv1(x,y));
                 color.add(new Color(imageBuffered.getRGB(x, y)));
+                if(x % 2 < 0)
+                    x--;
+                x /= 2;
+                if(y % 2 < 0)
+                    y--;
+                y /= 2;
+                pos.add(new Vector2Dv1(x,y));
                 /*Color mycolor = null;
                 mycolor = new Color(imageBuffered.getRGB(x, y));
                 System.out.println("Red " + mycolor.getRed() + "Green" + mycolor.getGreen() + "Blue" + mycolor.getBlue());

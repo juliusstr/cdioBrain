@@ -137,6 +137,9 @@ public class Robotv1 {
     }
 
     public void setScale(Vector2Dv1 lowPoint, Vector2Dv1 highPoint){
+        Vector2Dv1 mid = new Vector2Dv1(640/2,360/2);
+        lowPoint.subtract(mid);
+        highPoint.subtract(mid);
         scaleX = lowPoint.x/highPoint.x;
         scaleY = lowPoint.y/highPoint.y;
     }
