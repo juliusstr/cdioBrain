@@ -16,6 +16,8 @@ public class Robotv1 {
     private double  speed,
                     angelSpeed;
 
+    double scaleX = 1, scaleY = 1;
+
     public Robotv1(double xPos, double yPos, Vector2Dv1 directionVector) {
         this.xPos = xPos;
         this.yPos = yPos;
@@ -109,6 +111,18 @@ public class Robotv1 {
     }
 
     public void updatePos(Ball a, Ball b){
+        //640X360
+        Vector2Dv1 av = a.getPosVector();
+        Vector2Dv1 bv = b.getPosVector();
+        Vector2Dv1 mid = new Vector2Dv1(640/2,360/2);
+        Vector2Dv1 aPos = av.getSubtracted(mid);
+        Vector2Dv1 bPos = bv.getSubtracted(mid);
+        aPos.x *= scaleX;
+        aPos.y *= scaleY;
+        bPos.x *= scaleX;
+        bPos.y *= scaleY;
+        a.setPos(aPos.getAdded(mid).getPoint());
+        b.setPos(bPos.getAdded(mid).getPoint());
         Ball back = b;
         Ball front  = a;
         if (!back.getColor().equals(BallClassifierPhaseTwo.BLACK)){
@@ -120,6 +134,11 @@ public class Robotv1 {
         Vector2Dv1 dir = new Vector2Dv1(front.getxPos(), front.getyPos());
         dir.subtract(new Vector2Dv1(back.getxPos(), back.getyPos()));
         setDirection(dir);
+    }
+
+    public void setScale(Vector2Dv1 lowPoint, Vector2Dv1 highPoint){
+        scaleX = lowPoint.x/highPoint.x;
+        scaleY = lowPoint.y/highPoint.y;
     }
 
 }

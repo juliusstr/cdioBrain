@@ -168,6 +168,7 @@ public class MainClient {
             robotBalls.add(initBall);
             robotBalls.add(initBall2);
         }
+        robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
         robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
