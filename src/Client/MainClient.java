@@ -179,12 +179,12 @@ public class MainClient {
 
         System.out.println();
 
-        System.out.println("Press enter to Connect to server/robot:");
+        System.out.println("\nPress enter to Connect to server/robot:");
         Scanner inputWait = new Scanner(System.in);
         inputWait.nextLine();
 
         Socket s = new Socket("192.168.1.102",6666);
-        System.err.println("Wating on server...");
+        System.err.println("\nWating on server...");
 
         out = new PrintWriter(s.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(s.getInputStream()));
