@@ -202,6 +202,9 @@ public class RoutePlanerFaseTwo {
             System.err.println("No route found!! \nChoose route by hand");
             ballsHeat1.clear();
             manualVec.clear();
+            for (Ball b: balls) {
+                manualVec.add(b.getPosVector());
+            }
             ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
             System.out.println("Press enter to end route!");
             Scanner inputWaitConfig = new Scanner(System.in);
@@ -315,9 +318,14 @@ public class RoutePlanerFaseTwo {
             System.err.println("No route found!! \nChoose route by hand");
             ballsHeat2.clear();
             manualVec.clear();
+            for (Ball b: balls) {
+                manualVec.add(b.getPosVector());
+            }
             ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
             System.out.println("Press enter to end route!");
             Scanner inputWaitConfig = new Scanner(System.in);
+            inputWaitConfig.nextLine();
+
             for (Vector2Dv1 v :manualVec) {
                 Ball closest = null;
                 int closestDis = 0;
