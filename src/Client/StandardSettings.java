@@ -1,7 +1,7 @@
 package Client;
 
 public class StandardSettings {
-    public static final int VIDIO_CAPTURE_INDEX = 2;
+    public static final int VIDIO_CAPTURE_INDEX = 1;
 
 
     /**
@@ -22,7 +22,7 @@ public class StandardSettings {
      * Depth of search in waypoint generator.
      * Above 10 is not needed. Might be able to get away with 5 or 6.
      */
-    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 7;
+    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 6;
     /**
      * sppeds up nav by 300-400% but does not get best route.
      */
@@ -30,7 +30,7 @@ public class StandardSettings {
     /**
      * Number of threads to use in search for route in wayPointGen
      */
-    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 4;
+    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 8;
 
 
     /**
