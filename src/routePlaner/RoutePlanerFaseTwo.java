@@ -962,37 +962,17 @@ public class RoutePlanerFaseTwo {
             switch (heat.get(j).getPlacement()) {
                 case FREE:
                     //check if we have the right angle to the target
-                    out.println("stop -d -t");
-                    wait(100);
-                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
-                        updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d -t");
-                    }
-                    wait(100);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                         out.println(StandardSettings.COLLECT_COMMAND);
                         wait(500);
                     break;
                 case EDGE:
-                    out.println("stop -d -t");
-                    wait(100);
-                    //check if we have the right angle to the target
-                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
-                        updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d -t");
-                    }
-                    wait(100);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
                     wait(500);
                     break;
                 case CORNER:
-                    out.println("stop -d -t");
-                    wait(100);
-                    //check if we have the right angle to the target
-                    while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
-                        updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d -t");
-                    }
-                    wait(100);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
                     wait(500);
                     break;
@@ -1023,12 +1003,7 @@ public class RoutePlanerFaseTwo {
             }
             out.println(command);
         }
-        //check if we have the right angle to the target
-        while(!correctAngleToTarget(robot, getGoalPos(), out)){
-            updateRobotFromImgRec(imgRec, robot, stabilizer);
-            out.println("stop -d -t");
-        }
-        wait(100);
+        turnBeforeHardcode(robot, imgRec, out, getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
@@ -1073,7 +1048,7 @@ public class RoutePlanerFaseTwo {
             } else {
                 command += "r";
             }
-            double turnSpeed = Math.abs(angleToTarget / 20);
+            double turnSpeed = Math.abs(angleToTarget / 5);
             if (turnSpeed > 0.2) {turnSpeed = 0.2;
             } else if (turnSpeed < 0.02) {
                 turnSpeed = 0.02;
@@ -1151,6 +1126,18 @@ public class RoutePlanerFaseTwo {
         ArrayList<Vector2Dv1> corners = getCornersForGoal();
         Vector2Dv1 smallGoal = corners.get(0).getMidVector(corners.get(1));
         return smallGoal;
+    }
+
+    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
+        out.println("stop -d -t");
+        wait(100);
+        //check if we have the right angle to the target
+        while(!correctAngleToTarget(robot, target, out)){
+            updateRobotFromImgRec(imgRec, robot, stabilizer);
+            out.println("stop -d -t");
+        }
+        wait(100);
+
     }
 }
 
