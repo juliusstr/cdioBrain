@@ -111,8 +111,8 @@ public class ImageClick {
 
     private static void drawClickPos(int x, int y, JLabel label){
         org.opencv.core.Point center = new org.opencv.core.Point(x, y);
-        int radius = 3;
-        Imgproc.circle(matChanges, center, radius, new Scalar(255, 0, 0), 3);
+        int radius = 2;
+        Imgproc.circle(matChanges, center, radius, new Scalar(255, 0, 0), 2);
         // Convert Mat to MatOfByte
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", matChanges, matOfByte);
