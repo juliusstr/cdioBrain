@@ -1,6 +1,7 @@
 package misc;
 
 import Client.StandardSettings;
+import misc.ball.Ball;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,6 +13,9 @@ public class Boundry {
     public double scale = 1;
 
     public int zoneGroupID;
+
+    public Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
+    public Vector2Dv1 goalWaypoint1;
 
     public Boundry(ArrayList<Vector2Dv1> vectors) {
         Point a ,b, c, d;
@@ -80,6 +84,70 @@ public class Boundry {
         bound.add(bc);
         bound.add(cd);
         bound.add(da);
+    }
+    /**
+     * Initializes the goal waypoints used for navigation.
+     * Calculates the coordinates of two goal waypoints based on the boundary points.
+     * Sets the goalWaypoint0, goalWaypoint1, and goalFakeBall variables.
+     */
+    public void initGoalWaypoints() {
+        ArrayList<Vector2Dv1> corners = getCornersForGoal();
+        Vector2Dv1 midVector = corners.get(0).getMidVector(corners.get(1));
+        Vector2Dv1 dir = corners.get(0).getSubtracted(corners.get(1)).getNormalized().getRotatedBy((Math.PI / 2)*(-1));
+        goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
+        goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
+
+    }
+    /**
+     * Gets the corners that is on the small goal boundary
+     * @return List of Vector2D with the coordinates to the corners
+     */
+    public ArrayList<Vector2Dv1> getCornersForGoal(){
+        int index1 = -1, index2 = -1;;
+        int minX = Integer.MAX_VALUE;
+        ArrayList<Vector2Dv1> returnList = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).x < minX) {
+                index1 = i;
+                minX = points.get(i).x;
+            }
+        }
+        returnList.add(new Vector2Dv1(points.get(index1)));
+
+        minX = Integer.MAX_VALUE;
+
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).x < minX && i != index1) {
+                index2 = i;
+                minX = points.get(i).x;
+            }
+        }
+        returnList.add(new Vector2Dv1(points.get(index2)));
+        if(returnList.get(0).y < returnList.get(1).y){
+            Vector2Dv1 temp = returnList.get(0);
+            returnList.remove(temp);
+            returnList.add(temp);
+        }
+        return  returnList;
+    }
+    /**
+     * Gets the goal position as a vector from the corners with the smallest x coordinate
+     * @return Vector2D with the pos of the goal
+     */
+    public Vector2Dv1 getGoalPos(){
+        ArrayList<Vector2Dv1> corners = getCornersForGoal();
+        Vector2Dv1 smallGoal = corners.get(0).getMidVector(corners.get(1));
+        return smallGoal;
+    }
+
+    public Vector2Dv1 getGoalWaypoint(int i){
+        switch (i){
+            case 0:
+                return goalWaypoint0;
+            case 1:
+                return goalWaypoint1;
+        }
+        return null;
     }
 
 }
