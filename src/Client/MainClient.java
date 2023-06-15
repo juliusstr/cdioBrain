@@ -3,8 +3,6 @@ package Client;
 
 import Gui.DataView;
 import Gui.GUI_Menu;
-import Gui.GuiData;
-import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
@@ -18,7 +16,6 @@ import misc.ball.BallStabilizerPhaseTwo;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import routePlaner.Route;
 import routePlaner.RoutePlanerFaseTwo;
 
 import java.awt.*;

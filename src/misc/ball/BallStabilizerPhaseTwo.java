@@ -19,10 +19,6 @@ public class BallStabilizerPhaseTwo {
     private ArrayList<Ball> balls;
     private int nextId;
 
-    private BallPrecision ballPrecision = new BallPrecision();
-
-
-
     public BallStabilizerPhaseTwo(){
         balls = new ArrayList<>();
         nextId = 1;

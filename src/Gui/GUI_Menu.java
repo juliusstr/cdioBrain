@@ -1,5 +1,6 @@
 package Gui;
 
+import Gui.Image.GuiImage;
 import misc.Boundry;
 import misc.Cross;
 import misc.Vector2Dv1;
@@ -24,18 +25,17 @@ public class GUI_Menu {
     public static ArrayList<Color> robotColor = null;
     public static ArrayList<Vector2Dv1> robotPos = null;
 
-    private static GuiData guiData = null;
+    private static ImageClick clicker = null;
 
+    private static GuiImage image;
 
-    private static Mat image;
-
-    public GUI_Menu(Mat m, ArrayList<Color> rc, ArrayList<Vector2Dv1> bp, ArrayList<Vector2Dv1> cp, ArrayList<Vector2Dv1> balls, GuiData gd, ArrayList<Vector2Dv1> calip, ArrayList<Vector2Dv1> rPos){
-        image = m;
+    public GUI_Menu(Mat m, ArrayList<Color> rc, ArrayList<Vector2Dv1> bp, ArrayList<Vector2Dv1> cp, ArrayList<Vector2Dv1> balls, ArrayList<Vector2Dv1> calip, ArrayList<Vector2Dv1> rPos){
+        image = new GuiImage(m);
+        clicker = new ImageClick(image);
         robotColor = rc;
         boundryPos = bp;
         crossPos = cp;
         this.balls = balls;
-        guiData = gd;
         caliPos = calip;
         robotPos = rPos;
         setUpMenu();
