@@ -1,5 +1,6 @@
 package Gui;
 
+import Client.StandardSettings;
 import misc.Vector2Dv1;
 import misc.ball.BallClassifierPhaseTwo;
 import org.opencv.core.Core;
@@ -72,16 +73,16 @@ public class ImageClick {
         this.jt = new JTable();
         this.colorbool = false;
         this.startup = false;
-
+        Mat m2 = mat.clone();
         for (Vector2Dv1 v1: v) {
             org.opencv.core.Point center = new org.opencv.core.Point((int)v1.x*2, (int)v1.y*2);
             int radius = 16;
-            Imgproc.circle(mat, center, radius, new Scalar(0, 0, 255), 3);
+            Imgproc.circle(m2, center, radius, new Scalar(0, 0, 255), 3);
         }
         v.clear();
         // Convert Mat to MatOfByte
         MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", mat, matOfByte);
+        Imgcodecs.imencode(".png", m2, matOfByte);
 
         // Create an InputStream from the MatOfByte
         byte[] byteArray = matOfByte.toArray();

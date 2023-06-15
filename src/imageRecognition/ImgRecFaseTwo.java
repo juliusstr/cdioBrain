@@ -31,8 +31,6 @@ public class ImgRecFaseTwo {
     }
 
     public ImgRecFaseTwo() {
-
-
         // Create a new VideoCapture object to get frames from the webcam
         System.err.println("loading webcam");
         capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);

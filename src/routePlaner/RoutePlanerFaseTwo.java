@@ -2,6 +2,7 @@ package routePlaner;
 
 import Client.StandardSettings;
 import Gui.ImageClick;
+import Gui.RouteView;
 import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.NoRouteException;
@@ -119,6 +120,7 @@ public class RoutePlanerFaseTwo {
         ballsHeat1 = new ArrayList<>();
         ballsHeat2 = new ArrayList<>();
         ballsHeat3 = new ArrayList<>();
+        ArrayList<Ball> extraBalls = new ArrayList<>();
         ArrayList<Vector2Dv1> manualVec = new ArrayList<>();
         Route robotRoute = null;
         WaypointGenerator.WaypointRoute wrRobot = null;
@@ -198,6 +200,8 @@ public class RoutePlanerFaseTwo {
             }
         }
         robot.endHeatRoutes();
+        extraBalls.clear();
+        extraBalls = (ArrayList<Ball>) ballsHeat1.clone();
         ballsHeat1 = heat1Generator(ballsHeat1);
         if(ballsHeat1.size() < 4){
             System.err.println("No route found!! \nChoose route by hand");
