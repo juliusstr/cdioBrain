@@ -207,16 +207,16 @@ public class RoutePlanerFaseTwo {
             inputWaitConfig.nextLine();
             for (Vector2Dv1 v :manualVec) {
                 Ball closest = null;
-                int closestDis = 0;
+                double closestDis = 0;
                 for (Ball b: balls) {
                     if(ballsHeat1.contains(b))
                         continue;
                     if(closest == null){
                         closest = b;
-                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        closestDis = b.getPosVector().distance(v);
                         continue;
                     }
-                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    double dis = b.getPosVector().distance(v);
                     if(dis < closestDis){
                         closest = b;
                         closestDis = dis;
@@ -326,16 +326,16 @@ public class RoutePlanerFaseTwo {
 
             for (Vector2Dv1 v :manualVec) {
                 Ball closest = null;
-                int closestDis = 0;
+                double closestDis = 0;
                 for (Ball b: balls) {
                     if(ballsHeat2.contains(b))
                         continue;
                     if(closest == null){
                         closest = b;
-                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        closestDis = b.getPosVector().distance(v);
                         continue;
                     }
-                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    double dis = b.getPosVector().distance(v);
                     if(dis < closestDis){
                         closest = b;
                         closestDis = dis;
@@ -392,16 +392,16 @@ public class RoutePlanerFaseTwo {
             inputWaitConfig.nextLine();
             for (Vector2Dv1 v :manualVec) {
                 Ball closest = null;
-                int closestDis = 0;
+                double closestDis = 0;
                 for (Ball b: balls) {
                     if(ballsHeat3.contains(b))
                         continue;
                     if(closest == null){
                         closest = b;
-                        closestDis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                        closestDis = b.getPosVector().distance(v);
                         continue;
                     }
-                    int dis = (b.getxPos() - (int)v.x) > 0 ? (b.getxPos() - (int)v.x) : ((int)v.x - b.getxPos()) + (b.getyPos() - (int)v.y) > 0 ? (b.getyPos() - (int)v.y) : ((int)v.y - b.getyPos());
+                    double dis = b.getPosVector().distance(v);
                     if(dis < closestDis){
                         closest = b;
                         closestDis = dis;
