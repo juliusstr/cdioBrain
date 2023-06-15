@@ -137,8 +137,8 @@ public class RoutePlanerfaseTwoTest {
     @DisplayName("Goal init test")
     void goalInitTest(){
         RoutePlanerFaseTwo routePlaner = new RoutePlanerFaseTwo(simulationRobot,ballsToAvoid, boundry,cross);
-        System.out.println(routePlaner.getGoalWaypoint(0));
-        System.out.println(routePlaner.getGoalWaypoint(1));
+        System.out.println(boundry.getGoalWaypoint(0));
+        System.out.println(boundry.getGoalWaypoint(1));
     }
 
     @Test
@@ -463,12 +463,12 @@ public class RoutePlanerfaseTwoTest {
 
         //tjek for om den regner rigtigt når det passer
         Vector2Dv1 vec2 = new Vector2Dv1(2, 2);
-        double angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        double angle = routePlan.routExecuter.angleBeforeHardcode(simulationRobot, vec2);
         assertTrue(Math.abs(angle) < 0.01);
 
         // Tjek for at den regner rigtigt når det ikke passer
         vec2 = new Vector2Dv1(1, 0);
-        angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        angle = routePlan.routExecuter.angleBeforeHardcode(simulationRobot, vec2);
         assertTrue(angle > 0.77 || angle < 0.79);
     }
 

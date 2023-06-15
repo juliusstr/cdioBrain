@@ -34,11 +34,12 @@ public class RoutePlanerFaseTwo {
     public Ball goalFakeBall = null;
     private Mat justInCase = null;
     Cross cross;
-    Boundry boundry;
+    public Boundry boundry;
     ArrayList<Ball> ballsToAvoid;
 
-    private Vector2Dv1 goalWaypoint0;//go firsts to this then 1,
-    private Vector2Dv1 goalWaypoint1;
+
+
+    public RoutExecute routExecuter;
 
     /**
      * Sets the boundary for the route planner.
@@ -62,15 +63,7 @@ public class RoutePlanerFaseTwo {
      * @param i The index of the goal waypoint.
      * @return The goal waypoint vector.
      */
-    public Vector2Dv1 getGoalWaypoint(int i){
-        switch (i){
-            case 0:
-                return goalWaypoint0;
-            case 1:
-                return goalWaypoint1;
-        }
-        return null;
-    }
+
     /**
      * Gets the list of balls.
      *
@@ -100,7 +93,8 @@ public class RoutePlanerFaseTwo {
         robot = r;
         cross = c;
         this.boundry = boundry;
-        initGoalWaypoints();
+        boundry.initGoalWaypoints();
+        goalFakeBall = new Ball(boundry.goalWaypoint0);
     }
 
     public void setImage(Mat m){
@@ -809,37 +803,14 @@ public class RoutePlanerFaseTwo {
         return best_heat;
     }
 
-    /**
-     * Initializes the goal waypoints used for navigation.
-     * Calculates the coordinates of two goal waypoints based on the boundary points.
-     * Sets the goalWaypoint0, goalWaypoint1, and goalFakeBall variables.
-     */
-    public void initGoalWaypoints() {
-        ArrayList<Vector2Dv1> corners = getCornersForGoal();
-        Vector2Dv1 midVector = corners.get(0).getMidVector(corners.get(1));
-        Vector2Dv1 dir = corners.get(0).getSubtracted(corners.get(1)).getNormalized().getRotatedBy((Math.PI / 2)*(-1));
-        goalWaypoint1 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST));
-        goalWaypoint0 = midVector.getAdded(dir.getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_RUN_UP_DIST + StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP));
-        goalFakeBall = new Ball(goalWaypoint0);
-    }
+
 
     /**
      * Returns the goal waypoint 0.
      *
      * @return The goal waypoint 0 as a Vector2Dv1 object.
      */
-    public Vector2Dv1 getGoalWaypoint0() {
-        return goalWaypoint0;
-    }
 
-    /**
-     * Returns the goal waypoint 1.
-     *
-     * @return The goal waypoint 1 as a Vector2Dv1 object.
-     */
-    public Vector2Dv1 getGoalWaypoint1() {
-        return goalWaypoint1;
-    }
 
     /**
      * Executes the main run logic for the robot.
@@ -871,317 +842,11 @@ public class RoutePlanerFaseTwo {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
 
-        heatRunner(ballsHeat1, 1, out, in, imgRec, stabilizer, ballsToAvoid);
-        heatRunner(ballsHeat2, 2, out, in, imgRec, stabilizer, ballsToAvoid);
-        heatRunner(ballsHeat3, 3, out, in, imgRec, stabilizer, ballsToAvoid);
+        routExecuter = new RoutExecute(out, in, robot, cross, boundry);
 
-    }
+        routExecuter.heatRunner(ballsHeat1, 1, imgRec, stabilizer, ballsToAvoid);
+        routExecuter.heatRunner(ballsHeat2, 2, imgRec, stabilizer, ballsToAvoid);
+        routExecuter.heatRunner(ballsHeat3, 3, imgRec, stabilizer, ballsToAvoid);
 
-    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
-        WaypointGenerator waypointGenerator;
-        Ball lastBall = null;
-        CommandGenerator commandGenerator;
-        ArrayList<Vector2Dv1> routeToGoal;
-        // checksize to have 11 balls ?
-        int checkSize;
-        if(heatNr == 3){
-            checkSize = 3;
-        } else {
-            checkSize = 4;
-        }
-
-        for (int j = 0; j < heat.size(); j++) {
-            //finde route from robot to ball
-            ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
-            ballsToAvoid.remove(heat.get(j));
-            if (heat.size() == checkSize) {
-                for (int i = 0; i < robot.getRoutes(heatNr).size(); i++) {
-                    if (heat.get(0) == robot.getRoutes(heatNr).get(i).getEnd()) {
-                        //routToBall = robot.getRoutes(1).get(i).getWaypoints();
-                        try {
-                            Vector2Dv1 targetWaypoint;
-                            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
-                                targetWaypoint = heat.get(j).getPosVector();
-                            } else {
-                                targetWaypoint = heat.get(j).getPickUpPoint();
-                            }
-                            waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
-
-                        } catch (NoRouteException e) {
-                            throw new RuntimeException(e);
-                        } catch (TimeoutException e) {
-                            throw new RuntimeException(e);
-                        }
-                        routToBall = waypointGenerator.waypointRoute.getRoute();
-                        if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
-                            routToBall.add(heat.get(j).getLineUpPoint());
-                        }
-                        break;
-                    }
-                }
-            } else {
-                for (int i = 0; i < lastBall.getRoutes().size(); i++) {
-                    if (lastBall.getRoutes().get(i).getEnd() == heat.get(j)) {
-                        //routToBall = lastBall.getRoutes().get(i).getWaypoints();
-                        try {
-                            Vector2Dv1 targetWaypoint;
-                            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
-                                targetWaypoint = heat.get(j).getPosVector();
-                            } else {
-                                targetWaypoint = heat.get(j).getPickUpPoint();
-                            }
-                            waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
-                        } catch (NoRouteException e) {
-                            throw new RuntimeException(e);
-                        } catch (TimeoutException e) {
-                            throw new RuntimeException(e);
-                        }
-                        routToBall = waypointGenerator.waypointRoute.getRoute();
-                        if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
-                            routToBall.add(heat.get(j).getLineUpPoint());
-                        }
-                        break;
-                    }
-                }
-
-            }
-            //run to ball
-            commandGenerator = new CommandGenerator(robot, routToBall);
-            boolean isBallNotWaypoint;
-            if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
-                isBallNotWaypoint = true;
-            } else {
-                isBallNotWaypoint = false;
-            }
-            while (routToBall.size() != 0) {
-                updateRobotFromImgRec(imgRec, robot, stabilizer);
-                String command = commandGenerator.nextCommand(isBallNotWaypoint);
-                if (command.contains("ball") || command.contains("waypoint")) {
-                    out.println("stop -d -t");
-                    wait(200);
-                    routToBall.clear();
-                } else {
-                    out.println(command);
-                }
-            }
-            //collect
-            switch (heat.get(j).getPlacement()) {
-                case FREE:
-                    //check if we have the right angle to the target
-                    turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
-                    out.println(StandardSettings.COLLECT_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
-                    break;
-                case EDGE:
-                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
-                    out.println(StandardSettings.COLLECT_EDGE_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
-                    break;
-                case CORNER:
-                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
-                    out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
-                    break;
-                default:
-                    out.println("stop -t -d");
-                    wait(500);
-                    break;
-            }
-            lastBall = heat.get(j);
-
-        }
-        //go to goal and do a drop-off
-        try {
-            waypointGenerator = new WaypointGenerator(getGoalWaypoint0(), robot.getPosVector(), cross, boundry, ballsToAvoid);
-        } catch (NoRouteException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
-        routeToGoal.add(getGoalWaypoint1());
-        commandGenerator = new CommandGenerator(robot, routeToGoal);
-        while (routeToGoal.size() != 0) {
-            updateRobotFromImgRec(imgRec, robot, stabilizer);
-            String command = commandGenerator.nextCommand(false);
-            if (command.contains("waypoint")) {
-                routeToGoal.clear();
-            }
-            out.println(command);
-        }
-        turnBeforeHardcode(robot, imgRec, out, in, getGoalPos(), stabilizer);
-        out.println(StandardSettings.DROP_OFF_COMMAND);
-        reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-        reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
-    }
-
-    /**
-     * Pauses the execution for the specified number of milliseconds.
-     *
-     * @param millis The number of milliseconds to wait.
-     */
-    private void wait(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Checks the angle between a robot and the target it is supposed to go to.
-     * @param robot The robot
-     * @param target The target
-     * @return How wrong the angle of the robot is to target
-     */
-    public double angleBeforeHardcode(Robotv1 robot, Vector2Dv1 target) {
-        return robot.getDirection().getAngleBetwen(target.getSubtracted(robot.getPosVector()));
-    }
-
-    /**
-     * Checks if we have the correct angle to our target, within the constant ANGLE_ERROR
-     * @param robot The robot
-     * @param target The target
-     * @param out The Printwriter to write to robot
-     * @return True if we have the correct angle, false if we dont have the correct angle
-     */
-    public boolean correctAngleToTarget(Robotv1 robot, Vector2Dv1 target, PrintWriter out) {
-        double angleToTarget = angleBeforeHardcode(robot, target);
-        String command = "";
-        if (Math.abs(angleToTarget) > ANGLE_ERROR) {
-            command += "turn -";
-            if (angleToTarget < 0) {
-                command += "l";
-            } else {
-                command += "r";
-            }
-            double turnSpeed = Math.abs(angleToTarget / 5);
-            if (turnSpeed > 0.2) {turnSpeed = 0.2;
-            } else if (turnSpeed < 0.02) {
-                turnSpeed = 0.02;
-            }
-
-            command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
-            System.out.println("Send command: " + command);
-            out.println(command);
-            return false;
-        } else{
-            return true;
-        }
-    }
-
-    /**
-     * Updates the robots position from image rec
-     * @param imgRec The imgRec used
-     * @param robot The robot to update
-     * @param stabilizer The stabilizer to use
-     */
-    public void updateRobotFromImgRec(ImgRecFaseTwo imgRec, Robotv1 robot, BallStabilizerPhaseTwo stabilizer){
-        ArrayList<Ball> balls = imgRec.captureBalls();
-        try {
-            stabilizer.stabilizeBalls(balls);
-        } catch (TypeException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
-            robot.updatePos(robotBalls.get(0), robotBalls.get(1));
-        } catch (BadDataException e) {
-            //throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Gets the corners that is on the small goal boundary
-     * @return List of Vector2D with the coordinates to the corners
-     */
-    public ArrayList<Vector2Dv1> getCornersForGoal(){
-        int index1 = -1, index2 = -1;;
-        int minX = Integer.MAX_VALUE;
-        ArrayList<Vector2Dv1> returnList = new ArrayList<>();
-        for (int i = 0; i < boundry.points.size(); i++) {
-            if (boundry.points.get(i).x < minX) {
-                index1 = i;
-                minX = boundry.points.get(i).x;
-            }
-        }
-        returnList.add(new Vector2Dv1(boundry.points.get(index1)));
-
-        minX = Integer.MAX_VALUE;
-
-        for (int i = 0; i < boundry.points.size(); i++) {
-            if (boundry.points.get(i).x < minX && i != index1) {
-                index2 = i;
-                minX = boundry.points.get(i).x;
-            }
-        }
-        returnList.add(new Vector2Dv1(boundry.points.get(index2)));
-        if(returnList.get(0).y < returnList.get(1).y){
-            Vector2Dv1 temp = returnList.get(0);
-            returnList.remove(temp);
-            returnList.add(temp);
-        }
-        return  returnList;
-    }
-
-    /**
-     * Gets the goal position as a vector from the corners with the smallest x coordinate
-     * @return Vector2D with the pos of the goal
-     */
-    public Vector2Dv1 getGoalPos(){
-        ArrayList<Vector2Dv1> corners = getCornersForGoal();
-        Vector2Dv1 smallGoal = corners.get(0).getMidVector(corners.get(1));
-        return smallGoal;
-    }
-
-    /**
-     * To turn before starting a hardcoded command
-     * @param robot         The robot to turn
-     * @param imgRec        The imgRec to update robot pos
-     * @param out           The Printwriter to send command to robot
-     * @param target        The target to have minimal angle to
-     * @param stabilizer    The stabilizer for the balls
-     */
-    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, BufferedReader in, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
-        out.println("stop -d -t");
-        try {
-            while (in.readLine() != null) ;
-        } catch (IOException e){
-            throw new RuntimeException();
-        }
-        wait(100);
-        //check if we have the right angle to the target
-        while(!correctAngleToTarget(robot, target, out)){
-            updateRobotFromImgRec(imgRec, robot, stabilizer);
-            out.println("stop -d -t");
-        }
-
-        wait(100);
-    }
-
-    /**
-     * Reverse if too close to a line after pickup
-     * @param lines The ArrayList of lines to check for
-     * @param robot The robot to check for
-     * @param out the Printwriter to write to the robot
-     */
-    public void reverseIfCloseToBoundary(ArrayList<Line> lines, Robotv1 robot, PrintWriter out, BufferedReader in){
-        try{
-            while(in.readLine() != "hardcode done");
-        } catch (IOException e){
-            throw new RuntimeException();
-        }
-        for (Line line: lines) {
-            if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
-                out.println("reverse -m500");
-                wait(400);
-                out.println("stop -d -t");
-            }
-        }
     }
 }
-
-
