@@ -109,7 +109,7 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
 
-    private void drawClickPos(int x, int y, JLabel label){
+    private static void drawClickPos(int x, int y, JLabel label){
         org.opencv.core.Point center = new org.opencv.core.Point(x, y);
         int radius = 3;
         Imgproc.circle(matChanges, center, radius, new Scalar(255, 0, 0), 3);
@@ -155,6 +155,7 @@ public class ImageClick {
                         y--;
                     y /= 2;
                 }
+                drawClickPos(x, y, imageLabel);
                 pos.add(new Vector2Dv1(x,y));
                 /*Color mycolor = null;
                 mycolor = new Color(imageBuffered.getRGB(x, y));
