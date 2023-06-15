@@ -26,11 +26,12 @@ public class RouteView {
         for (ArrayList<Vector2Dv1> route: routes) {
             int j = 1;
             if(routes.size() > i){
-                Imgproc.line(m2, new Point(route.get(route.size()-1).x, route.get(route.size()-1).y), new Point(routes.get(i).get(0).x, routes.get(i).get(0).y), new Scalar(0,0,255), 3);
+                System.out.println("Line p1: " + route.get(route.size()-1).x*2 + ", " + route.get(route.size()-1).y*2 + " P2: " + routes.get(i).get(0).x*2 + ", " + routes.get(i).get(0).y*2);
+                Imgproc.line(m2, new Point(route.get(route.size()-1).x*2, route.get(route.size()-1).y*2), new Point(routes.get(i).get(0).x*2, routes.get(i).get(0).y*2), new Scalar(0,0,255), 3);
             }
             for (Vector2Dv1 waypoint: route) {
                 if(route.size() > j){
-                    Imgproc.line(m2, new Point(waypoint.x, waypoint.y), new Point(route.get(j).x, route.get(j).y), new Scalar(0,255,0), 2);
+                    Imgproc.line(m2, new Point(waypoint.x*2, waypoint.y*2), new Point(route.get(j).x*2, route.get(j).y*2), new Scalar(0,255,0), 2);
                 }
                 org.opencv.core.Point center = new org.opencv.core.Point((int)waypoint.x*2, (int)waypoint.y*2);
                 Imgproc.circle(m2, center, 6, new Scalar(0,255,0), 3);

@@ -63,6 +63,7 @@ public class DataView {
         imageFrame.pack();
         imageFrame.setVisible(true);
         updateImage(m.clone());
+        setupMenu();
     }
 
     private void showImage(ImageIcon icon){
@@ -106,13 +107,13 @@ public class DataView {
         if(boundryOn){
 
             for (Line l: boundry.bound) {
-                Imgproc.line(mat, new Point(l.p1.x, l.p1.y), new Point(l.p2.x, l.p2.y), new Scalar(255,0,0), 3);
+                Imgproc.line(mat, new Point(l.p1.x*2, l.p1.y*2), new Point(l.p2.x*2, l.p2.y*2), new Scalar(255,0,0), 3);
             }
         }
         if(crossOn){
 
             for (Line l: cross.crossLines) {
-                Imgproc.line(mat, new Point(l.p1.x, l.p1.y), new Point(l.p2.x, l.p2.y), new Scalar(255,0,0), 3);
+                Imgproc.line(mat, new Point(l.p1.x*2, l.p1.y*2), new Point(l.p2.x*2, l.p2.y*2), new Scalar(255,0,0), 3);
             }
 
             if(zoneOn){
@@ -136,7 +137,6 @@ public class DataView {
             }
         }
         showImage(getIcon(mat));
-        setupMenu();
     }
 
     private void setupMenu(){

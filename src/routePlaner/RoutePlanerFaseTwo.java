@@ -34,7 +34,7 @@ public class RoutePlanerFaseTwo {
     public ArrayList<Ball> ballsHeat2 = null;
     public ArrayList<Ball> ballsHeat3 = null;
     private Robotv1 robot = null;
-    private Ball goalFakeBall = null;
+    public Ball goalFakeBall = null;
     private Mat justInCase = null;
     Cross cross;
     Boundry boundry;
@@ -116,7 +116,7 @@ public class RoutePlanerFaseTwo {
      * The calculated heats are stored in separate lists.
      */
     public void getHeats(){
-        int heat = 3;
+        int heat = 2;
         ballsHeat1 = new ArrayList<>();
         ballsHeat2 = new ArrayList<>();
         ballsHeat3 = new ArrayList<>();
@@ -238,13 +238,15 @@ public class RoutePlanerFaseTwo {
         }
         System.out.println("\nHeat 1 calculated: \n Possible stating balls: " + robot.getRoutes(1).size() + "\n Total score for Heat: " + ballsHeat1.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat1) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor().equals(BallClassifierPhaseTwo.ORANGE) ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
             btaRobot.remove(b);
         }
         if(heat < 2)
             return;
         //heat 2
+        if(heat < 2)
+            return;
         System.out.println("\n-------------" + "\n Calculating Heat 2...");
         wrRobot = null;
         for (Ball b : balls) {
@@ -355,10 +357,12 @@ public class RoutePlanerFaseTwo {
         }
         System.out.println("\nHeat 2 calculated: \n Possible stating balls: " + robot.getRoutes(2).size() + "\n Total score for Heat: " + ballsHeat2.get(3).getGoalRoute().getScore());
         for (Ball b: ballsHeat2) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor().equals(BallClassifierPhaseTwo.ORANGE) ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
             btaRobot.remove(b);
         }
+        if(heat < 3)
+            return;
         //heat 3
         System.out.println("\n-------------" + "\n Calculating Heat 3...");
         wrRobot = null;
@@ -419,7 +423,7 @@ public class RoutePlanerFaseTwo {
         }
         System.out.println("\nHeat 3 calculated: \n Possible stating balls: " + robot.getRoutes(3).size() + "\n Total score for Heat: " + ballsHeat3.get(2).getGoalRoute().getScore());
         for (Ball b: ballsHeat3) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
+            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor().equals(BallClassifierPhaseTwo.ORANGE) ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
             balls.remove(b);
             btaRobot.remove(b);
         }

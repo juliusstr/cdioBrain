@@ -177,9 +177,9 @@ public class MainClient {
         System.out.println("simulationRobot = new Robotv1(" + robotv1.getxPos() + ", " + robotv1.getyPos() +  ", new Vector2Dv1(" + robotv1.getPosVector().getAngle() + "));");
         System.out.println("cross = new Cross(new Vector2Dv1(" + crossPosGUI.get(0).x + "," + crossPosGUI.get(0).y + "), new Vector2Dv1(" + crossPosGUI.get(1).x + "," + crossPosGUI.get(1).y + "));");
         System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(1).x + "," + boundryConorsGUI.get(1).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(2).x + "," + boundryConorsGUI.get(2).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(3).x + "," + boundryConorsGUI.get(3).y + "));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(0).x + "," + ballsGUI.get(0).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(1).x + "," + ballsGUI.get(1).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(2).x + "," + ballsGUI.get(2).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
