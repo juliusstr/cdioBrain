@@ -1042,24 +1042,13 @@ public class RoutePlanerFaseTwo {
     }
 
     /**
-     * Gets the angle between two vectors
-     * @param vec1 first vector
-     * @param vec2 second vector
-     * @return the angle
-     */
-    public double angleFromPosVectorToPosVector(Vector2Dv1 vec1, Vector2Dv1 vec2) {
-        return vec2.getSubtracted(vec1).getAngle();
-    }
-
-    /**
      * Checks the angle between a robot and the target it is supposed to go to.
      * @param robot The robot
      * @param target The target
      * @return How wrong the angle of the robot is to target
      */
     public double angleBeforeHardcode(Robotv1 robot, Vector2Dv1 target) {
-        double correctAngle = angleFromPosVectorToPosVector(robot.getPosVector(), target);
-        return correctAngle - robot.getDirection().getAngle();
+        return robot.getDirection().getAngleBetwen(target.getSubtracted(robot.getPosVector()));
     }
 
     /**
