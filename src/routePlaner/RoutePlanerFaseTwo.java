@@ -966,8 +966,9 @@ public class RoutePlanerFaseTwo {
                     wait(100);
                     while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d");
+                        out.println("stop -d -t");
                     }
+                    wait(100);
                         out.println(StandardSettings.COLLECT_COMMAND);
                         wait(500);
                     break;
@@ -977,8 +978,9 @@ public class RoutePlanerFaseTwo {
                     //check if we have the right angle to the target
                     while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d");
+                        out.println("stop -d -t");
                     }
+                    wait(100);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
                     wait(500);
                     break;
@@ -988,8 +990,9 @@ public class RoutePlanerFaseTwo {
                     //check if we have the right angle to the target
                     while(!correctAngleToTarget(robot, heat.get(j).getPosVector(), out)){
                         updateRobotFromImgRec(imgRec, robot, stabilizer);
-                        out.println("stop -d");
+                        out.println("stop -d -t");
                     }
+                    wait(100);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
                     wait(500);
                     break;
@@ -1023,7 +1026,9 @@ public class RoutePlanerFaseTwo {
         //check if we have the right angle to the target
         while(!correctAngleToTarget(robot, getGoalPos(), out)){
             updateRobotFromImgRec(imgRec, robot, stabilizer);
+            out.println("stop -d -t");
         }
+        wait(100);
         out.println(StandardSettings.DROP_OFF_COMMAND);
         wait(500);
     }
@@ -1069,8 +1074,11 @@ public class RoutePlanerFaseTwo {
                 command += "r";
             }
             double turnSpeed = Math.abs(angleToTarget / 20);
-            if (turnSpeed > 0.2)
-                turnSpeed = 0.2;
+            if (turnSpeed > 0.2) {turnSpeed = 0.2;
+            } else if (turnSpeed < 0.02) {
+                turnSpeed = 0.02;
+            }
+
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
             System.out.println("Send command: " + command);
             out.println(command);

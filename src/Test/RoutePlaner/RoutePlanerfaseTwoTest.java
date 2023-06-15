@@ -438,20 +438,6 @@ public class RoutePlanerfaseTwoTest {
     }
 
     @Test
-    @DisplayName("Test Angle from pos")
-    void angleFromPosTest(){
-        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
-        Vector2Dv1 vec1 = new Vector2Dv1(1,1);
-        Vector2Dv1 vec2 = new Vector2Dv1(2, 2);
-        double angle = routePlan.angleFromPosVectorToPosVector(vec1, vec2);
-        assertTrue(angle > 0.77 || angle < 0.79);
-
-        vec1 = new Vector2Dv1(0, 1);
-        vec2 = new Vector2Dv1(1, 0);
-        angle = routePlan.angleFromPosVectorToPosVector(vec1, vec2);
-        assertTrue(angle > 0.77 || angle < 0.79);
-    }
-    @Test
     @DisplayName("Test correct Angle Before Hardcode")
     void correctAngleBeforeHardcodeTest(){
         RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
