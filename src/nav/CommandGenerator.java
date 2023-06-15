@@ -74,8 +74,8 @@ public class CommandGenerator {
                 command += "r";
             }
             double turnSpeed = Math.abs(angleDelta / 2);
-            if (turnSpeed > 0.2)
-                turnSpeed = 0.2;
+            if (turnSpeed > 0.6)
+                turnSpeed = 0.3;
             command += " -s" + String.format("%.2f", turnSpeed).replace(',','.') + "";
         } else {
             command += "stop -t";
@@ -87,9 +87,12 @@ public class CommandGenerator {
             return command + ";stop -d";
         }
         if(distDelta > WAYPOINT_DISTANCE_ERROR){
-            double speed = distDelta/2;
-            if (speed > 5)
-                speed = 5;
+            double speed = distDelta/11;
+            if (speed > 10) {
+                speed = 10;
+            } else if(speed < 1){
+                speed = 1;
+            }
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
             command += ";stop -d;stop -t";
