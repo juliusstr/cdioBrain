@@ -147,6 +147,7 @@ public class RoutExecute {
 
         }
         //go to goal and do a drop-off
+        updateRobotFromImgRec(imgRec,robot,stabilizer);
         try {
             waypointGenerator = new WaypointGenerator(boundry.goalWaypoint0, robot.getPosVector(), cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
