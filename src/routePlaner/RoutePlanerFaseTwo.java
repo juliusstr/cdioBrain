@@ -6,10 +6,7 @@ import exceptions.BadDataException;
 import exceptions.NoRouteException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
-import misc.Boundry;
-import misc.Cross;
-import misc.Robotv1;
-import misc.Vector2Dv1;
+import misc.*;
 import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
@@ -1043,7 +1040,7 @@ public class RoutePlanerFaseTwo {
         String command = "";
         if (Math.abs(angleToTarget) > ANGLE_ERROR) {
             command += "turn -";
-            if (angleToTarget > 0) {
+            if (angleToTarget < 0) {
                 command += "l";
             } else {
                 command += "r";
@@ -1137,7 +1134,12 @@ public class RoutePlanerFaseTwo {
             out.println("stop -d -t");
         }
         wait(100);
+    }
 
+    public void reverseIfCloseToBoundary(Boundry boundry, Robotv1 robot){
+        for (Line line: boundry.bound) {
+            if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < 1);
+        }
     }
 }
 
