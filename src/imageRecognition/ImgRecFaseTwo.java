@@ -7,14 +7,18 @@ import misc.ball.PrimitiveBall;
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Size;
 import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.features2d.SimpleBlobDetector_Params;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 
 public class ImgRecFaseTwo {
 
@@ -32,13 +36,18 @@ public class ImgRecFaseTwo {
 
     public ImgRecFaseTwo() {
         // Create a new VideoCapture object to get frames from the webcam
+        if(!StandardSettings.SPEED_BOOT) {
+            System.err.println("loading webcam");
+            capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
+            System.err.println("changing frame size for GUI clicker");
+            capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 1280);
+            capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 720);
+            frameGUI = new Mat();
+            capture.read(frameGUI);
+            capture.release();
+        }
         System.err.println("loading webcam");
         capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
-        System.err.println("changing frame size for GUI clicker");
-        capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 1280);
-        capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 720);
-        frameGUI = new Mat();
-        capture.read(frameGUI);
         System.err.println("changing frame size");
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
@@ -59,6 +68,10 @@ public class ImgRecFaseTwo {
         keypoints = new MatOfKeyPoint();
         frame = new Mat();
         capture.read(frame);
+        if(StandardSettings.SPEED_BOOT){
+            frameGUI = frame.clone();
+            Imgproc.resize(frameGUI,frameGUI, new Size(1280, 720), 0, 0, INTER_CUBIC);
+        }
         imgRecObstacle = new ImgRecObstacle();
         try {
             imgRecObstacle.findeObstacle(frame);

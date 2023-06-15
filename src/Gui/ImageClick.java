@@ -26,6 +26,7 @@ public class ImageClick {
     public static ArrayList<Color> color = null;
 
     private static int amount = -1;
+    private static Mat matChanges = null;
     private static BufferedImage imageBuffered = null;
 
     private static ImageIcon icon = null;
@@ -44,7 +45,7 @@ public class ImageClick {
         this.title = title;
         this.jt = jt;
         this.colorbool = color;
-
+        matChanges = mat.clone();
         // Convert Mat to MatOfByte
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", mat, matOfByte);
@@ -80,6 +81,7 @@ public class ImageClick {
             Imgproc.circle(m2, center, radius, new Scalar(0, 0, 255), 3);
         }
         v.clear();
+        matChanges = mat.clone();
         // Convert Mat to MatOfByte
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", m2, matOfByte);
@@ -107,6 +109,30 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
 
+    private static void drawClickPos(int x, int y, JLabel label){
+        org.opencv.core.Point center = new org.opencv.core.Point(x, y);
+        int radius = 2;
+        Imgproc.circle(matChanges, center, radius, new Scalar(255, 0, 0), 2);
+        // Convert Mat to MatOfByte
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".png", matChanges, matOfByte);
+
+        // Create an InputStream from the MatOfByte
+        byte[] byteArray = matOfByte.toArray();
+        InputStream in = new ByteArrayInputStream(byteArray);
+
+        // Read the image using ImageIO
+        try {
+            imageBuffered = ImageIO.read(in);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            System.err.println("ERROR");
+            imageBuffered = null;
+        }
+        icon = new ImageIcon(imageBuffered);
+        label.setIcon(icon);
+    }
+
     private static void createAndShowGUI() {
         JFrame frame = new JFrame(title + " (click 1 out of " + amount + ")");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -121,10 +147,11 @@ public class ImageClick {
                 int x = e.getX();
                 int y = e.getY();
                 color.add(new Color(imageBuffered.getRGB(x, y)));
-                if(x % 2 < 0)
+                drawClickPos(x, y, imageLabel);
+                if (x % 2 < 0)
                     x--;
                 x /= 2;
-                if(y % 2 < 0)
+                if (y % 2 < 0)
                     y--;
                 y /= 2;
                 pos.add(new Vector2Dv1(x,y));
