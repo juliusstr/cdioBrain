@@ -121,7 +121,7 @@ public class ImageClick {
                 int x = e.getX();
                 int y = e.getY();
                 color.add(new Color(imageBuffered.getRGB(x, y)));
-                if(StandardSettings.SPEED_BOOT) {
+                if(!StandardSettings.SPEED_BOOT) {
                     if (x % 2 < 0)
                         x--;
                     x /= 2;
