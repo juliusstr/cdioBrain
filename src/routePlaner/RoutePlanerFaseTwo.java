@@ -108,8 +108,17 @@ public class RoutePlanerFaseTwo {
      */
     public void getHeats(){
         ballsHeat1 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 1, justInCase, new ArrayList<Ball>(), true).getHeat();
+        for (Ball b: ballsHeat1) {
+            balls.remove(b);
+        }
         ballsHeat2 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 2, justInCase).getHeat();
+        for (Ball b: ballsHeat2) {
+            balls.remove(b);
+        }
         ballsHeat3 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 3, justInCase).getHeat();
+        for (Ball b: ballsHeat3) {
+            balls.remove(b);
+        }
     }
 
     /**
