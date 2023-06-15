@@ -1,6 +1,7 @@
 package Client;
 
 
+import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.GuiData;
 import exceptions.BadDataException;
@@ -197,7 +198,7 @@ public class MainClient {
 
         System.out.println();
 
-
+        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);

@@ -261,7 +261,6 @@ public class WaypointGenerator {
             }
         } while (waypoint == null);
         //todo check if rout form pos to waypoint hits critical-zone closer to robot.
-
         pastRoute.add(waypoint);
 
         if(pastRoute.size() < lowestWaypointCount) {
