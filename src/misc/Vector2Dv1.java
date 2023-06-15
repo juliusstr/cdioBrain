@@ -290,7 +290,14 @@ public class Vector2Dv1 {
         double magThis = getLength();
         double magVec = vec.getLength();
         double cosTheta = dot/(magVec*magThis);
-        return Math.acos(cosTheta);
+        double angle = Math.acos(cosTheta);
+
+        // Check the sign of the angle based on the cross product
+        double cross = Vector2Dv1.cross(this, vec);
+        if (cross < 0) {
+            angle = -angle;
+        }
+        return angle;
     }
 
     /**
@@ -305,6 +312,13 @@ public class Vector2Dv1 {
         double magVec1 = vec1.getLength();
         double magVec2 = vec2.getLength();
         double cosTheta = dot/(magVec1*magVec2);
-        return Math.acos(cosTheta);
+        double angle = Math.acos(cosTheta);
+
+        // Check the sign of the angle based on the cross product
+        double cross = Vector2Dv1.cross(vec1, vec2);
+        if (cross < 0) {
+            angle = -angle;
+        }
+        return angle;
     }
 }

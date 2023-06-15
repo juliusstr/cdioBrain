@@ -125,15 +125,23 @@ public class MainClient {
         caliGUI.add(new Vector2Dv1(1,1));
         caliGUI.add(new Vector2Dv1(1,1));
 
+        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
+        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+
+        ArrayList<Vector2Dv1> robotPos = new ArrayList<>();
+        robotPos.add(new Vector2Dv1(1,1));
+        robotPos.add(new Vector2Dv1(1,1));
+
         //call interface
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI);
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI, robotPos);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
 
 
         //inserts clicked data to right places
-        imgRec.imgRecObstacle.boundry = new Boundry(GUI_Menu.boundryPos);
+        imgRec.imgRecObstacle.boundry = new Boundry((ArrayList<Vector2Dv1>) GUI_Menu.boundryPos.clone());
         imgRec.imgRecObstacle.cross = new Cross(GUI_Menu.crossPos);
         balls.clear();
         balls.add(new Ball(GUI_Menu.balls.get(0),StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
@@ -158,28 +166,23 @@ public class MainClient {
         } catch (NoDataException e) {
             throw new RuntimeException(e);
         }
-        Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
-        Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
-        Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
-        ArrayList<Ball> robotBalls = new ArrayList<>();
-        try {
-            robotBalls = stabilizer.getStabelRobotCirce();
-        } catch (BadDataException e) {
-            robotBalls.add(initBall);
-            robotBalls.add(initBall2);
-        }
-        robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
-        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
 
+
+        Ball greenBall = new Ball((int) GUI_Menu.robotPos.get(1).x, (int) GUI_Menu.robotPos.get(1).y,0, BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        Ball blackBall = new Ball((int) GUI_Menu.robotPos.get(0).x, (int) GUI_Menu.robotPos.get(0).y,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
+
+
+        //robotv1.setScale(GUI_Menu.caliPos.get(0), GUI_Menu.caliPos.get(1));
+        robotv1.updatePos(greenBall, blackBall);
 
 
         System.out.println("\n-----------------------\nInfo to make sim test from");
         System.out.println("simulationRobot = new Robotv1(" + robotv1.getxPos() + ", " + robotv1.getyPos() +  ", new Vector2Dv1(" + robotv1.getPosVector().getAngle() + "));");
         System.out.println("cross = new Cross(new Vector2Dv1(" + crossPosGUI.get(0).x + "," + crossPosGUI.get(0).y + "), new Vector2Dv1(" + crossPosGUI.get(1).x + "," + crossPosGUI.get(1).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(0).x + "," + boundryConorsGUI.get(0).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(1).x + "," + boundryConorsGUI.get(1).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(2).x + "," + boundryConorsGUI.get(2).y + "));");
-        System.out.println("boundryList.add(new Vector2Dv1(" + boundryConorsGUI.get(3).x + "," + boundryConorsGUI.get(3).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + GUI_Menu.boundryPos.get(0).x + "," + GUI_Menu.boundryPos.get(0).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + GUI_Menu.boundryPos.get(1).x + "," + GUI_Menu.boundryPos.get(1).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + GUI_Menu.boundryPos.get(2).x + "," + GUI_Menu.boundryPos.get(2).y + "));");
+        System.out.println("boundryList.add(new Vector2Dv1(" + GUI_Menu.boundryPos.get(3).x + "," + boundryConorsGUI.get(3).y + "));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(0).x + "," + ballsGUI.get(0).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(1).x + "," + ballsGUI.get(1).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(2).x + "," + ballsGUI.get(2).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
@@ -193,6 +196,8 @@ public class MainClient {
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(10).x + "," + ballsGUI.get(10).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
 
         System.out.println();
+
+
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);

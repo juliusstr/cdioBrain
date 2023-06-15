@@ -14,12 +14,12 @@ import java.util.List;
 
 public class ImgRecObstacle {
 
-    public Color colorPicker = new Color(232, 59, 49);
-    public static final int arg0 = 10;
-    public static final int arg1 = 10;
+    public Color colorPicker = new Color(246, 59, 50);
+    public static final int arg0 = 15;
+    public static final int arg1 = 15;
     public static final int arg2 = 160;
-    public static final int arg3 = 150;
-    public static final int arg4 = 150;
+    public static final int arg3 = 110;
+    public static final int arg4 = 110;
     public static final int arg5 = 255;
 
     public static final int arg6 = 4;

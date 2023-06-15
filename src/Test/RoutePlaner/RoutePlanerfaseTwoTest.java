@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import static Test.Gui.ImageClickTest.imageIconToMat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RoutePlanerfaseTwoTest {
 
@@ -381,12 +382,6 @@ public class RoutePlanerfaseTwoTest {
         ball_list.add(new Ball(new Vector2Dv1(278.0,147.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
         ball_list.add(new Ball(new Vector2Dv1(408.0,124.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
 
-        ball_list.get(0).setPlacement(Ball.Placement.FREE);
-        ball_list.get(1).setPlacement(Ball.Placement.FREE);
-        ball_list.get(2).setPlacement(Ball.Placement.FREE);
-        ball_list.get(3).setPlacement(Ball.Placement.FREE);
-        ball_list.get(4).setPlacement(Ball.Placement.FREE);
-        ball_list.get(5).setPlacement(Ball.Placement.FREE);
         RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
         ArrayList<Ball> best_route = new ArrayList<>();
 
@@ -459,6 +454,24 @@ public class RoutePlanerfaseTwoTest {
 
     }
 
+    @Test
+    @DisplayName("Test correct Angle Before Hardcode")
+    void correctAngleBeforeHardcodeTest(){
+        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
+        simulationRobot.setDirection(new Vector2Dv1(1, 1));
+        simulationRobot.setPos(1, 1);
+
+        //tjek for om den regner rigtigt når det passer
+        Vector2Dv1 vec2 = new Vector2Dv1(2, 2);
+        double angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        assertTrue(Math.abs(angle) < 0.01);
+
+        // Tjek for at den regner rigtigt når det ikke passer
+        vec2 = new Vector2Dv1(1, 0);
+        angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
+        assertTrue(angle > 0.77 || angle < 0.79);
+    }
+
 
     @Test
     @DisplayName("Test getHeats")
@@ -520,5 +533,4 @@ public class RoutePlanerfaseTwoTest {
         inputWaitConfig.nextLine();
 
     }
-
 }
