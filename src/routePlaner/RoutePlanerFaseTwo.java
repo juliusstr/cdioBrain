@@ -16,6 +16,7 @@ import nav.WaypointGenerator;
 import org.opencv.core.Mat;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -870,13 +871,13 @@ public class RoutePlanerFaseTwo {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
 
-        heatRunner(ballsHeat1, 1, out, imgRec, stabilizer, ballsToAvoid);
-        heatRunner(ballsHeat2, 2, out, imgRec, stabilizer, ballsToAvoid);
-        heatRunner(ballsHeat3, 3, out, imgRec, stabilizer, ballsToAvoid);
+        heatRunner(ballsHeat1, 1, out, in, imgRec, stabilizer, ballsToAvoid);
+        heatRunner(ballsHeat2, 2, out, in, imgRec, stabilizer, ballsToAvoid);
+        heatRunner(ballsHeat3, 3, out, in, imgRec, stabilizer, ballsToAvoid);
 
     }
 
-    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
+    void heatRunner(ArrayList<Ball> heat, int heatNr, PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         CommandGenerator commandGenerator;
@@ -967,19 +968,22 @@ public class RoutePlanerFaseTwo {
             switch (heat.get(j).getPlacement()) {
                 case FREE:
                     //check if we have the right angle to the target
-                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
-                        out.println(StandardSettings.COLLECT_COMMAND);
-                        wait(500);
+                    turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
+                    out.println(StandardSettings.COLLECT_COMMAND);
+                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
+                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
                     break;
                 case EDGE:
-                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
+                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
-                    wait(500);
+                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
+                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
                     break;
                 case CORNER:
-                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
+                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    wait(500);
+                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
+                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
                     break;
                 default:
                     out.println("stop -t -d");
@@ -1008,9 +1012,10 @@ public class RoutePlanerFaseTwo {
             }
             out.println(command);
         }
-        turnBeforeHardcode(robot, imgRec, out, getGoalPos(), stabilizer);
+        turnBeforeHardcode(robot, imgRec, out, in, getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
-        wait(500);
+        reverseIfCloseToBoundary(boundry.bound, robot, out, in);
+        reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
     }
 
     /**
@@ -1114,7 +1119,6 @@ public class RoutePlanerFaseTwo {
             }
         }
         returnList.add(new Vector2Dv1(boundry.points.get(index2)));
-        // todo EVT VEND < OM !!!
         if(returnList.get(0).y < returnList.get(1).y){
             Vector2Dv1 temp = returnList.get(0);
             returnList.remove(temp);
@@ -1133,20 +1137,49 @@ public class RoutePlanerFaseTwo {
         return smallGoal;
     }
 
-    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
+    /**
+     * To turn before starting a hardcoded command
+     * @param robot         The robot to turn
+     * @param imgRec        The imgRec to update robot pos
+     * @param out           The Printwriter to send command to robot
+     * @param target        The target to have minimal angle to
+     * @param stabilizer    The stabilizer for the balls
+     */
+    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, BufferedReader in, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
         out.println("stop -d -t");
+        try {
+            while (in.readLine() != null) ;
+        } catch (IOException e){
+            throw new RuntimeException();
+        }
         wait(100);
         //check if we have the right angle to the target
         while(!correctAngleToTarget(robot, target, out)){
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
         }
+
         wait(100);
     }
 
-    public void reverseIfCloseToBoundary(Boundry boundry, Robotv1 robot){
-        for (Line line: boundry.bound) {
-            if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < 1);
+    /**
+     * Reverse if too close to a line after pickup
+     * @param lines The ArrayList of lines to check for
+     * @param robot The robot to check for
+     * @param out the Printwriter to write to the robot
+     */
+    public void reverseIfCloseToBoundary(ArrayList<Line> lines, Robotv1 robot, PrintWriter out, BufferedReader in){
+        try{
+            while(in.readLine() != "hardcode done");
+        } catch (IOException e){
+            throw new RuntimeException();
+        }
+        for (Line line: lines) {
+            if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
+                out.println("reverse -m500");
+                wait(400);
+                out.println("stop -d -t");
+            }
         }
     }
 }
