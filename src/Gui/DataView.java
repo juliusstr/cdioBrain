@@ -1,5 +1,6 @@
 package Gui;
 
+import Gui.Image.GuiImage;
 import misc.*;
 import misc.ball.Ball;
 import org.opencv.core.Mat;
@@ -40,7 +41,8 @@ public class DataView {
 
     private static Boundry boundry = null;
 
-    private Mat image;
+    private GuiImage image;
+    private GuiImage cleanImage;
 
     private JFrame imageFrame = null;
 
@@ -52,17 +54,18 @@ public class DataView {
         cross = c;
         boundry = b;
         this.balls = balls;
-        image = m.clone();
+        image = new GuiImage(m);
+        cleanImage = new GuiImage(m);
         imageFrame = new JFrame("Image");
         imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Load an image
-        imageLabel = new JLabel(getIcon(m.clone()));
+        imageLabel = new JLabel(image.getIcon());
         // Add the image label to the frame
         imageFrame.getContentPane().add(imageLabel);
         //frame.add(imageLabel);
         imageFrame.pack();
         imageFrame.setVisible(true);
-        updateImage(m.clone());
+        updateImage();
         setupMenu();
     }
 
@@ -70,36 +73,30 @@ public class DataView {
         imageLabel.setIcon(icon);
     }
 
-    private void updateImage(Mat mat){
+    private void updateImage(){
+        image = (GuiImage) cleanImage.clone();
         if(ballOn){
-
             for (Ball b: balls) {
-                org.opencv.core.Point center = new org.opencv.core.Point((int)b.getxPos()*2, (int)b.getyPos()*2);
-                Imgproc.circle(mat, center, 6, new Scalar(0,255,0), 3);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 6, Color.GREEN, 3), false);
             }
-
             if(zoneOn){
 
                 for (Ball b: balls) {
-                    org.opencv.core.Point center = new org.opencv.core.Point((int)b.getxPos()*2, (int)b.getyPos()*2);
-                    Imgproc.circle(mat, center, (int)b.getSafetyZone().radius, new Scalar(255,0,0,128), 3);
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), (int)b.getSafetyZone().radius, Color.BLUE, 3), false);
                 }
 
             }
             if(dangerZoneOn){
 
                 for (Ball b: balls) {
-                    org.opencv.core.Point center = new org.opencv.core.Point((int)b.getxPos()*2, (int)b.getyPos()*2);
-                    Imgproc.circle(mat, center, (int)b.getCriticalZone().radius, new Scalar(0,0,255), 3);
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), (int)b.getCriticalZone().radius, Color.RED, 3), false);
                 }
 
             }
             if(lineUpOn){
 
                 for (Ball b: balls) {
-                    Vector2Dv1 l = b.getLineUpPoint();
-                    org.opencv.core.Point center = new org.opencv.core.Point((int)l.x*2, (int)l.y*2);
-                    Imgproc.circle(mat, center, 4, new Scalar(0,255,0,128), 3);
+                    image.Draw(new GuiImage.GuiCircle(b.getLineUpPoint(), 4, Color.RED, 2), false);
                 }
 
             }
@@ -107,36 +104,33 @@ public class DataView {
         if(boundryOn){
 
             for (Line l: boundry.bound) {
-                Imgproc.line(mat, new Point(l.p1.x*2, l.p1.y*2), new Point(l.p2.x*2, l.p2.y*2), new Scalar(255,0,0), 3);
+                image.Draw(new GuiImage.GuiLine(l.p1, l.p2, Color.blue, 3), false);
             }
         }
         if(crossOn){
 
             for (Line l: cross.crossLines) {
-                Imgproc.line(mat, new Point(l.p1.x*2, l.p1.y*2), new Point(l.p2.x*2, l.p2.y*2), new Scalar(255,0,0), 3);
+                image.Draw(new GuiImage.GuiLine(l.p1, l.p2, Color.blue, 3), false);
             }
 
             if(zoneOn){
 
                 for (Zone z: cross.getCriticalZones()) {
                     Zone safe = z.getNewSafetyZoneFromCriticalZone();
-                    Vector2Dv1 p = safe.pos;
-                    org.opencv.core.Point center = new org.opencv.core.Point((int)p.x*2, (int)p.y*2);
-                    Imgproc.circle(mat, center, (int)safe.radius, new Scalar(0,0,255), 3);
+                    image.Draw(new GuiImage.GuiCircle(safe.pos, (int)safe.radius, Color.BLUE, 3), false);
                 }
 
             }
             if(dangerZoneOn){
 
                 for (Zone z: cross.getCriticalZones()) {
-                    Vector2Dv1 p = z.pos;
-                    org.opencv.core.Point center = new org.opencv.core.Point((int)p.x*2, (int)p.y*2);
-                    Imgproc.circle(mat, center, (int)z.radius, new Scalar(0,0,255), 3);
+                    image.Draw(new GuiImage.GuiCircle(z.pos, (int)z.radius, Color.RED, 3), false);
                 }
 
             }
         }
-        showImage(getIcon(mat));
+        image.update();
+        imageLabel.setIcon(image.getIcon());
     }
 
     private void setupMenu(){
@@ -171,7 +165,7 @@ public class DataView {
                     ballOn = false;
                 else
                     ballOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         boundryBtn.addActionListener(new ActionListener() {
@@ -181,7 +175,7 @@ public class DataView {
                     boundryOn = false;
                 else
                     boundryOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         crossBtn.addActionListener(new ActionListener() {
@@ -191,7 +185,7 @@ public class DataView {
                     crossOn = false;
                 else
                     crossOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         zoneBtn.addActionListener(new ActionListener() {
@@ -201,7 +195,7 @@ public class DataView {
                     zoneOn = false;
                 else
                     zoneOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         dzoneBtn.addActionListener(new ActionListener() {
@@ -211,7 +205,7 @@ public class DataView {
                     dangerZoneOn = false;
                 else
                     dangerZoneOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         pointBtn.addActionListener(new ActionListener() {
@@ -221,7 +215,7 @@ public class DataView {
                     lineUpOn = false;
                 else
                     lineUpOn = true;
-                updateImage(image.clone());
+                updateImage();
             }
         });
         closeBtn.addActionListener(new ActionListener() {
@@ -239,27 +233,6 @@ public class DataView {
         frame.setSize(WIDTH,HEIGHT);
         frame.setVisible(true);
 
-    }
-
-
-    private ImageIcon getIcon(Mat mat){
-        // Convert Mat to MatOfByte
-        MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", mat, matOfByte);
-
-        // Create an InputStream from the MatOfByte
-        byte[] byteArray = matOfByte.toArray();
-        InputStream in = new ByteArrayInputStream(byteArray);
-        BufferedImage imageBuffered = null;
-        // Read the image using ImageIO
-        try {
-            imageBuffered = ImageIO.read(in);
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            System.err.println("ERROR");
-            imageBuffered = null;
-        }
-        return new ImageIcon(imageBuffered);
     }
 
 

@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.Image.GuiImage;
 import Gui.ImageClick;
 import Gui.RouteView;
 import exceptions.BadDataException;
@@ -15,6 +16,7 @@ import nav.CommandGenerator;
 import nav.WaypointGenerator;
 import org.opencv.core.Mat;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -114,6 +116,7 @@ public class RoutePlanerFaseTwo {
      */
     public void getHeats(){
         int heat = 2;
+        ImageClick ic = new ImageClick(new GuiImage(justInCase));
         ballsHeat1 = new ArrayList<>();
         ballsHeat2 = new ArrayList<>();
         ballsHeat3 = new ArrayList<>();
@@ -204,10 +207,8 @@ public class RoutePlanerFaseTwo {
             System.err.println("No route found!! \nChoose route by hand");
             ballsHeat1.clear();
             manualVec.clear();
-            for (Ball b: balls) {
-                manualVec.add(b.getPosVector());
-            }
-            ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
+            ic.drawBalls(balls);
+            ic.run("Choose a route", 4, manualVec, new ArrayList<Color>(), false);
             System.out.println("Press enter to end route!");
             Scanner inputWaitConfig = new Scanner(System.in);
             inputWaitConfig.nextLine();
@@ -325,7 +326,8 @@ public class RoutePlanerFaseTwo {
             for (Ball b: balls) {
                 manualVec.add(b.getPosVector());
             }
-            ImageClick ic = new ImageClick(4, justInCase, "Choose a route", manualVec);
+            ic.drawBalls(balls);
+            ic.run("Choose a route", 4, manualVec, new ArrayList<Color>(), false);
             System.out.println("Press enter to end route!");
             Scanner inputWaitConfig = new Scanner(System.in);
             inputWaitConfig.nextLine();
@@ -392,7 +394,8 @@ public class RoutePlanerFaseTwo {
             manualVec.add(balls.get(0).getPosVector());
             manualVec.add(balls.get(1).getPosVector());
             manualVec.add(balls.get(2).getPosVector());
-            ImageClick ic = new ImageClick(3, justInCase, "Choose a route", manualVec);
+            ic.drawBalls(balls);
+            ic.run("Choose a route", 4, manualVec, new ArrayList<Color>(), false);
             System.out.println("Press enter to end route!");
             Scanner inputWaitConfig = new Scanner(System.in);
             inputWaitConfig.nextLine();

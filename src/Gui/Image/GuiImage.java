@@ -138,7 +138,7 @@ public class GuiImage implements Cloneable{
 
     }
 
-    public class GuiLine{
+    public static class GuiLine{
 
         private Scalar color;
 
@@ -187,6 +187,8 @@ public class GuiImage implements Cloneable{
         if(update)
             update(this.mat);
     }
+
+    public void update(){ update(mat); }
 
     public GuiPixel getPixel(int x, int y){
         Color c = new Color(bufferedImage.getRGB(x, y));
