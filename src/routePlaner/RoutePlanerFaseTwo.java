@@ -970,20 +970,20 @@ public class RoutePlanerFaseTwo {
                     //check if we have the right angle to the target
                     turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
+                    wait(300);
+                    reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, out, in);
                     break;
                 case EDGE:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
+                    wait(300);
+                    reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, out, in);
                     break;
                 case CORNER:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-                    reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
+                    wait(300);
+                    reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, out, in);
                     break;
                 default:
                     out.println("stop -t -d");
@@ -1014,8 +1014,7 @@ public class RoutePlanerFaseTwo {
         }
         turnBeforeHardcode(robot, imgRec, out, in, getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
-        reverseIfCloseToBoundary(boundry.bound, robot, out, in);
-        reverseIfCloseToBoundary(cross.crossLines, robot, out, in);
+        reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, out, in);
     }
 
     /**
@@ -1147,11 +1146,14 @@ public class RoutePlanerFaseTwo {
      */
     public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, BufferedReader in, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
         out.println("stop -d -t");
+        /*
         try {
-            while (in.readLine() != null) ;
+        if(in.ready())  while (in.readLine() != null) ;
         } catch (IOException e){
             throw new RuntimeException();
         }
+
+         */
         wait(100);
         //check if we have the right angle to the target
         while(!correctAngleToTarget(robot, target, out)){
@@ -1168,17 +1170,31 @@ public class RoutePlanerFaseTwo {
      * @param robot The robot to check for
      * @param out the Printwriter to write to the robot
      */
-    public void reverseIfCloseToBoundary(ArrayList<Line> lines, Robotv1 robot, PrintWriter out, BufferedReader in){
+    public void reverseIfCloseToBoundary(ArrayList<Line> lines,ArrayList<Line> lines2, Robotv1 robot, PrintWriter out, BufferedReader in) {
+        String message;
         try{
-            while(in.readLine() != "hardcode done");
+            message = in.readLine();
+            while(!message.equals("hardcode done")){
+                message = in.readLine();
+                System.out.println(message);
+            }
         } catch (IOException e){
             throw new RuntimeException();
         }
         for (Line line: lines) {
             if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
-                out.println("reverse -m500");
+                out.println("reverse -s5 -m500");
                 wait(400);
                 out.println("stop -d -t");
+                break;
+            }
+        }
+        for (Line line: lines2) {
+            if (line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN) {
+                out.println("reverse -s5 -m500");
+                wait(400);
+                out.println("stop -d -t");
+                break;
             }
         }
     }
