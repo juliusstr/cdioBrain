@@ -60,13 +60,12 @@ public class ImageClickTest {
         robotPos.add(new Vector2Dv1(1,1));
         System.out.println("1. sort " + BallClassifierPhaseTwo.BLACK + "\n");
         System.out.println("1. green" + BallClassifierPhaseTwo.GREEN + "\n");
-        GuiData gd = new GuiData();
 
         ArrayList<Vector2Dv1> caliGUI = new ArrayList<>();
         caliGUI.add(new Vector2Dv1(1,1));
         caliGUI.add(new Vector2Dv1(1,1));
 
-        new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd,caliGUI,robotPos);
+        new GUI_Menu(mat, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI,caliGUI,robotPos);
 
         Boundry boundry = new Boundry(boundryConorsGUI);
         Cross cross = new Cross(boundryConorsGUI.get(0), boundryConorsGUI.get(1));

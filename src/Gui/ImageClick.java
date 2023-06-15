@@ -3,6 +3,7 @@ package Gui;
 import Client.StandardSettings;
 import Gui.Image.GuiImage;
 import misc.Vector2Dv1;
+import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -22,35 +23,61 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ImageClick {
-    private GuiImage image;
+    private static GuiImage image;
+    private static GuiImage image2;
 
     public ImageClick(GuiImage image){
         this.image = (GuiImage) image.clone();
     }
 
-    public void draw(ArrayList<Vector2Dv1> circles){
-
+    public void drawBalls(ArrayList<Ball> balls){
+        for (Ball b: balls) {
+            if(balls.get(balls.size()-1) == b)
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), true);
+            else
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), false);
+        }
     }
 
-    public void drawBall(Vector2Dv1 circle){
-
-    }
-
-    public void drawPoint(int x, int y){
+    public static void drawPoint(int x, int y){
         image.Draw(new GuiImage.GuiCircle(new Vector2Dv1(x,y), 2, Color.BLUE, 2), true);
     }
 
     public void setImage(GuiImage image){
         this.image = image;
     }
-    private int amount;
-    private void createAndShowGUI(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color) {
-        JFrame frame = new JFrame(title + " (click 1 out of " + amount + ")");
+    private static int amount;
+    private static String title;
+    private static ArrayList<Vector2Dv1> pos;
+    private static ArrayList<Color> color;
+    private static boolean colorbool;
+    private static JTable jt = null;
+    public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, JTable jt, boolean colorbool) {
+        image2 = (GuiImage) image.clone();
+        this.title = title;
         this.amount = amount;
+        this.pos = pos;
+        this.color = color;
+        this.jt = jt;
+        this.colorbool = colorbool;
+        SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
+    }
+    public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool) {
+        image2 = (GuiImage) image.clone();
+        this.title = title;
+        this.amount = amount;
+        this.pos = pos;
+        this.color = color;
+        this.colorbool = colorbool;
+        SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame(title + " (click 1 out of " + amount + ")");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Load an image
-        JLabel imageLabel = new JLabel(this.image.getIcon());
+        JLabel imageLabel = new JLabel(image.getIcon());
 
         // Create a custom mouse adapter to handle mouse click events
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -64,10 +91,10 @@ public class ImageClick {
                 drawPoint(x, y);
                 imageLabel.setIcon(image.getIcon());
                 amount--;
-                frame.setTitle(title + "(" + (pos.size()+1) + " out of " + (pos.size()+this.amount) + ")");
+                frame.setTitle(title + "(" + (pos.size()+1) + " out of " + (pos.size()+amount) + ")");
                 if(amount == 0){
                     int i = 0;
-                    if(startup && colorbool){
+                    if(jt != null && colorbool){
                         for (Color c: color) {
                             jt.getModel().setValueAt(String.valueOf(c.getRed()), i, 1);
                             jt.getModel().setValueAt(String.valueOf(c.getGreen()), i, 2);
@@ -75,13 +102,14 @@ public class ImageClick {
                             i++;
                         }
                         BallClassifierPhaseTwo.UpdateColor(color);
-                    } else if(startup) {
+                    } else if(jt != null) {
                         for (Vector2Dv1 v: pos) {
                             jt.getModel().setValueAt(String.valueOf(v.x),i,1);
                             jt.getModel().setValueAt(String.valueOf(v.y),i,2);
                             i++;
                         }
                     }
+                    image = (GuiImage) image2.clone();
                     frame.dispose();
                 }
             }

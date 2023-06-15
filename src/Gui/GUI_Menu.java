@@ -109,7 +109,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 boundryPos.clear();
-                new ImageClick(4, image, "Set boundry corners", boundryPos, c, tableConer, false);
+                clicker.run("Set boundry corners", 4, boundryPos, c, tableConer, false);
             }
         });
         buttonCross.addActionListener(new ActionListener() {
@@ -117,7 +117,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 crossPos.clear();
-                new ImageClick(4, image, "Set Cross", crossPos, c, tableCross, false);
+                clicker.run("Set Cross", 4, crossPos, c, tableCross, false);
             }
         });
         buttonBalls.addActionListener(new ActionListener() {
@@ -125,7 +125,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 balls.clear();
-                new ImageClick(11, image, "Set balls(orange first)", balls, c, tableBalls, false);
+                clicker.run("Set balls(orange first)", 11, balls, c, tableBalls, false);
             }
         });
         buttonRobot.addActionListener(new ActionListener() {
@@ -133,7 +133,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 robotPos.clear();
-                new ImageClick(2, image, "Choose robot ", robotPos, c, tableRobot, false);
+                clicker.run("Choose robot", 2, robotPos, c, tableRobot, false);
             }
         });
         buttonCompleted.addActionListener(new ActionListener() {
@@ -148,7 +148,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 caliPos.clear();
-                new ImageClick(2, image, "Choose cali blok posses", caliPos, c, tableCali, false);
+                clicker.run( "Choose cali blok posses", 2, caliPos, c, tableCali, false);
             }
         });
 

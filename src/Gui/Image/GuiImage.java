@@ -21,7 +21,7 @@ public class GuiImage implements Cloneable{
 
     private final int HEIGHT = 740;
     private final int WIDTH = 1280;
-    private final int ADJUST = 2;
+    private static final int ADJUST = 2;
 
     private Mat mat;
 

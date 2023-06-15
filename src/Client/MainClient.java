@@ -111,13 +111,6 @@ public class MainClient {
         robotColorsGUI.add(Color.BLACK);
         robotColorsGUI.add(Color.GREEN);
 
-        //??
-        GuiData gd = new GuiData();
-        gd.boundryHeight = 122;
-        gd.boundryLength = 161;
-        gd.crossLength = 1;
-        gd.robotLength = 1;
-
         //height of box
         ArrayList<Vector2Dv1> caliGUI = new ArrayList<>();
         caliGUI.add(new Vector2Dv1(1,1));
@@ -132,7 +125,7 @@ public class MainClient {
         robotPos.add(new Vector2Dv1(1,1));
 
         //call interface
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, gd, caliGUI, robotPos);
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
