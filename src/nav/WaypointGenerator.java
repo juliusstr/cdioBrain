@@ -260,8 +260,20 @@ public class WaypointGenerator {
                     return;
             }
         } while (waypoint == null);
-        //todo check if rout form pos to waypoint hits critical-zone closer to robot.
+        if(waypoint.y <= 180 && (waypoint.x < boundry.points.get(0).getX() ||
+                waypoint.x > boundry.points.get(1).getX()))
+            return;
+        if(waypoint.y >= 180 && (waypoint.x < boundry.points.get(3).getX() ||
+                waypoint.x > boundry.points.get(2).getX()))
+            return;
+        if(waypoint.x <= 370 && (waypoint.y < boundry.points.get(0).getY() ||
+                waypoint.y > boundry.points.get(3).getY()))
+            return;
+        if(waypoint.x <= 370 && (waypoint.y < boundry.points.get(1).getY() ||
+                waypoint.y > boundry.points.get(2).getY()))
+            return;
 
+        //todo check if rout form pos to waypoint hits critical-zone closer to robot.
         pastRoute.add(waypoint);
 
         if(pastRoute.size() < lowestWaypointCount) {

@@ -1,6 +1,7 @@
 package Client;
 
 
+import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.GuiData;
 import exceptions.BadDataException;
@@ -193,6 +194,8 @@ public class MainClient {
         System.out.println("ball_list.add(new Ball(new Vector2Dv1(" + ballsGUI.get(10).x + "," + ballsGUI.get(10).y + "),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));");
 
         System.out.println();
+
+        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);
