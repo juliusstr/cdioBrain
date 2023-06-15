@@ -105,8 +105,8 @@ public class RoutePlanerFaseTwo {
         initGoalWaypoints();
     }
 
-    public void setImage(Mat m){
-        justInCase = m;
+    public void setImage(GuiImage image){
+        justInCase = image.getMat();
     }
 
     /**

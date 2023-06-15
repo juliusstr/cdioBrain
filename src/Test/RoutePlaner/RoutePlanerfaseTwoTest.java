@@ -2,6 +2,7 @@ package Test.RoutePlaner;
 
 import Client.StandardSettings;
 import Gui.DataView;
+import Gui.Image.GuiImage;
 import Gui.RouteView;
 import exceptions.NoRouteException;
 import misc.Boundry;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
-import static Test.Gui.ImageClickTest.imageIconToMat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -387,8 +387,8 @@ public class RoutePlanerfaseTwoTest {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
-        Mat mat = imageIconToMat(tImage);
-        hg.setImage(mat);
+        GuiImage image = new GuiImage(tImage);
+        hg.setImage(image);
         hg.getHeats();
         best_route = hg.ballsHeat1;/*
         System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());
@@ -456,8 +456,8 @@ public class RoutePlanerfaseTwoTest {
 
     @Test
     @DisplayName("Test correct Angle Before Hardcode")
-    void correctAngleBeforeHardcodeTest(){
-        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot,new ArrayList<>(), boundry, cross);
+    void correctAngleBeforeHardcodeTest() {
+        RoutePlanerFaseTwo routePlan = new RoutePlanerFaseTwo(simulationRobot, new ArrayList<>(), boundry, cross);
         simulationRobot.setDirection(new Vector2Dv1(1, 1));
         simulationRobot.setPos(1, 1);
 
@@ -470,67 +470,5 @@ public class RoutePlanerfaseTwoTest {
         vec2 = new Vector2Dv1(1, 0);
         angle = routePlan.angleBeforeHardcode(simulationRobot, vec2);
         assertTrue(angle > 0.77 || angle < 0.79);
-    }
-
-
-    @Test
-    @DisplayName("Test getHeats")
-    void routeViewTest() throws NoRouteException, TimeoutException {
-        ArrayList<Ball> ball_list = new ArrayList<>();
-        ball_list.add(new Ball(new Vector2Dv1(128.0,91.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(155.0,37.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(174.0,99.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(212.0,224.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(200.0,272.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(87.0,318.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(421.0,108.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(494.0,134.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(510.0,104.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(454.0,336.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(294.0,187.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-
-
-        ArrayList<Ball> bta = (ArrayList<Ball>) ball_list.clone();
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
-
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
-        Mat mat = imageIconToMat(tImage);
-        Imgproc.resize(mat,mat, new Size(1480, 720), 0, 0, INTER_CUBIC);
-        hg.setImage(mat);
-
-        new DataView(mat, ball_list, boundry, cross);
-        System.out.println("Press enter to end config!");
-        Scanner inputWaitConfig = new Scanner(System.in);
-        inputWaitConfig.nextLine();
-        hg.getHeats();
-        best_route = hg.ballsHeat1;
-        ArrayList<ArrayList<Vector2Dv1>> t = new ArrayList<>();
-        int i = 1;
-        bta.remove(best_route.get(0));
-        for (Ball b: best_route) {
-            t.add(new ArrayList<>());
-            Route route = new Route(b.getPickUpPoint());
-            if(i != 4) {
-                route.setEnd(best_route.get(i));
-                bta.remove(route.getEnd());
-            }
-            else{
-                route.setEnd(hg.goalFakeBall);
-            }
-            WaypointGenerator.WaypointRoute wrRobot = new WaypointGenerator(b.getPickUpPoint(), route.getEnd().getPickUpPoint(), cross, boundry, bta).waypointRoute;
-            route.setScore(wrRobot.getCost());
-            ArrayList<Vector2Dv1> robotwaypoints = wrRobot.getRoute();
-            route.setWaypoints(robotwaypoints);
-            for (Vector2Dv1 v: route.getWaypoints()) {
-                t.get(i-1).add(v);
-            }
-            i++;
-        }
-        new DataView(mat, ball_list, boundry, cross);
-        System.out.println("Press enter to end config!");
-        inputWaitConfig.nextLine();
-
     }
 }
