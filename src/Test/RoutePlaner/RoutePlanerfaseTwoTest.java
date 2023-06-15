@@ -142,63 +142,6 @@ public class RoutePlanerfaseTwoTest {
     }
 
     @Test
-    @DisplayName("Ball classifier test")
-    void heatGenTest(){
-
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),new ArrayList<>(), boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
-
-        double score = 0;
-
-        Ball ball1 = new Ball(new Vector2Dv1(30,20),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball2 = new Ball(new Vector2Dv1(210,140),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-
-        ArrayList<Ball> ball_list = new ArrayList<>();
-
-        ball_list.add(ball1);
-        ball_list.add(ball2);
-        ball_list.add(ball3);
-        ball_list.add(ball4);
-        ball_list.add(ball5);
-        ball_list.add(ball6);
-        ball_list.add(ball7);
-        ball_list.add(ball8);
-        ball_list.add(ball9);
-        ball_list.add(ball10);
-        ball_list.add(ball11);
-
-
-        for(int i = 0; i < ball_list.size(); i++){
-            for(int j = 0, k = 0;j < 10; j++){
-                if(i!=j){
-                ball_list.get(i).addRoute(new Route(ball_list.get(i).getPosVector()));
-                ball_list.get(i).getRoutes().get(k).setWaypoints(null);
-                ball_list.get(i).getRoutes().get(k).setEnd(ball_list.get(j));
-                ball_list.get(i).getRoutes().get(k).setScore((int) ball_list.get(i).getPosVector().distance(ball_list.get(i).getRoutes().get(k).getEnd().getPosVector()));
-                k++;
-                }
-            }
-        }
-
-        best_route = hg.heat1Generator(ball_list);
-       // System.out.println(ball_list);
-        for(int l = 0; l < best_route.size(); l++){
-            System.out.println("\n x:"+best_route.get(l).getxPos()+" y:"+best_route.get(l).getyPos());
-        }
-
-
-    }
-
-    @Test
     @DisplayName("Test getHeats")
     void getHeat1Test(){
 
@@ -388,7 +331,7 @@ public class RoutePlanerfaseTwoTest {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
         GuiImage image = new GuiImage(tImage);
-        hg.setImage(image);
+        hg.setImage(image.getMat());
         hg.getHeats();
         best_route = hg.ballsHeat1;/*
         System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());

@@ -192,7 +192,7 @@ public class MainClient {
         new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
-        routePlanerFaseTwo.setImage(new GuiImage(m));
+        routePlanerFaseTwo.setImage(m);
         System.out.println(routeBalls);
         System.out.println("Mapping route...");
         routePlanerFaseTwo.getHeats();
