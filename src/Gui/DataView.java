@@ -32,11 +32,14 @@ public class DataView {
 
     private static boolean boundryOn = false;
 
+    private static Robotv1 robot = null;
     private static boolean dangerZoneOn = false;
 
     private static boolean zoneOn = false;
     private static boolean lineUpOn = false;
 
+    private static boolean robotOn = false;
+    private static boolean robotNonScaleOn = false;
     private static ArrayList<Ball> balls = null;
 
     private static Cross cross = null;
@@ -56,6 +59,7 @@ public class DataView {
 
         ArrayList<Vector2Dv1> boundryList = new ArrayList<>();
         ArrayList<Ball> ball_list = new ArrayList<>();
+        robot = new Robotv1(416.0, 254.0, new Vector2Dv1(0.5481603730984362));
 
 
         //SET TEST DATA
@@ -103,7 +107,8 @@ public class DataView {
         setupMenu();
     }
 
-    public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c){
+    public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c, Robotv1 r){
+        robot = r;
         cross = c;
         boundry = b;
         this.balls = balls;
@@ -181,6 +186,12 @@ public class DataView {
                 }
 
             }
+            if(robotOn){
+                image.Draw(new GuiImage.GuiCircle(robot.getPosVector(), 1, Color.BLACK, 10), false);
+            }
+            if(robotNonScaleOn){
+                image.Draw(new GuiImage.GuiCircle(robot.getPosVector().getMultiplied(1/robot.getScale()), 1, Color.BLUE, 10), false);
+            }
         }
         image.update();
         imageLabel.setIcon(image.getIcon());
@@ -207,6 +218,10 @@ public class DataView {
         jPanel.add(dzoneBtn);
         JButton pointBtn = new JButton("Toggle line up point");
         jPanel.add(pointBtn);
+        JButton robotBtn = new JButton("Toggle Robot");
+        jPanel.add(robotBtn);
+        JButton robotScaleBtn = new JButton("Toggle robot no scale");
+        jPanel.add(robotScaleBtn);
         JButton closeBtn = new JButton("Close");
         jPanel.add(closeBtn);
 
@@ -277,6 +292,26 @@ public class DataView {
                 running = false;
                 imageFrame.dispose();
                 frame.dispose();
+            }
+        });
+        robotBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(robotOn)
+                    robotOn = false;
+                else
+                    robotOn = true;
+                updateImage();
+            }
+        });
+        robotScaleBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(robotNonScaleOn)
+                    robotNonScaleOn = false;
+                else
+                    robotNonScaleOn = true;
+                updateImage();
             }
         });
 

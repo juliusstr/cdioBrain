@@ -29,10 +29,18 @@ public class Robotv1 {
     private ArrayList<Route> heat1Routes = new ArrayList<>();
     private ArrayList<Route> heat2Routes = new ArrayList<>();
     private ArrayList<Route> heat3Routes = new ArrayList<>();
+    private ArrayList<Route> heatLiveRoutes = new ArrayList<>();
 
+    private boolean heatReset = false;
     private int heatRouteNum = 1;
 
+    public double getScale(){
+        return scale;
+    }
+
     public void endHeatRoutes(){
+        if(heatRouteNum > 3)
+            heatReset = true;
         heatRouteNum++;
     }
 
@@ -45,7 +53,7 @@ public class Robotv1 {
             case 3:
                 return heat3Routes;
         }
-        return null;
+        return heatLiveRoutes;
     }
 
     public void addRoute(Route r) {
@@ -59,6 +67,11 @@ public class Robotv1 {
             case 3:
                 this.heat3Routes.add(r);
             break;
+            default:
+                if(heatReset)
+                    this.heatLiveRoutes.clear();
+                heatReset = false;
+                this.heatLiveRoutes.add(r);
         }
     }
 

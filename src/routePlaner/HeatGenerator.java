@@ -352,6 +352,7 @@ public class HeatGenerator {
         private int bestScoreO = -1;
 
         private int count = 0;
+        private int gAmount = amount;
 
         /**
          * The constructor of the 'generate' class.
@@ -375,7 +376,7 @@ public class HeatGenerator {
                     ball_list.remove(heat.get(i));
                     best_heat.add(heat.get(i));
                     bta.remove(heat.get(i));
-                    amount--;
+                    gAmount--;
                 }
                 findNextBall(best_heat.get(best_heat.size() - 1), bta);
             } else {
@@ -386,7 +387,7 @@ public class HeatGenerator {
                     bta.add(r.getEnd());
                 }
             }
-            if (orangeFirst && best_heat.size() < amount && best_heat_orange.size() == amount)
+            if (orangeFirst && best_heat.size() < gAmount && best_heat_orange.size() == gAmount)
                 heat = (ArrayList<Ball>) best_heat_orange.clone();
             else
                 heat = (ArrayList<Ball>) best_heat.clone();
@@ -401,7 +402,7 @@ public class HeatGenerator {
         private void findNextBall(Ball start, ArrayList<Ball> bta) {
             count++;
             int countInner = count;
-            if(curBalls.size()+1 > amount)
+            if(curBalls.size()+1 > gAmount)
                 return;
             if (curScore >= bestScore && bestScore > 0)
                 return;
@@ -411,7 +412,7 @@ public class HeatGenerator {
                 curPairBalls.add(start);
             else if (diffBalls.contains(start))
                 curDiffBalls.add(start);
-            if (curBalls.size()+1 + (reqBalls.size() - curReqBalls.size()) > amount) {
+            if (curBalls.size()+1 + (reqBalls.size() - curReqBalls.size()) > gAmount) {
                 if (curReqBalls.contains(start))
                     curReqBalls.remove(start);
                 else if (curPairBalls.contains(start))
@@ -428,7 +429,7 @@ public class HeatGenerator {
                 curScore += 200;
             else if (start.getPlacement() == Ball.Placement.CORNER)
                 curScore += 200;
-            if (curBalls.size() >= amount) {
+            if (curBalls.size() >= gAmount) {
                 Route route = getRoute(start.getPickUpPoint(), goal, bta);
                 if (route != null) {
                     if (curScore + (int) route.getScore() < bestScore || bestScore < 0) {
@@ -438,7 +439,7 @@ public class HeatGenerator {
                         best_heat = (ArrayList<Ball>) curBalls.clone();
                     }
                 }
-            } else if (orangeFirst && curBalls.size() == amount - 1) {
+            } else if (orangeFirst && curBalls.size() == gAmount - 1) {
                 bta.remove(orangeBall);
                 Route route = getRoute(start.getPickUpPoint(), orangeBall, bta);
                 if (route == null) {
