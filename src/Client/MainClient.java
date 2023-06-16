@@ -226,7 +226,7 @@ public class MainClient {
 
         System.out.println(routeBalls);
         System.out.println("Mapping route...");
-        routePlanerFaseTwo.getHeats();
+        routePlanerFaseTwo.getHeats(req_balls);
         System.out.println("Mapping route complete!");
 
         System.out.println();

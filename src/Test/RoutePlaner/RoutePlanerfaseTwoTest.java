@@ -189,8 +189,10 @@ public class RoutePlanerfaseTwoTest {
 
         boundry = new Boundry(boundryList);
 
-        for (Ball b: ball_list) {
-            BallClassifierPhaseTwo.ballSetPlacement(b, boundry, cross);
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(ball_list, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
         }
 
 
@@ -200,7 +202,11 @@ public class RoutePlanerfaseTwoTest {
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
         GuiImage image = new GuiImage(tImage);
         hg.setImage(image.getMat());
-        hg.getHeats();
+        ArrayList<Ball> req = new ArrayList<>();
+        req.add(ball_list.get(1));
+        hg.getHeats(req);
+
+        while(true);
     }
 
     @Test

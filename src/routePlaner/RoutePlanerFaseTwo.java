@@ -106,16 +106,16 @@ public class RoutePlanerFaseTwo {
      * This method calculates the routes for three different heats based on the balls' positions.
      * The calculated heats are stored in separate lists.
      */
-    public void getHeats(){
-        ballsHeat1 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 1, justInCase, new ArrayList<Ball>(), true).getHeat();
+    public void getHeats(ArrayList<Ball> req){
+        ballsHeat1 = new HeatGenerator(balls, robot, robot.getPosVector(), boundry, cross, goalFakeBall, 1, justInCase, req, true).getHeat();
         for (Ball b: ballsHeat1) {
             balls.remove(b);
         }
-        ballsHeat2 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 2, justInCase).getHeat();
+        ballsHeat2 = new HeatGenerator(balls, robot, goalFakeBall.getPosVector(), boundry, cross, goalFakeBall, 2, justInCase).getHeat();
         for (Ball b: ballsHeat2) {
             balls.remove(b);
         }
-        ballsHeat3 = new HeatGenerator(balls, robot, boundry, cross, goalFakeBall, 3, justInCase).getHeat();
+        ballsHeat3 = new HeatGenerator(balls, robot, goalFakeBall.getPosVector(), boundry, cross, goalFakeBall, 3, justInCase).getHeat();
         for (Ball b: ballsHeat3) {
             balls.remove(b);
         }

@@ -174,6 +174,8 @@ public class BallClassifierPhaseTwo {
                     throw new NoWaypointException("No waypoint was found on pair ball");
                 }
             }
+            if(ball.getPlacement() == null)
+                ball.setPlacement(Ball.Placement.FREE);
         }
 
     }

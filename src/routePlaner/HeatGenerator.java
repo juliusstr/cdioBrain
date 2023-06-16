@@ -40,6 +40,7 @@ public class HeatGenerator {
 
     private  int amount;
     private  int heatNum;
+    private  Vector2Dv1 robotPos;
     private GuiImage image;
 
     /**
@@ -55,7 +56,7 @@ public class HeatGenerator {
      * @param req         The list of required balls.
      * @param orangeFirst A boolean value indicating whether the orange ball should be placed last in the heat.
      */
-    public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Boundry b, Cross c, Ball g, int heatNum, Mat m, ArrayList<Ball> req, boolean orangeFirst){
+    public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Vector2Dv1 robotPos, Boundry b, Cross c, Ball g, int heatNum, Mat m, ArrayList<Ball> req, boolean orangeFirst){
         image = new GuiImage(m);
         this.balls = balls;
         this.reqBalls = req;
@@ -65,6 +66,7 @@ public class HeatGenerator {
         this.robot = r;
         this.orangeFirst = orangeFirst;
         this.heatNum = heatNum;
+        this.robotPos = robotPos;
         this.amount = balls.size() > (MAXBALLSPERHEAT-1) ? MAXBALLSPERHEAT : balls.size();
         heat = new ArrayList<>();
         diffBalls = new ArrayList<>();
@@ -85,13 +87,14 @@ public class HeatGenerator {
      * @param heatNum The number of the heat.
      * @param m       The Mat object.
      */
-    public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Boundry b, Cross c, Ball g, int heatNum, Mat m){
+    public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Vector2Dv1 robotPos, Boundry b, Cross c, Ball g, int heatNum, Mat m){
         image = new GuiImage(m);
         this.balls = balls;
         this.goal = g;
         this.boundry = b;
         this.cross = c;
         this.robot = r;
+        this.robotPos = robotPos;
         this.orangeFirst = false;
         this.heatNum = heatNum;
         this.amount = balls.size() > (MAXBALLSPERHEAT-1) ? MAXBALLSPERHEAT : balls.size();
@@ -191,7 +194,7 @@ public class HeatGenerator {
             if(orangeFirst && orangeBall == b)
                 continue;
             bta.remove(b);
-            Route r = getRoute(robot.getPosVector(), b, bta);
+            Route r = getRoute(robotPos, b, bta);
             if(r != null){
                 i++;
                 robot.addRoute(r);
@@ -202,7 +205,7 @@ public class HeatGenerator {
             ballsForHeat = (ArrayList<Ball>) balls.clone();
             for (Ball b: ballsForHeat) {
                 bta.remove(b);
-                Route r = getRoute(robot.getPosVector(), b, bta);
+                Route r = getRoute(robotPos, b, bta);
                 if(r != null){
                     i++;
                     robot.addRoute(r);
