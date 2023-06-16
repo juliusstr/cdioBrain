@@ -50,7 +50,7 @@ public class ImageClick {
     }
 
     public void setImage(GuiImage image){
-        this.image = image;
+        this.image = (GuiImage) image.clone();
     }
     private static int amount;
     private static String title;

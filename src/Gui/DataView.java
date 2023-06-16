@@ -55,7 +55,7 @@ public class DataView {
         boundry = b;
         this.balls = balls;
         image = new GuiImage(m);
-        cleanImage = new GuiImage(m);
+        cleanImage = (GuiImage) image.clone();
         imageFrame = new JFrame("Image");
         imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Load an image
