@@ -150,6 +150,7 @@ public class BallClassifierPhaseTwo {
                 if(ball == balls.get(i))
                     continue;
                 if(ballZone.posInsideZone(balls.get(i).getPosVector())) {
+                    ball.setPlacement(Ball.Placement.PAIR);
                     Vector2Dv1 dir = balls.get(i).getPosVector().getSubtracted(ball.getPosVector());
                     dir.normalize();
                     dir.multiply(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL);
@@ -174,6 +175,7 @@ public class BallClassifierPhaseTwo {
                 }
             }
         }
+
     }
     private static boolean waypointInCriticalZone(Vector2Dv1 waypoint, ArrayList<Ball> balls, Cross cross, Boundry boundry){
         for (Ball ball: balls) {
