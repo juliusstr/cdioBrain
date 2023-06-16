@@ -61,7 +61,6 @@ public class ImageClick {
     private static boolean colorbool;
     private static JTable jt = null;
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, JTable jt, boolean colorbool) {
-        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -71,7 +70,6 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool, ArrayList<Vector2Dv1> balls) {
-        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -81,7 +79,6 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool) {
-        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -127,6 +124,7 @@ public class ImageClick {
                             i++;
                         }
                     }
+                    image = new GuiImage(cleanMat);
                     frame.dispose();
                 }
             }
