@@ -42,6 +42,19 @@ public class HeatGenerator {
     private  int heatNum;
     private GuiImage image;
 
+    /**
+     * Constructs a HeatGenerator object with the specified parameters.
+     *
+     * @param balls       The list of balls to generate heat from.
+     * @param r           The Robotv1 object.
+     * @param b           The Boundry object.
+     * @param c           The Cross object.
+     * @param g           The goal Ball object.
+     * @param heatNum     The number of the heat.
+     * @param m           The Mat object.
+     * @param req         The list of required balls.
+     * @param orangeFirst A boolean value indicating whether the orange ball should be placed last in the heat.
+     */
     public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Boundry b, Cross c, Ball g, int heatNum, Mat m, ArrayList<Ball> req, boolean orangeFirst){
         image = new GuiImage(m);
         this.balls = balls;
@@ -60,6 +73,18 @@ public class HeatGenerator {
         reqBalls = new ArrayList<>();
         run();
     }
+
+    /**
+     * Constructs a HeatGenerator object with the specified parameters.
+     *
+     * @param balls   The list of balls to generate heat from.
+     * @param r       The Robotv1 object.
+     * @param b       The Boundry object.
+     * @param c       The Cross object.
+     * @param g       The goal Ball object.
+     * @param heatNum The number of the heat.
+     * @param m       The Mat object.
+     */
     public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Boundry b, Cross c, Ball g, int heatNum, Mat m){
         image = new GuiImage(m);
         this.balls = balls;
@@ -78,6 +103,9 @@ public class HeatGenerator {
         run();
     }
 
+    /**
+     * Runs the heat generation
+     */
     private void run(){
         System.out.println("-------------------\nStarting generation of heat " + heatNum + "\nHeat settings:\nHeat size: " + amount + "\nGet orange ball: " + (orangeFirst ? "Y" : "N"));
         sortBalls();
@@ -125,6 +153,14 @@ public class HeatGenerator {
         System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
     }
 
+    /**
+     * Sorts the balls into different categories based on their color and placement.
+     * The sorted balls are stored in separate ArrayLists or Ball objects: orangeBall, freeBalls, pairBalls, and diffBalls.
+     * The orange ball is assigned to the orangeBall instance variable.
+     * The free balls are added to the freeBalls ArrayList.
+     * The paired balls are added to the pairBalls ArrayList.
+     * The remaining balls are added to the diffBalls ArrayList.
+     */
     private void sortBalls(){
         for (Ball b: balls) {
             if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE))
@@ -138,6 +174,16 @@ public class HeatGenerator {
         }
     }
 
+    /**
+     * Adds routes to the robot based on the balls for the current heat.
+     * The method creates a clone of the 'balls' list called 'bta' to use as balls to avoid.
+     * It iterates over the ballsForHeat list, excluding the orange ball if 'orangeFirst' is set.
+     * For each ball, it removes the ball from 'bta', calculates a route using the getRoute() method,
+     * and if a route is found, it is added to the current heat routes in the robot.
+     * After iterating through all the balls, if no routes were added, it resets the ballsForHeat list to include all balls,
+     * and repeats the process. If no routes are found even with all balls, the 'setRouteByHand' method is called to get a start ball for the heat.
+     * Finally, the cuurent heat routes for the robot are maked as completed.
+     */
     private void addRouteToRobot(){
         ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
         int i = 0;
@@ -170,6 +216,19 @@ public class HeatGenerator {
         robot.endHeatRoutes();
     }
 
+    /**
+     * Sets the route for the robot manually by allowing user input through image clicks.
+     * The method clears the 'heat' list, creates an instance of 'ImageClick' with the 'image' parameter,
+     * and draws the balls in the 'ballsForHeat' list using the 'drawBalls()' method of 'ImageClick'.
+     * It initializes an empty list of 'v_list' to store the clicked positions.
+     * If the 'robot' parameter is true, the method prompts the user to select the first ball by running 'ImageClick' with a message and limiting the clicks to 1.
+     * If the 'robot' parameter is false, the method prompts the user to select the route by running 'ImageClick' with a message and limiting the clicks to 'amount'.
+     * The method waits until the required number of clicks is obtained by continuously checking the size of 'v_list' with a do-while loop and a sleep interval.
+     * After obtaining the clicks, the method iterates over the clicked positions in 'v_list' and finds the closest ball from the 'ballsForHeat' list.
+     * It calculates the distance between the clicked position and each ball's position and selects the ball with the minimum distance as the closest.
+     * The selected closest ball is added to the 'heat' list.
+     * the cost of the heat or route is set to -1.
+     */
     private void setRouteByHand(boolean robot){
         heat.clear();
         ImageClick ic = new ImageClick(image);
@@ -215,6 +274,15 @@ public class HeatGenerator {
         heat.get(heat.size()-1).addRoute(route);
     }
 
+    /**
+     * Calculates and returns a route from the start position to the end ball, considering the given list of balls to avoid.
+     * The method initializes a 'WaypointGenerator.WaypointRoute' object 'wr' as null.
+     * It creates a new 'Route' object with the start position and sets the end ball.
+     * The method attempts to generate a waypoint route using the 'WaypointGenerator' class, passing the end ball's pick-up point, start position, cross, boundary, and the list of balls to avoid.
+     * If a 'NoRouteException' or 'TimeoutException' occurs during waypoint route generation, the method returns null.
+     * Otherwise, it sets the route's score to the cost of the generated waypoint route and sets the waypoints from the waypoint route to the route object.
+     * Finally, it returns the route object.
+     */
     private  Route getRoute(Vector2Dv1 start, Ball end, ArrayList<Ball> bta){
         WaypointGenerator.WaypointRoute wr = null;
         Route route = new Route(start);
@@ -231,6 +299,10 @@ public class HeatGenerator {
         return route;
     }
 
+    /**
+     * Finds the possible balls that can be included in the heat.
+     * Populates the 'ballsForHeat' ArrayList based on various conditions and ball placements.
+     */
     private void findPossibleBallsForHeat(){
         ballsForHeat = new ArrayList<Ball>();
         int amountLeft = amount;
@@ -252,6 +324,10 @@ public class HeatGenerator {
         ballsForHeat.addAll(diffBalls);
     }
 
+    /**
+     * The 'generate' class is a private class used internally by the parent class.
+     * It is responsible for generating the best possible heat configuration.
+     */
     private class generate {
         private int bestScore = -1;
         private ArrayList<Ball> best_heat = new ArrayList<>();
@@ -268,6 +344,11 @@ public class HeatGenerator {
         private int bestScoreO = -1;
 
         private int count = 0;
+
+        /**
+         * The constructor of the 'generate' class.
+         * It initializes the class variables and prepares the ball list for generating the heat configuration.
+         */
         private generate() {
             bestScore = -1;
             bestScoreO = -1;
@@ -303,6 +384,12 @@ public class HeatGenerator {
                 heat = (ArrayList<Ball>) best_heat.clone();
         }
 
+        /**
+         * Recursive method to find the next ball in the heat configuration.
+         *
+         * @param start The ball to start the search from.
+         * @param bta   The list of balls available for selection.
+         */
         private void findNextBall(Ball start, ArrayList<Ball> bta) {
             count++;
             int countInner = count;
@@ -424,6 +511,12 @@ public class HeatGenerator {
             curBalls.remove(start);
         }
     }
+
+    /**
+     * Retrieves the heat generated by the 'generate' class.
+     *
+     * @return The ArrayList of balls representing the heat.
+     */
     public ArrayList<Ball> getHeat(){
         return heat;
     }
