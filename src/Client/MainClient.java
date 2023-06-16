@@ -4,6 +4,7 @@ package Client;
 import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.Image.GuiImage;
+import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
@@ -216,6 +217,38 @@ public class MainClient {
 
         System.out.println("Starting run...");
         routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
+
+        //#############################  FINAL ROUND  ############################################
+        balls.clear();
+        balls = imgRec.captureBalls();
+        try {
+                stabilizer.stabilizeBalls(balls);
+                } catch (TypeException e) {
+                throw new RuntimeException(e);
+                }
+                try {
+                ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+        robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
+        } catch (BadDataException e) {
+        throw new RuntimeException(e);
+        }
+        routeBalls = new ArrayList<>();
+        try {
+                ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
+        System.out.println("balls1 = " + balls1);
+        for (Ball ball : balls1) {
+        BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
+        System.out.println(ball.toString());
+        routeBalls.add(ball);
+        }
+        } catch (NoDataException e) {
+        throw new RuntimeException(e);
+        }
+        RoutePlanerFaseTwo lastRound = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+        //lastRound.getHeats();
+
+        routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
+
     }
 }
 
