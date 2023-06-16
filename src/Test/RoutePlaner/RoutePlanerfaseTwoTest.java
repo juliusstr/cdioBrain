@@ -205,8 +205,6 @@ public class RoutePlanerfaseTwoTest {
         ArrayList<Ball> req = new ArrayList<>();
         req.add(ball_list.get(1));
         hg.getHeats(req);
-
-        while(true);
     }
 
     @Test
