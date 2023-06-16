@@ -49,7 +49,9 @@ public class RoutExecute {
         for (int j = 0; j < heat.size(); j++) {
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
-            ballsToAvoid.remove(heat.get(j));
+            if(heat.get(j).getPlacement() == Ball.Placement.FREE){
+                ballsToAvoid.remove(heat.get(j));
+            }
             if (heat.size() == checkSize) {
                 for (int i = 0; i < robot.getRoutes(heatNr).size(); i++) {
                     if (heat.get(0) == robot.getRoutes(heatNr).get(i).getEnd()) {
@@ -62,6 +64,9 @@ public class RoutExecute {
                                 targetWaypoint = heat.get(j).getPickUpPoint();
                             }
                             waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
+                            if(heat.get(j).getPlacement() != Ball.Placement.FREE){
+                                ballsToAvoid.remove(heat.get(j));
+                            }
 
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
@@ -69,9 +74,11 @@ public class RoutExecute {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
+                         */
                         break;
                     }
                 }
@@ -93,9 +100,11 @@ public class RoutExecute {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
+                         */
                         break;
                     }
                 }
@@ -126,24 +135,25 @@ public class RoutExecute {
                     //check if we have the right angle to the target
                     turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_COMMAND);
+                    //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case EDGE:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_EDGE_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case CORNER:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_CORNER_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case PAIR:
                     turnBeforeHardcode(robot,imgRec,out,in,heat.get(j).getPosVector(),stabilizer);
                     out.println(StandardSettings.COLLECT_PAIR_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_PAIR_COMMAND);
                 default:
                     out.println("stop -t -d");
 
@@ -156,14 +166,14 @@ public class RoutExecute {
         //go to goal and do a drop-off
         updateRobotFromImgRec(imgRec,robot,stabilizer);
         try {
-            waypointGenerator = new WaypointGenerator(boundry.goalWaypoint0, robot.getPosVector(), cross, boundry, ballsToAvoid);
+            waypointGenerator = new WaypointGenerator(boundry.goalWaypoint1, robot.getPosVector(), cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
         routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
-        routeToGoal.add(boundry.goalWaypoint1);
+        //routeToGoal.add(boundry.goalWaypoint1);
         commandGenerator = new CommandGenerator(robot, routeToGoal);
         while (routeToGoal.size() != 0) {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
@@ -175,7 +185,7 @@ public class RoutExecute {
         }
         turnBeforeHardcode(robot, imgRec, out, in, boundry.getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
-        checkForHardcodeDone(in);
+        checkForHardcodeDone(in, StandardSettings.DROP_OFF_COMMAND);
         //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
     }
 
@@ -216,7 +226,7 @@ public class RoutExecute {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
         }
-        wait(300);
+        wait(500);
     }
     /**
      * Reverse if too close to a line after pickup
@@ -323,10 +333,10 @@ public class RoutExecute {
         return robot.getDirection().getAngleBetwen(target.getSubtracted(robot.getPosVector()));
     }
 
-    public void checkForHardcodeDone(BufferedReader in){
+    public void checkForHardcodeDone(BufferedReader in, String commandSend){
         try {
             String input = in.readLine();
-            while (!input.equals("hardcode done")) {
+            while(!input.contains(commandSend)){
                 input = in.readLine();
             }
         }
@@ -334,4 +344,5 @@ public class RoutExecute {
             throw new RuntimeException();
             }
     }
+
 }

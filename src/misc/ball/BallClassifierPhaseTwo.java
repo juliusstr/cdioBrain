@@ -11,10 +11,10 @@ import java.util.List;
 
 public class BallClassifierPhaseTwo {
 
-    public static Color BLACK = new Color(81, 83, 82);
-    public static Color GREEN = new Color(61, 143, 100);
-    public static final Color WHITE = new Color(240, 237, 213);
-    public static final Color ORANGE = new Color(246, 162, 93);
+    public static Color BLACK = new Color(95, 84, 68);
+    public static Color GREEN = new Color(68, 130, 100);
+    public static final Color WHITE = new Color(234, 220, 188);
+    public static final Color ORANGE = new Color(248, 132, 47);
     public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE, ORANGE};
 
     public static void UpdateColor(ArrayList<Color> colors){
