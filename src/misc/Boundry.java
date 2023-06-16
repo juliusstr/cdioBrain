@@ -150,10 +150,10 @@ public class Boundry {
     }
 
     public boolean vectorInsideBoundary(Vector2Dv1 pos) {
-        Vector2Dv1 edge1 = (new Vector2Dv1(points.get(1))).getSubtracted((new Vector2Dv1(points.get(0))));
-        Vector2Dv1 edge2 = (new Vector2Dv1(points.get(3))).getSubtracted((new Vector2Dv1(points.get(0))));
+        Vector2Dv1 edge1 = (new Vector2Dv1(points.get(0))).getSubtracted((new Vector2Dv1(points.get(3))));
+        Vector2Dv1 edge2 = (new Vector2Dv1(points.get(2))).getSubtracted((new Vector2Dv1(points.get(3))));
 
-        Vector2Dv1 pointVector1 = pos.getSubtracted((new Vector2Dv1(points.get(0))));
+        Vector2Dv1 pointVector1 = pos.getSubtracted((new Vector2Dv1(points.get(3))));
 
         double dotProduct1 = pointVector1.dot(edge1);
         double dotProduct2 = pointVector1.dot(edge2);

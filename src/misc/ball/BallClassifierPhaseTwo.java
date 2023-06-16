@@ -156,22 +156,35 @@ public class BallClassifierPhaseTwo {
                     ball.setPlacement(Ball.Placement.PAIR);
                     Vector2Dv1 dir = balls.get(i).getPosVector().getSubtracted(ball.getPosVector());
                     dir.normalize();
+                    dir.rotateBy(Math.PI);
                     dir.multiply(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL);
                     Vector2Dv1 waypoint = ball.getPosVector().getAdded(dir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
                         ball.setPickUpWaypoint(dir);
                         break;
                     }
-                    dir.rotateBy(Math.PI/2);
-                    waypoint = ball.getPosVector().getAdded(dir);
+                    Vector2Dv1 tempDir = dir.getRotatedBy(Math.PI/2);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
-                        ball.setPickUpWaypoint(dir);
+                        ball.setPickUpWaypoint(tempDir);
                         break;
                     }
-                    dir.rotateBy(Math.PI);
-                    waypoint = ball.getPosVector().getAdded(dir);
+                    tempDir = dir.getRotatedBy(Math.PI/2*(-1));
+                    waypoint = ball.getPosVector().getAdded(tempDir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
-                        ball.setPickUpWaypoint(dir);
+                        ball.setPickUpWaypoint(tempDir);
+                        break;
+                    }
+                    tempDir = dir.getRotatedBy(Math.PI/4);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
+                    if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
+                        ball.setPickUpWaypoint(tempDir);
+                        break;
+                    }
+                    tempDir = dir.getRotatedBy(Math.PI/8);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
+                    if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
+                        ball.setPickUpWaypoint(tempDir);
                         break;
                     }
                     throw new NoWaypointException("No waypoint was found on pair ball");
