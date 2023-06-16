@@ -34,6 +34,11 @@ public class Robotv1 {
     private boolean heatReset = false;
     private int heatRouteNum = 1;
 
+    public Ball aUnScale = null;
+    public Ball bUnScale = null;
+    public Ball aScale = null;
+    public Ball bScale = null;
+
     public double getScale(){
         return scale;
     }
@@ -125,6 +130,8 @@ public class Robotv1 {
 
     public void updatePos(Ball a, Ball b){
         //640X360
+        aUnScale = new Ball(a.getPosVector());
+        bUnScale = new Ball(b.getPosVector());
         Vector2Dv1 av = a.getPosVector();
         Vector2Dv1 bv = b.getPosVector();
         Vector2Dv1 mid = new Vector2Dv1(640/2,360/2);
@@ -139,6 +146,8 @@ public class Robotv1 {
 
         a.setPos(av.getPoint());
         b.setPos(bv.getPoint());
+        aScale = a;
+        bScale = b;
         Ball back = b;
         Ball front  = a;
         if (!back.getColor().equals(BallClassifierPhaseTwo.BLACK)){
