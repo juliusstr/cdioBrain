@@ -123,6 +123,7 @@ public class Ball extends PrimitiveBall{
                 ", yPos=" + yPos +
                 ", status=" + status +
                 ", zoneGroupeId=" + zoneGroupId +
+                ", placement=" + placement +
                 '}';
     }
 
@@ -241,4 +242,6 @@ public class Ball extends PrimitiveBall{
         dir = dir.getNormalized().getMultiplied(StandardSettings.ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP);
         return getPickUpPoint().getAdded(dir);
     }
+
+
 }

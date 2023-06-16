@@ -4,6 +4,7 @@ package Client;
 import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.Image.GuiImage;
+import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.NoWaypointException;
 import exceptions.TypeException;
@@ -51,22 +52,29 @@ public class MainClient {
 
         balls = imgRec.captureBalls();
         BallStabilizerPhaseTwo stabilizer = new BallStabilizerPhaseTwo();
+        stabilizer.stabilizeBalls(balls);
+        ArrayList<Ball> realballs = new ArrayList<>();
+        try {
+            realballs = stabilizer.getStabelBalls();
+        } catch (NoDataException e) {
+            throw new RuntimeException(e);
+        }
 
 
         //todo add balls if less then 11 / remove if needed
-        while (balls.size() <= 11){
-            balls.add(new Ball(0,0,StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
+        while (realballs.size() < 11){
+            realballs.add(new Ball(0,0,StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
         }
         boolean orangeInBalls = false;
         for (Ball ball :
-                balls) {
-            if(ball.getColor() == BallClassifierPhaseTwo.ORANGE){
+                realballs) {
+            if(ball.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
                 orangeInBalls = true;
                 break;
             }
         }
         if(!orangeInBalls)
-            balls.get(0).setColor(BallClassifierPhaseTwo.ORANGE);
+            realballs.get(0).setColor(BallClassifierPhaseTwo.ORANGE);
 
 
         //vars for GUI
@@ -90,21 +98,21 @@ public class MainClient {
         //find orange ball
         int ballI = 0;
         for (; ballI < 11 ; ballI++) {
-            Ball b = balls.get(ballI);
-            if(b.getColor() == BallClassifierPhaseTwo.ORANGE){
+            Ball b = realballs.get(ballI);
+            if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
                 break;
             }
         }
 
         //orange first in list
-        Ball ballO = balls.get(ballI);
-        Ball ball1 = balls.get(0);
+        Ball ballO = realballs.get(ballI);
+        Ball ball1 = realballs.get(0);
         if(ballO != ball1){
-            balls.set(0, ballO);
-            balls.set(ballI, ball1);
+            realballs.set(0, ballO);
+            realballs.set(ballI, ball1);
         }
         //add position to ballsGUI
-        for (Ball b: balls) {
+        for (Ball b: realballs) {
             ballsGUI.add(b.getPosVector());
         }
 
@@ -120,17 +128,30 @@ public class MainClient {
 
         Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
         Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        try {
+            ArrayList<Ball> roball = stabilizer.getStabelRobotCirce();
+            if(roball.get(0).getType() == Ball.Type.ROBOT_BACK){
+                initBall = roball.get(0);
+                initBall2 = roball.get(1);
+            } else {
+                initBall2 = roball.get(0);
+                initBall = roball.get(1);
+            }
+        } catch (BadDataException e) {
+
+        }
         Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+        robotv1.updatePos(initBall,initBall2);
 
         ArrayList<Vector2Dv1> robotPos = new ArrayList<>();
-        robotPos.add(new Vector2Dv1(1,1));
-        robotPos.add(new Vector2Dv1(1,1));
+        robotPos.add(initBall.getPosVector());
+        robotPos.add(initBall2.getPosVector());
 
         ArrayList<Vector2Dv1> reqBalls = new ArrayList<>();
-        robotPos.add(new Vector2Dv1(0,0));
-        robotPos.add(new Vector2Dv1(0,0));
-        robotPos.add(new Vector2Dv1(0,0));
-        robotPos.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
 
         //call interface
         new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos, reqBalls);
