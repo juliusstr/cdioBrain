@@ -206,7 +206,7 @@ public class MainClient {
 
         ArrayList<Ball> req_balls = new ArrayList<>();
         for (Vector2Dv1 v: GUI_Menu.rBalls) {
-            if(imgRec.imgRecObstacle.boundry != null) {
+            if(imgRec.imgRecObstacle.boundry.vectorInsideBoundary(v)) {
                 Ball clostest = null;
                 Vector2Dv1 close = null;
                 for (Ball b : routeBalls) {
