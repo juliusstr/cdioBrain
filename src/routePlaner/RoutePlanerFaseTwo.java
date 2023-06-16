@@ -33,6 +33,7 @@ public class RoutePlanerFaseTwo {
     public ArrayList<Ball> ballsHeat1 = null;
     public ArrayList<Ball> ballsHeat2 = null;
     public ArrayList<Ball> ballsHeat3 = null;
+    public static ArrayList<Ball> ballsAllRun = null;
     private Robotv1 robot = null;
     public Ball goalFakeBall = null;
     private Mat justInCase = null;
@@ -129,6 +130,14 @@ public class RoutePlanerFaseTwo {
         ballsHeat3 = new HeatGenerator(balls, robot, goalFakeBall.getPosVector(), boundry, cross, goalFakeBall, 3, justInCase).getHeat();
         for (Ball b: ballsHeat3) {
             balls.remove(b);
+        }
+        ballsAllRun.addAll(ballsHeat1);
+        ballsAllRun.addAll(ballsHeat2);
+        ballsAllRun.addAll(ballsHeat3);
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(ballsAllRun, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
         }
     }
 
