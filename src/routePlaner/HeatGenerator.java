@@ -145,6 +145,7 @@ public class HeatGenerator {
         }
         new generate();
         if(heat.size() < amount && ballsForHeat.size() < balls.size()){
+            System.out.println("Cannot find route trying with more balls!");
             ballsForHeat = (ArrayList<Ball>) balls.clone();
             orangeFirst = false;
             new generate();
@@ -158,7 +159,6 @@ public class HeatGenerator {
         System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
         if(heat.get(heat.size()-1).getGoalRoute().getScore() < 0)
             return;
-        System.out.println("heat size " + heat.size());
         ArrayList bta = (ArrayList) balls.clone();
         ArrayList<ArrayList<Vector2Dv1>> vv_list = new ArrayList<>();
         vv_list.add(new ArrayList<>());
@@ -270,6 +270,7 @@ public class HeatGenerator {
         ic.drawBalls(ballsForHeat);
         ArrayList<Vector2Dv1> v_list = new ArrayList<>();
         if(robot){
+            System.out.println("Cannot find route robot select the first ball in route!");
             ic.run("Select first ball",1, v_list,new ArrayList<Color>(),false);
             do{
                 try {
@@ -279,6 +280,7 @@ public class HeatGenerator {
                 }
             }while (v_list.size() < 1);
         } else {
+            System.out.println("Cannot find route click by hand!");
             ic.run("Select route",amount, v_list,new ArrayList<Color>(),false);
             do{
                 try {
