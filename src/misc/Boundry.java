@@ -1,7 +1,6 @@
 package misc;
 
 import Client.StandardSettings;
-import misc.ball.Ball;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -148,6 +147,26 @@ public class Boundry {
                 return goalWaypoint1;
         }
         return null;
+    }
+
+    public boolean vectorInsideBoundary(Vector2Dv1 pos) {
+        Vector2Dv1 edge1 = (new Vector2Dv1(points.get(1))).getSubtracted((new Vector2Dv1(points.get(0))));
+        Vector2Dv1 edge2 = (new Vector2Dv1(points.get(3))).getSubtracted((new Vector2Dv1(points.get(0))));
+
+        Vector2Dv1 pointVector1 = pos.getSubtracted((new Vector2Dv1(points.get(0))));
+
+        double dotProduct1 = pointVector1.dot(edge1);
+        double dotProduct2 = pointVector1.dot(edge2);
+
+        if (dotProduct1 < 0 || dotProduct1 > edge1.dot(edge1)) {
+            return false;
+        }
+
+        if (dotProduct2 < 0 || dotProduct2 > edge2.dot(edge2)) {
+            return false;
+        }
+
+        return true;
     }
 
 }

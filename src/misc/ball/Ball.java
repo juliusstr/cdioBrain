@@ -36,7 +36,7 @@ public class Ball extends PrimitiveBall{
 
     private Vector2Dv1 pickUpVector = null;
 
-    private Placement placement;
+    private Placement placement =null;
 
     private ArrayList<Route> routes = new ArrayList<>();
     private Route goalRoute = null;

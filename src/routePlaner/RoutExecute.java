@@ -208,7 +208,7 @@ public class RoutExecute {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
         }
-        wait(200);
+        wait(300);
     }
     /**
      * Reverse if too close to a line after pickup
