@@ -138,7 +138,7 @@ public class GuiImage implements Cloneable{
 
         public GuiCircle(Vector2Dv1 v, int radius , Color color, int size){
             this.size = size;
-            this.radius = radius;
+            this.radius = radius * ADJUST;
             pos = new org.opencv.core.Point((int)v.x*ADJUST, (int)v.y*ADJUST);
             this.color = new Scalar(color.getBlue(), color.getGreen(), color.getRed());
         }

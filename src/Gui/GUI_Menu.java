@@ -40,7 +40,7 @@ public class GUI_Menu {
         this.balls = balls;
         caliPos = calip;
         robotPos = rPos;
-        this.rBalls = rBalls;
+        this.rBalls = rballs;
         setUpMenu();
     }
 
@@ -297,17 +297,17 @@ public class GUI_Menu {
 
     public static String[][] getBallsInfo(){
         String[][] data = {
-                {"Ball 1(Orange)",String.valueOf(balls.get(0).x),String.valueOf(balls.get(0).x)},
-                {"Ball 2",String.valueOf(balls.get(1).x),String.valueOf(balls.get(1).x)},
-                {"Ball 3",String.valueOf(balls.get(2).x),String.valueOf(balls.get(2).x)},
-                {"Ball 4",String.valueOf(balls.get(3).x),String.valueOf(balls.get(3).x)},
-                {"Ball 5",String.valueOf(balls.get(4).x),String.valueOf(balls.get(4).x)},
-                {"Ball 6",String.valueOf(balls.get(5).x),String.valueOf(balls.get(5).x)},
-                {"Ball 7",String.valueOf(balls.get(6).x),String.valueOf(balls.get(6).x)},
-                {"Ball 8",String.valueOf(balls.get(7).x),String.valueOf(balls.get(7).x)},
-                {"Ball 9",String.valueOf(balls.get(8).x),String.valueOf(balls.get(8).x)},
-                {"Ball 10",String.valueOf(balls.get(9).x),String.valueOf(balls.get(9).x)},
-                {"Ball 11",String.valueOf(balls.get(10).x),String.valueOf(balls.get(10).x)}
+                {"Ball 1(Orange)",String.valueOf(balls.get(0).x),String.valueOf(balls.get(0).y)},
+                {"Ball 2",String.valueOf(balls.get(1).x),String.valueOf(balls.get(1).y)},
+                {"Ball 3",String.valueOf(balls.get(2).x),String.valueOf(balls.get(2).y)},
+                {"Ball 4",String.valueOf(balls.get(3).x),String.valueOf(balls.get(3).y)},
+                {"Ball 5",String.valueOf(balls.get(4).x),String.valueOf(balls.get(4).y)},
+                {"Ball 6",String.valueOf(balls.get(5).x),String.valueOf(balls.get(5).y)},
+                {"Ball 7",String.valueOf(balls.get(6).x),String.valueOf(balls.get(6).y)},
+                {"Ball 8",String.valueOf(balls.get(7).x),String.valueOf(balls.get(7).y)},
+                {"Ball 9",String.valueOf(balls.get(8).x),String.valueOf(balls.get(8).y)},
+                {"Ball 10",String.valueOf(balls.get(9).x),String.valueOf(balls.get(9).y)},
+                {"Ball 11",String.valueOf(balls.get(10).x),String.valueOf(balls.get(10).y)}
         };
         return data;
     }

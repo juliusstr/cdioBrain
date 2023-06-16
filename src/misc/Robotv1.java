@@ -144,12 +144,14 @@ public class Robotv1 {
         bv.multiply(scale);
         bv.add(mid);
 
-        a.setPos(av.getPoint());
-        b.setPos(bv.getPoint());
-        aScale = a;
-        bScale = b;
-        Ball back = b;
-        Ball front  = a;
+        Ball newA = new Ball(av);
+        Ball newB = new Ball(bv);
+        newA.setColor(a.getColor());
+        newB.setColor(b.getColor());
+        aScale = newA;
+        bScale = newB;
+        Ball back = newA;
+        Ball front  = newB;
         if (!back.getColor().equals(BallClassifierPhaseTwo.BLACK)){
             Ball temp = front;
             front = back;
