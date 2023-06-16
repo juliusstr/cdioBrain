@@ -20,26 +20,26 @@ import org.opencv.core.Mat;
 public class HeatGenerator {
 
     private int MAXBALLSPERHEAT = 4;
-    private static ArrayList<Ball> heat = new ArrayList<>();
+    private  ArrayList<Ball> heat = new ArrayList<>();
 
-    private static ArrayList<Ball> balls;
-    private static ArrayList<Ball> ballsForHeat;
+    private  ArrayList<Ball> balls;
+    private  ArrayList<Ball> ballsForHeat;
 
     private ArrayList<Ball> freeBalls = new ArrayList<>();
-    private static ArrayList<Ball> pairBalls = new ArrayList<>();
-    private static ArrayList<Ball> diffBalls =  new ArrayList<>();
-    private static ArrayList<Ball> reqBalls =  new ArrayList<>();
+    private  ArrayList<Ball> pairBalls = new ArrayList<>();
+    private  ArrayList<Ball> diffBalls =  new ArrayList<>();
+    private  ArrayList<Ball> reqBalls =  new ArrayList<>();
 
-    private static Ball orangeBall = null;
+    private  Ball orangeBall = null;
 
-    private static Robotv1 robot;
-    private static Cross cross;
-    private static Boundry boundry;
-    private static Ball goal;
-    private static boolean orangeFirst;
+    private  Robotv1 robot;
+    private  Cross cross;
+    private  Boundry boundry;
+    private  Ball goal;
+    private  boolean orangeFirst;
 
-    private static int amount;
-    private static int heatNum;
+    private  int amount;
+    private  int heatNum;
     private GuiImage image;
 
     public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Boundry b, Cross c, Ball g, int heatNum, Mat m, ArrayList<Ball> req, boolean orangeFirst){
@@ -215,7 +215,7 @@ public class HeatGenerator {
         heat.get(heat.size()-1).addRoute(route);
     }
 
-    private static Route getRoute(Vector2Dv1 start, Ball end, ArrayList<Ball> bta){
+    private  Route getRoute(Vector2Dv1 start, Ball end, ArrayList<Ball> bta){
         WaypointGenerator.WaypointRoute wr = null;
         Route route = new Route(start);
         route.setEnd(end);
@@ -252,7 +252,7 @@ public class HeatGenerator {
         ballsForHeat.addAll(diffBalls);
     }
 
-    private static class generate {
+    private class generate {
         private int bestScore = -1;
         private ArrayList<Ball> best_heat = new ArrayList<>();
         private ArrayList<Ball> best_heat_orange = new ArrayList<>();
