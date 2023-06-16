@@ -25,7 +25,8 @@ public class RoutExecute {
     private Robotv1 robot = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
-    RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
+
+    public RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
         this.in = in;
         this.out = out;
         this.robot = robot;
@@ -33,7 +34,7 @@ public class RoutExecute {
         this.boundry = boundry;
     }
 
-    void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
+    public void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
         CommandGenerator commandGenerator;
