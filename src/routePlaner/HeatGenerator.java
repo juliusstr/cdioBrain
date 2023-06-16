@@ -156,28 +156,36 @@ public class HeatGenerator {
         }
         System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
         if(heat.get(heat.size()-1).getGoalRoute().getScore() < 0)
-            return;/*
+            return;
+        System.out.println("heat size " + heat.size());
         ArrayList bta = (ArrayList) balls.clone();
         ArrayList<ArrayList<Vector2Dv1>> vv_list = new ArrayList<>();
+        vv_list.add(new ArrayList<>());
+        vv_list.get(0).add(robotPos);
         for (Route r: robot.getRoutes(heatNum)) {
             if(r.getEnd() == heat.get(0)){
                 vv_list.add(r.getWaypoints());
                 break;
             }
         }
-        RouteView rw = new RouteView(vv_list, image.getMat());
         bta.remove(heat.get(0));
         int i = 1;
         for (Ball b: heat) {
-            RouteView rw1 = new RouteView(vv_list, image.getMat());
             if(heat.get(heat.size()-1) == b)
                 vv_list.add(b.getGoalRoute().getWaypoints());
             else {
                 bta.remove(heat.get(i));
-                vv_list.add(getRoute(b.getPickUpPoint(), heat.get(i), bta).getWaypoints());
+                Route r = getRoute(b.getPickUpPoint(), heat.get(i), bta);
+                if (r == null){
+                    ArrayList<Vector2Dv1> v_list = new ArrayList<>();
+                    v_list.add(heat.get(i).getPickUpPoint());
+                } else
+                    vv_list.add(r.getWaypoints());
             }
+            i++;
         }
-        RouteView rw2 = new RouteView(vv_list, image.getMat());*/
+        RouteView rw = new RouteView(vv_list, image.getMat());
+        while (true);
     }
 
     /**
