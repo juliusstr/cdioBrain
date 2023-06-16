@@ -186,14 +186,14 @@ public class DataView {
                 }
 
             }
-            if(robotOn){
-                image.Draw(new GuiImage.GuiCircle(robot.aScale.getPosVector(), 1, Color.GREEN, 10), false);
-                image.Draw(new GuiImage.GuiCircle(robot.bScale.getPosVector(), 1, Color.BLACK, 10), false);
-            }
-            if(robotNonScaleOn){
-                image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 1, Color.GREEN, 10), false);
-                image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 1, Color.BLACK, 10), false);
-            }
+        }
+        if(robotOn){
+            image.Draw(new GuiImage.GuiCircle(robot.aScale.getPosVector(), 1, Color.GREEN, 10), false);
+            image.Draw(new GuiImage.GuiCircle(robot.bScale.getPosVector(), 1, Color.BLACK, 10), false);
+        }
+        if(robotNonScaleOn){
+            image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 1, Color.GREEN, 10), false);
+            image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 1, Color.BLACK, 10), false);
         }
         image.update();
         imageLabel.setIcon(image.getIcon());

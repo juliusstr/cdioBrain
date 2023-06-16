@@ -156,7 +156,7 @@ public class HeatGenerator {
         }
         System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
         if(heat.get(heat.size()-1).getGoalRoute().getScore() < 0)
-            return;
+            return;/*
         ArrayList bta = (ArrayList) balls.clone();
         ArrayList<ArrayList<Vector2Dv1>> vv_list = new ArrayList<>();
         for (Route r: robot.getRoutes(heatNum)) {
@@ -165,9 +165,11 @@ public class HeatGenerator {
                 break;
             }
         }
+        RouteView rw = new RouteView(vv_list, image.getMat());
         bta.remove(heat.get(0));
         int i = 1;
         for (Ball b: heat) {
+            RouteView rw1 = new RouteView(vv_list, image.getMat());
             if(heat.get(heat.size()-1) == b)
                 vv_list.add(b.getGoalRoute().getWaypoints());
             else {
@@ -175,7 +177,7 @@ public class HeatGenerator {
                 vv_list.add(getRoute(b.getPickUpPoint(), heat.get(i), bta).getWaypoints());
             }
         }
-        RouteView rw = new RouteView(vv_list, image.getMat());
+        RouteView rw2 = new RouteView(vv_list, image.getMat());*/
     }
 
     /**
