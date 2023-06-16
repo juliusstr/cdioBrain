@@ -24,10 +24,11 @@ import java.util.ArrayList;
 
 public class ImageClick {
     private static GuiImage image;
-    private static GuiImage image2;
+    private static Mat cleanMat;
 
     public ImageClick(GuiImage image){
         this.image = (GuiImage) image.clone();
+        cleanMat = image.getMat();
     }
 
     public void drawBalls(ArrayList<Ball> balls){
@@ -51,6 +52,7 @@ public class ImageClick {
 
     public void setImage(GuiImage image){
         this.image = (GuiImage) image.clone();
+        cleanMat = image.getMat();
     }
     private static int amount;
     private static String title;
@@ -59,7 +61,7 @@ public class ImageClick {
     private static boolean colorbool;
     private static JTable jt = null;
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, JTable jt, boolean colorbool) {
-        image2 = (GuiImage) image.clone();
+        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -69,7 +71,7 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool, ArrayList<Vector2Dv1> balls) {
-        image2 = (GuiImage) image.clone();
+        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -79,7 +81,7 @@ public class ImageClick {
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool) {
-        image2 = (GuiImage) image.clone();
+        image = new GuiImage(cleanMat);
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -125,7 +127,6 @@ public class ImageClick {
                             i++;
                         }
                     }
-                    image = (GuiImage) image2.clone();
                     frame.dispose();
                 }
             }
