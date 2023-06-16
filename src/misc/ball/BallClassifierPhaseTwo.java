@@ -79,6 +79,9 @@ public class BallClassifierPhaseTwo {
      @param cross the cross object representing the cross in the playing area
      */
     public static void ballSetPlacement(ArrayList<Ball> balls, Boundry boundry, Cross cross) throws NoWaypointException {
+        for (Ball b: balls) {
+            b.setPlacement(null);
+        }
         //cross
         for (Ball ball : balls) {
             ArrayList<Zone> zones = cross.getCriticalZones();

@@ -8,6 +8,7 @@ import Gui.Image.GuiImage;
 import Gui.ImageClick;
 import Gui.RouteView;
 import exceptions.NoRouteException;
+import exceptions.NoWaypointException;
 import misc.Boundry;
 import misc.Cross;
 import misc.Robotv1;
@@ -408,9 +409,19 @@ public class HeatGenerator {
             } else {
                 for (Route r : robot.getRoutes(heatNum)) {
                     bta.remove(r.getEnd());
+                    try {
+                        BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                    } catch (NoWaypointException e) {
+                        throw new RuntimeException(e);
+                    }
                     curScore = (int) r.getScore();
                     findNextBall(r.getEnd(), bta);
                     bta.add(r.getEnd());
+                    try {
+                        BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                    } catch (NoWaypointException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
             if (orangeFirst && best_heat.size() < gAmount && best_heat_orange.size() == gAmount)
@@ -468,9 +479,19 @@ public class HeatGenerator {
                 }
             } else if (orangeFirst && curBalls.size() == gAmount - 1) {
                 bta.remove(orangeBall);
+                try {
+                    BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                } catch (NoWaypointException e) {
+                    throw new RuntimeException(e);
+                }
                 Route route = getRoute(start.getPickUpPoint(), orangeBall, bta);
                 if (route == null) {
                     bta.add(orangeBall);
+                    try {
+                        BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                    } catch (NoWaypointException e) {
+                        throw new RuntimeException(e);
+                    }
                     curBalls.remove(start);
                     if (start.getPlacement() == Ball.Placement.PAIR)
                         curScore -= 100;
@@ -484,13 +505,28 @@ public class HeatGenerator {
                 findNextBall(orangeBall, bta);
                 curScore -= (int) route.getScore();
                 bta.add(orangeBall);
+                try {
+                    BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                } catch (NoWaypointException e) {
+                    throw new RuntimeException(e);
+                }
                 for (Ball b : ball_list) {
                     if (curBalls.contains(b))
                         continue;
                     bta.remove(b);
+                    try {
+                        BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                    } catch (NoWaypointException e) {
+                        throw new RuntimeException(e);
+                    }
                     Route route2 = getRoute(start.getPickUpPoint(), b, bta);
                     if (route2 == null) {
                         bta.add(b);
+                        try {
+                            BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                        } catch (NoWaypointException e) {
+                            throw new RuntimeException(e);
+                        }
                         continue;
                     }
                     curScore += (int) route2.getScore();
@@ -499,6 +535,11 @@ public class HeatGenerator {
                     if (route3 == null) {
                         curScore -= (int) route2.getScore();
                         bta.add(b);
+                        try {
+                            BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                        } catch (NoWaypointException e) {
+                            throw new RuntimeException(e);
+                        }
                         curBalls.remove(b);
                         continue;
                     }
@@ -511,6 +552,11 @@ public class HeatGenerator {
                     }
                     curBalls.remove(b);
                     bta.add(b);
+                    try {
+                        BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                    } catch (NoWaypointException e) {
+                        throw new RuntimeException(e);
+                    }
                     curScore -= (int) route2.getScore();
                 }
                 } else {
@@ -518,6 +564,11 @@ public class HeatGenerator {
                         if (curBalls.contains(b))
                             continue;
                         bta.remove(b);
+                        try {
+                            BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                        } catch (NoWaypointException e) {
+                            throw new RuntimeException(e);
+                        }
                         Route route = getRoute(start.getPickUpPoint(), b, bta);
                         if (route == null)
                             continue;
@@ -531,6 +582,11 @@ public class HeatGenerator {
                         curScore -= (int) route.getScore();
                         //System.out.println("current score after: " + curScore);
                         bta.add(b);
+                        try {
+                            BallClassifierPhaseTwo.ballSetPlacement(bta, boundry, cross);
+                        } catch (NoWaypointException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             if (curReqBalls.contains(start))

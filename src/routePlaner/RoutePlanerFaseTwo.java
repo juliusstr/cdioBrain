@@ -6,6 +6,7 @@ import Gui.ImageClick;
 import Gui.RouteView;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
+import exceptions.NoWaypointException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
 import misc.*;
@@ -111,9 +112,19 @@ public class RoutePlanerFaseTwo {
         for (Ball b: ballsHeat1) {
             balls.remove(b);
         }
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(balls, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
+        }
         ballsHeat2 = new HeatGenerator(balls, robot, goalFakeBall.getPosVector(), boundry, cross, goalFakeBall, 2, justInCase).getHeat();
         for (Ball b: ballsHeat2) {
             balls.remove(b);
+        }
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(balls, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
         }
         ballsHeat3 = new HeatGenerator(balls, robot, goalFakeBall.getPosVector(), boundry, cross, goalFakeBall, 3, justInCase).getHeat();
         for (Ball b: ballsHeat3) {
