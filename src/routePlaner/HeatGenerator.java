@@ -309,6 +309,7 @@ public class HeatGenerator {
         Route route = new Route(heat.get(heat.size()-1).getPickUpPoint());
         route.setScore(-1);
         heat.get(heat.size()-1).addRoute(route);
+        heat.get(heat.size()-1).setGoalRoute(route);
     }
 
     /**
