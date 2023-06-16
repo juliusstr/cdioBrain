@@ -241,16 +241,17 @@ public class MainClient {
                 ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
         System.out.println("balls1 = " + balls1);
         for (Ball ball : balls1) {
-        BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
+        BallClassifierPhaseTwo.ballSetPlacement(routeBalls, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
         System.out.println(ball.toString());
         routeBalls.add(ball);
         }
         } catch (NoDataException e) {
         throw new RuntimeException(e);
+        } catch (NoWaypointException e) {
+            e.printStackTrace();
         }
         RoutePlanerFaseTwo lastRound = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         //lastRound.getHeats();
-
         routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
 
     }
