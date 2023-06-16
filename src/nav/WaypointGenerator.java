@@ -412,12 +412,12 @@ public class WaypointGenerator {
      * @param waypoints the route we need the calculation of
      * @return the cost to take the route
      */
-    //todo make it so this adds cost of turning
     public double getRouteCost(ArrayList<Vector2Dv1> waypoints){
         double cost;
         cost=this.start.getSubtracted(waypoints.get(0)).getLength();
         for (int cnt = 1; cnt < waypoints.size(); cnt++) {
             cost+=waypoints.get(cnt).getSubtracted(waypoints.get(cnt-1)).getLength();
+            cost+= 20; // todo fine tune me
         }
         return cost;
     }

@@ -88,7 +88,7 @@ public class ImageClick {
                 GuiImage.GuiPixel pixel = image.getPixel(x,y);
                 color.add(pixel.getColor());
                 pos.add(pixel.getVector());
-                drawPoint(x, y);
+                drawPoint(pixel.x, pixel.y);
                 imageLabel.setIcon(image.getIcon());
                 amount--;
                 frame.setTitle(title + "(" + (pos.size()+1) + " out of " + (pos.size()+amount) + ")");
