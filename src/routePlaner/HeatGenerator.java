@@ -277,7 +277,7 @@ public class HeatGenerator {
             curDiffBalls = new ArrayList<>();
             best_heat_orange = new ArrayList<>();
             ball_list = (ArrayList<Ball>) ballsForHeat.clone();
-            ArrayList<Ball> bta = (ArrayList<Ball>) ballsForHeat.clone();
+            ArrayList<Ball> bta = (ArrayList<Ball>) balls.clone();
             if (orangeFirst)
                 ball_list.remove(orangeBall);
             if (heat.size() > 0) {
@@ -303,19 +303,17 @@ public class HeatGenerator {
         }
 
         private void findNextBall(Ball start, ArrayList<Ball> bta) {
+            if(curBalls.size()+1 > amount)
+                return;
             if (curScore >= bestScore && bestScore > 0)
                 return;
-            curBalls.add(start);
-            if (best_heat.size() < curBalls.size())
-                best_heat = (ArrayList<Ball>) curBalls.clone();
             if (reqBalls.contains(start))
                 curReqBalls.add(start);
             else if (pairBalls.contains(start))
                 curPairBalls.add(start);
             else if (diffBalls.contains(start))
                 curDiffBalls.add(start);
-            if (curBalls.size() + (reqBalls.size() - curReqBalls.size()) > amount) {
-                curBalls.remove(start);
+            if (curBalls.size()+1 + (reqBalls.size() - curReqBalls.size()) > amount) {
                 if (curReqBalls.contains(start))
                     curReqBalls.remove(start);
                 else if (curPairBalls.contains(start))
@@ -323,68 +321,71 @@ public class HeatGenerator {
                 else if (curDiffBalls.contains(start))
                     curDiffBalls.remove(start);
             }
+            curBalls.add(start);
+            if (best_heat.size() < curBalls.size())
+                best_heat = (ArrayList<Ball>) curBalls.clone();
             if (start.getPlacement() == Ball.Placement.PAIR)
                 curScore += 100;
             else if (start.getPlacement() == Ball.Placement.EDGE)
                 curScore += 200;
-            else if (start.getPlacement() == Ball.Placement.CORNER) {
+            else if (start.getPlacement() == Ball.Placement.CORNER)
                 curScore += 200;
-                if (curBalls.size() >= amount) {
-                    Route route = getRoute(start.getPickUpPoint(), goal, bta);
-                    if (route != null) {
-                        if (curScore + (int) route.getScore() < bestScore || bestScore < 0) {
-                            bestScore = curScore + (int) route.getScore();
-                            route.setScore(bestScore);
-                            start.addRoute(route);
-                            best_heat = (ArrayList<Ball>) curBalls.clone();
-                        }
+            if (curBalls.size() >= amount) {
+                Route route = getRoute(start.getPickUpPoint(), goal, bta);
+                if (route != null) {
+                    if (curScore + (int) route.getScore() < bestScore || bestScore < 0) {
+                        bestScore = curScore + (int) route.getScore();
+                        route.setScore(bestScore);
+                        start.addRoute(route);
+                        best_heat = (ArrayList<Ball>) curBalls.clone();
                     }
-                } else if (orangeFirst && curBalls.size() == amount - 1) {
-                    bta.remove(orangeBall);
-                    Route route = getRoute(start.getPickUpPoint(), orangeBall, bta);
-                    if (route == null) {
-                        bta.add(orangeBall);
-                        curBalls.remove(start);
-                        if (start.getPlacement() == Ball.Placement.PAIR)
-                            curScore -= 100;
-                        else if (start.getPlacement() == Ball.Placement.EDGE)
-                            curScore -= 200;
-                        else if (start.getPlacement() == Ball.Placement.CORNER)
-                            curScore -= 200;
-                        return;
-                    }
-                    curScore += (int) route.getScore();
-                    findNextBall(orangeBall, bta);
-                    curScore -= (int) route.getScore();
+                }
+            } else if (orangeFirst && curBalls.size() == amount - 1) {
+                bta.remove(orangeBall);
+                Route route = getRoute(start.getPickUpPoint(), orangeBall, bta);
+                if (route == null) {
                     bta.add(orangeBall);
-                    for (Ball b : ball_list) {
-                        if (curBalls.contains(b))
-                            continue;
-                        bta.remove(b);
-                        Route route2 = getRoute(start.getPickUpPoint(), b, bta);
-                        if (route2 == null) {
-                            bta.add(b);
-                            continue;
-                        }
-                        curScore += (int) route2.getScore();
-                        curBalls.add(b);
-                        Route route3 = getRoute(b.getPickUpPoint(), goal, bta);
-                        if (route3 == null) {
-                            curScore -= (int) route2.getScore();
-                            bta.add(b);
-                            curBalls.remove(b);
-                            continue;
-                        }
-                        if (curScore + (int) route3.getScore() < bestScoreO || bestScoreO < 0) {
-                            bestScoreO = curScore + (int) route.getScore();
-                            route.setScore(bestScoreO);
-                            start.addRoute(route);
-                            best_heat_orange = (ArrayList<Ball>) curBalls.clone();
-                        }
-                        curBalls.remove(b);
+                    curBalls.remove(start);
+                    if (start.getPlacement() == Ball.Placement.PAIR)
+                        curScore -= 100;
+                    else if (start.getPlacement() == Ball.Placement.EDGE)
+                        curScore -= 200;
+                    else if (start.getPlacement() == Ball.Placement.CORNER)
+                        curScore -= 200;
+                    return;
+                }
+                curScore += (int) route.getScore();
+                findNextBall(orangeBall, bta);
+                curScore -= (int) route.getScore();
+                bta.add(orangeBall);
+                for (Ball b : ball_list) {
+                    if (curBalls.contains(b))
+                        continue;
+                    bta.remove(b);
+                    Route route2 = getRoute(start.getPickUpPoint(), b, bta);
+                    if (route2 == null) {
                         bta.add(b);
-                        curScore -= (int) route2.getScore();
+                        continue;
                     }
+                    curScore += (int) route2.getScore();
+                    curBalls.add(b);
+                    Route route3 = getRoute(b.getPickUpPoint(), goal, bta);
+                    if (route3 == null) {
+                        curScore -= (int) route2.getScore();
+                        bta.add(b);
+                        curBalls.remove(b);
+                        continue;
+                    }
+                    if (curScore + (int) route3.getScore() < bestScoreO || bestScoreO < 0) {
+                        bestScoreO = curScore + (int) route.getScore();
+                        route.setScore(bestScoreO);
+                        start.addRoute(route);
+                        best_heat_orange = (ArrayList<Ball>) curBalls.clone();
+                    }
+                    curBalls.remove(b);
+                    bta.add(b);
+                    curScore -= (int) route2.getScore();
+                }
                 } else {
                     for (Ball b : ball_list) {
                         if (curBalls.contains(b))
@@ -399,21 +400,19 @@ public class HeatGenerator {
                         bta.add(b);
                     }
                 }
-                if (curReqBalls.contains(start))
-                    curReqBalls.remove(start);
-                else if (curPairBalls.contains(start))
-                    curPairBalls.remove(start);
-                else if (curDiffBalls.contains(start))
-                    curDiffBalls.remove(start);
-                if (start.getPlacement() == Ball.Placement.PAIR)
-                    curScore -= 100;
-                else if (start.getPlacement() == Ball.Placement.EDGE)
-                    curScore -= 200;
-                else if (start.getPlacement() == Ball.Placement.CORNER)
-                    curScore -= 200;
-                curBalls.remove(start);
-            }
-
+            if (curReqBalls.contains(start))
+                curReqBalls.remove(start);
+            else if (curPairBalls.contains(start))
+                curPairBalls.remove(start);
+            else if (curDiffBalls.contains(start))
+                curDiffBalls.remove(start);
+            if (start.getPlacement() == Ball.Placement.PAIR)
+                curScore -= 100;
+            else if (start.getPlacement() == Ball.Placement.EDGE)
+                curScore -= 200;
+            else if (start.getPlacement() == Ball.Placement.CORNER)
+                curScore -= 200;
+            curBalls.remove(start);
         }
     }
     public ArrayList<Ball> getHeat(){
