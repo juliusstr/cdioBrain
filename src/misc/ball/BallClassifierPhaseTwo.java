@@ -1,6 +1,7 @@
 package misc.ball;
 import Client.StandardSettings;
 import exceptions.NoWaypointException;
+import imageRecognition.RGBtoHSVConverter;
 import misc.*;
 
 import java.awt.*;
@@ -60,10 +61,12 @@ public class BallClassifierPhaseTwo {
         double dist = Double.MAX_VALUE;
         Color closestColer = null;
         for (int i = 0; i < COLOR_LIST.length; i++){
-            double r = Math.pow(COLOR_LIST[i].getRed()-color.getRed(),2);
-            double g = Math.pow(COLOR_LIST[i].getGreen()-color.getGreen(),2);
-            double b = Math.pow(COLOR_LIST[i].getBlue()-color.getBlue(),2);
-            double temp = Math.sqrt(r+g+b);
+            float hsvColor[] = RGBtoHSVConverter.convertRGBtoHSV(color);
+            float hsvStaticColor[] = RGBtoHSVConverter.convertRGBtoHSV(COLOR_LIST[i]);
+            double hue = Math.pow(hsvStaticColor[0]-hsvColor[0],2);
+            double sat = Math.pow(hsvStaticColor[1]-hsvColor[1],2);
+            double bri = Math.pow(hsvStaticColor[2]-hsvColor[2],2);
+            double temp = Math.sqrt(hue+sat+bri);
             if(dist > temp){
                 dist = temp;
                 closestColer = COLOR_LIST[i];
