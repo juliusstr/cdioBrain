@@ -6,6 +6,7 @@ import Gui.GUI_Menu;
 import Gui.Image.GuiImage;
 import exceptions.BadDataException;
 import exceptions.NoDataException;
+import exceptions.NoWaypointException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
 import misc.Boundry;
@@ -145,13 +146,16 @@ public class MainClient {
 
 
         stabilizer.stabilizeBalls(balls);
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(balls, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
+        }
         ArrayList<Ball> routeBalls = new ArrayList<>();
         try {
             ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
             System.out.println("balls1 = " + balls1);
             for (Ball ball : balls1) {
-                BallClassifierPhaseTwo.ballSetPlacement(ball, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
-                //BallClassifierPhaseTwo.ballSetPlacement(ball, boundryConorsGUI,imgRec.imgRecObstacle.cross);
                 System.out.println(ball.toString());
                 routeBalls.add(ball);
             }
