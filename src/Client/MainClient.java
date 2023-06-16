@@ -199,6 +199,27 @@ public class MainClient {
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);
+
+        ArrayList<Ball> req_balls = new ArrayList<>();
+        for (Vector2Dv1 v: GUI_Menu.rBalls) {
+            if(imgRec.imgRecObstacle.boundry != null) {
+                Ball clostest = null;
+                Vector2Dv1 close = null;
+                for (Ball b : routeBalls) {
+                    if (req_balls.contains(b))
+                        continue;
+                    if (close == null) {
+                        clostest = b;
+                        close = v.getSubtracted(b.getPosVector());
+                    } else if (close.x + close.y > v.getSubtracted(b.getPosVector()).x + v.getSubtracted(b.getPosVector()).y) {
+                        clostest = b;
+                        close = v.getSubtracted(b.getPosVector());
+                    }
+                }
+                req_balls.add(clostest);
+            }
+        }
+
         System.out.println(routeBalls);
         System.out.println("Mapping route...");
         routePlanerFaseTwo.getHeats();
