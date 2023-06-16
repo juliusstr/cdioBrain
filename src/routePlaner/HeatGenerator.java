@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import Gui.Image.GuiImage;
 import Gui.ImageClick;
+import Gui.RouteView;
 import exceptions.NoRouteException;
 import misc.Boundry;
 import misc.Cross;
@@ -154,11 +155,27 @@ public class HeatGenerator {
             System.out.println("Ball: (" + ball.getxPos() + ", " + ball.getyPos() + ") Color: " + (ball.getColor().equals(BallClassifierPhaseTwo.ORANGE) ? "ORANGE" : "WHITE") + " TYPE: " + ball.getPlacement());
         }
         System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
-        /*ArrayList bta = (ArrayList) balls.clone();
-        ArrayList<ArrayList<Vector2Dv1>>
+        if(heat.get(heat.size()-1).getGoalRoute().getScore() < 0)
+            return;
+        ArrayList bta = (ArrayList) balls.clone();
+        ArrayList<ArrayList<Vector2Dv1>> vv_list = new ArrayList<>();
+        for (Route r: robot.getRoutes(heatNum)) {
+            if(r.getEnd() == heat.get(0)){
+                vv_list.add(r.getWaypoints());
+                break;
+            }
+        }
+        bta.remove(heat.get(0));
+        int i = 1;
         for (Ball b: heat) {
-
-        }*/
+            if(heat.get(heat.size()-1) == b)
+                vv_list.add(b.getGoalRoute().getWaypoints());
+            else {
+                bta.remove(heat.get(i));
+                vv_list.add(getRoute(b.getPickUpPoint(), heat.get(i), bta).getWaypoints());
+            }
+        }
+        RouteView rw = new RouteView(vv_list, image.getMat());
     }
 
     /**
@@ -436,6 +453,7 @@ public class HeatGenerator {
                         bestScore = curScore + (int) route.getScore();
                         route.setScore(bestScore);
                         start.addRoute(route);
+                        start.setGoalRoute(route);
                         best_heat = (ArrayList<Ball>) curBalls.clone();
                     }
                 }
@@ -478,7 +496,8 @@ public class HeatGenerator {
                     if (curScore + (int) route3.getScore() < bestScoreO || bestScoreO < 0) {
                         bestScoreO = curScore + (int) route.getScore();
                         route.setScore(bestScoreO);
-                        start.addRoute(route);
+                        b.addRoute(route);
+                        b.setGoalRoute(route);
                         best_heat_orange = (ArrayList<Ball>) curBalls.clone();
                     }
                     curBalls.remove(b);

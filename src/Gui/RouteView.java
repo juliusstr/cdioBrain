@@ -35,7 +35,7 @@ public class RouteView {
                 if(route.size() > j){
                     image.Draw(new GuiImage.GuiLine(waypoint, route.get(j), Color.GREEN, 2), false);
                 }
-                image.Draw(new GuiImage.GuiCircle(waypoint, 6, Color.GREEN, 3), false);
+                image.Draw(new GuiImage.GuiCircle(waypoint, 3, Color.GREEN, 3), false);
                 j++;
             }
             i++;

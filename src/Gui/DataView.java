@@ -135,7 +135,7 @@ public class DataView {
         image = new GuiImage(cleanImage);
         if(ballOn){
             for (Ball b: balls) {
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 6, Color.GREEN, 3), false);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.GREEN, 3), false);
             }
             if(zoneOn){
 
@@ -154,7 +154,7 @@ public class DataView {
             if(lineUpOn){
 
                 for (Ball b: balls) {
-                    image.Draw(new GuiImage.GuiCircle(b.getLineUpPoint(), 4, Color.RED, 2), false);
+                    image.Draw(new GuiImage.GuiCircle(b.getLineUpPoint(), 2, Color.RED, 2), false);
                 }
 
             }
@@ -187,10 +187,12 @@ public class DataView {
 
             }
             if(robotOn){
-                image.Draw(new GuiImage.GuiCircle(robot.getPosVector(), 1, Color.BLACK, 10), false);
+                image.Draw(new GuiImage.GuiCircle(robot.aScale.getPosVector(), 1, Color.GREEN, 10), false);
+                image.Draw(new GuiImage.GuiCircle(robot.bScale.getPosVector(), 1, Color.BLACK, 10), false);
             }
             if(robotNonScaleOn){
-                image.Draw(new GuiImage.GuiCircle(robot.getPosVector().getMultiplied(1/robot.getScale()), 1, Color.BLUE, 10), false);
+                image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 1, Color.GREEN, 10), false);
+                image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 1, Color.BLACK, 10), false);
             }
         }
         image.update();

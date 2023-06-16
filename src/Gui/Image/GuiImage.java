@@ -18,7 +18,7 @@ import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 
 public class GuiImage implements Cloneable{
 
-    private final int HEIGHT = 740;
+    private final int HEIGHT = 720;
     private final int WIDTH = 1280;
     private static final int ADJUST = 2;
 

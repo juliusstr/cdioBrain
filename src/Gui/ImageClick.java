@@ -34,20 +34,20 @@ public class ImageClick {
     public void drawBalls(ArrayList<Ball> balls){
         for (Ball b: balls) {
             if(balls.get(balls.size()-1) == b)
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), true);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 8, Color.RED, 3), true);
             else
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), false);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 8, Color.RED, 3), false);
         }
     }
     public void drawBallsVec(ArrayList<Vector2Dv1> balls){
         for (Vector2Dv1 v: balls) {
-                image.Draw(new GuiImage.GuiCircle(v, 16, Color.RED, 3), false);
+                image.Draw(new GuiImage.GuiCircle(v, 8, Color.RED, 3), false);
         }
         image.update();
     }
 
     public static void drawPoint(int x, int y){
-        image.Draw(new GuiImage.GuiCircle(new Vector2Dv1(x,y), 2, Color.BLUE, 2), true);
+        image.Draw(new GuiImage.GuiCircle(new Vector2Dv1(x,y), 1, Color.BLUE, 2), true);
     }
 
     public void setImage(GuiImage image){
