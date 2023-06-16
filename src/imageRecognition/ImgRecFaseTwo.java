@@ -70,7 +70,6 @@ public class ImgRecFaseTwo {
         capture.read(frame);
         if(StandardSettings.SPEED_BOOT){
             frameGUI = frame.clone();
-            Imgproc.resize(frameGUI,frameGUI, new Size(1280, 720), 0, 0, INTER_CUBIC);
         }
         imgRecObstacle = new ImgRecObstacle();
         try {

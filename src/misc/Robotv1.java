@@ -29,10 +29,23 @@ public class Robotv1 {
     private ArrayList<Route> heat1Routes = new ArrayList<>();
     private ArrayList<Route> heat2Routes = new ArrayList<>();
     private ArrayList<Route> heat3Routes = new ArrayList<>();
+    private ArrayList<Route> heatLiveRoutes = new ArrayList<>();
 
+    private boolean heatReset = false;
     private int heatRouteNum = 1;
 
+    public Ball aUnScale = null;
+    public Ball bUnScale = null;
+    public Ball aScale = null;
+    public Ball bScale = null;
+
+    public double getScale(){
+        return scale;
+    }
+
     public void endHeatRoutes(){
+        if(heatRouteNum > 3)
+            heatReset = true;
         heatRouteNum++;
     }
 
@@ -45,7 +58,7 @@ public class Robotv1 {
             case 3:
                 return heat3Routes;
         }
-        return null;
+        return heatLiveRoutes;
     }
 
     public void addRoute(Route r) {
@@ -59,6 +72,11 @@ public class Robotv1 {
             case 3:
                 this.heat3Routes.add(r);
             break;
+            default:
+                if(heatReset)
+                    this.heatLiveRoutes.clear();
+                heatReset = false;
+                this.heatLiveRoutes.add(r);
         }
     }
 
@@ -112,6 +130,8 @@ public class Robotv1 {
 
     public void updatePos(Ball a, Ball b){
         //640X360
+        aUnScale = new Ball(a.getPosVector());
+        bUnScale = new Ball(b.getPosVector());
         Vector2Dv1 av = a.getPosVector();
         Vector2Dv1 bv = b.getPosVector();
         Vector2Dv1 mid = new Vector2Dv1(640/2,360/2);
@@ -124,10 +144,14 @@ public class Robotv1 {
         bv.multiply(scale);
         bv.add(mid);
 
-        a.setPos(av.getPoint());
-        b.setPos(bv.getPoint());
-        Ball back = b;
-        Ball front  = a;
+        Ball newA = new Ball(av);
+        Ball newB = new Ball(bv);
+        newA.setColor(a.getColor());
+        newB.setColor(b.getColor());
+        aScale = newA;
+        bScale = newB;
+        Ball back = newA;
+        Ball front  = newB;
         if (!back.getColor().equals(BallClassifierPhaseTwo.BLACK)){
             Ball temp = front;
             front = back;

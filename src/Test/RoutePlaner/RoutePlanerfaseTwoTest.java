@@ -161,316 +161,50 @@ public class RoutePlanerfaseTwoTest {
     }
 
     @Test
-    @DisplayName("Ball classifier test")
-    void heatGenTest(){
-
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(new Robotv1(1,1,new Vector2Dv1(1,1)),new ArrayList<>(), boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
-
-        double score = 0;
-
-        Ball ball1 = new Ball(new Vector2Dv1(30,20),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball2 = new Ball(new Vector2Dv1(210,140),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-
-        ArrayList<Ball> ball_list = new ArrayList<>();
-
-        ball_list.add(ball1);
-        ball_list.add(ball2);
-        ball_list.add(ball3);
-        ball_list.add(ball4);
-        ball_list.add(ball5);
-        ball_list.add(ball6);
-        ball_list.add(ball7);
-        ball_list.add(ball8);
-        ball_list.add(ball9);
-        ball_list.add(ball10);
-        ball_list.add(ball11);
-
-
-        for(int i = 0; i < ball_list.size(); i++){
-            for(int j = 0, k = 0;j < 10; j++){
-                if(i!=j){
-                ball_list.get(i).addRoute(new Route(ball_list.get(i).getPosVector()));
-                ball_list.get(i).getRoutes().get(k).setWaypoints(null);
-                ball_list.get(i).getRoutes().get(k).setEnd(ball_list.get(j));
-                ball_list.get(i).getRoutes().get(k).setScore((int) ball_list.get(i).getPosVector().distance(ball_list.get(i).getRoutes().get(k).getEnd().getPosVector()));
-                k++;
-                }
-            }
-        }
-
-        best_route = hg.heat1Generator(ball_list);
-       // System.out.println(ball_list);
-        for(int l = 0; l < best_route.size(); l++){
-            System.out.println("\n x:"+best_route.get(l).getxPos()+" y:"+best_route.get(l).getyPos());
-        }
-
-
-    }
-
-    @Test
     @DisplayName("Test getHeats")
-    void getHeat1Test(){
-
-        double score = 0;
-
-        Ball ball1 = new Ball(new Vector2Dv1(30,20),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball2 = new Ball(new Vector2Dv1(210,140),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-
-        ball1.setPlacement(Ball.Placement.FREE);
-        ball2.setPlacement(Ball.Placement.FREE);
-        ball3.setPlacement(Ball.Placement.FREE);
-        ball4.setPlacement(Ball.Placement.FREE);
-        ball5.setPlacement(Ball.Placement.FREE);
-        ball6.setPlacement(Ball.Placement.FREE);
-        ball7.setPlacement(Ball.Placement.FREE);
-        ball8.setPlacement(Ball.Placement.FREE);
-        ball9.setPlacement(Ball.Placement.FREE);
-        ball10.setPlacement(Ball.Placement.FREE);
-        ball11.setPlacement(Ball.Placement.FREE);
-
+    void getHeatTest(){
+        ArrayList<Vector2Dv1> boundryList = new ArrayList<>();
         ArrayList<Ball> ball_list = new ArrayList<>();
-        ball_list.add(ball1);
-        ball_list.add(ball2);
-        ball_list.add(ball3);
-        ball_list.add(ball4);
-        ball_list.add(ball5);
-        ball_list.add(ball6);
-        ball_list.add(ball7);
-        ball_list.add(ball8);
-        ball_list.add(ball9);
-        ball_list.add(ball10);
-        ball_list.add(ball11);
+
+
+        //SET TEST DATA
+        simulationRobot = new Robotv1(416.0, 254.0, new Vector2Dv1(0.5481603730984362));
+        cross = new Cross(new Vector2Dv1(301.0,205.0), new Vector2Dv1(306.0,180.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        ball_list.add(new Ball(new Vector2Dv1(128.0,91.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(155.0,37.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(174.0,99.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(212.0,224.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(200.0,272.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(87.0,318.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(421.0,108.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(494.0,134.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(510.0,104.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(454.0,336.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(294.0,187.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+
+
+        boundry = new Boundry(boundryList);
+
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(ball_list, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
+        }
+
 
         RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
-
-        hg.getHeats();
-        best_route = hg.ballsHeat1;
-        System.out.println(simulationRobot.getRoutes(1).size());
-        for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
-        }
-
-
-    }
-
-    @Test
-    @DisplayName("Test getHeats")
-    void getHeat2Test(){
-
-        double score = 0;
-
-        Ball ball1 = new Ball(new Vector2Dv1(30,20),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball2 = new Ball(new Vector2Dv1(210,140),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-
-        ball1.setPlacement(Ball.Placement.FREE);
-        ball2.setPlacement(Ball.Placement.FREE);
-        ball3.setPlacement(Ball.Placement.FREE);
-        ball4.setPlacement(Ball.Placement.FREE);
-        ball5.setPlacement(Ball.Placement.FREE);
-        ball6.setPlacement(Ball.Placement.FREE);
-        ball7.setPlacement(Ball.Placement.FREE);
-        ball8.setPlacement(Ball.Placement.FREE);
-        ball9.setPlacement(Ball.Placement.FREE);
-        ball10.setPlacement(Ball.Placement.FREE);
-        ball11.setPlacement(Ball.Placement.FREE);
-
-        ArrayList<Ball> ball_list = new ArrayList<>();
-        ball_list.add(ball1);
-        ball_list.add(ball2);
-        ball_list.add(ball3);
-        ball_list.add(ball4);
-        ball_list.add(ball5);
-        ball_list.add(ball6);
-        ball_list.add(ball7);
-        ball_list.add(ball8);
-        ball_list.add(ball9);
-        ball_list.add(ball10);
-        ball_list.add(ball11);
-
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
-
-        hg.getHeats();
-        best_route = hg.ballsHeat1;
-        System.out.println(simulationRobot.getRoutes(1).size());
-        for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
-        }
-        best_route = hg.ballsHeat2;
-        System.out.println(simulationRobot.getRoutes(2).size());
-        for (Ball b: best_route) {
-            System.out.println("\n x:"+b.getxPos()+" y:"+b.getyPos());
-        }
-
-
-    }
-
-    @Test
-    @DisplayName("Test getHeats")
-    void getHeat3Test(){
-
-        double score = 0;
-
-        Ball ball1 = new Ball(new Vector2Dv1(30,20),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball2 = new Ball(new Vector2Dv1(210,140),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball3 = new Ball(new Vector2Dv1(180,340),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball4 = new Ball(new Vector2Dv1(94,256),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball5 = new Ball(new Vector2Dv1(217,36),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball6 = new Ball(new Vector2Dv1(57,345),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball7 = new Ball(new Vector2Dv1(479,240),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball8 = new Ball(new Vector2Dv1(610,40),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball9 = new Ball(new Vector2Dv1(556,443),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball10 = new Ball(new Vector2Dv1(610,114),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-        Ball ball11 = new Ball(new Vector2Dv1(290,478),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL);
-
-        ball1.setPlacement(Ball.Placement.CORNER);
-        ball2.setPlacement(Ball.Placement.CORNER);
-        ball3.setPlacement(Ball.Placement.CORNER);
-        ball4.setPlacement(Ball.Placement.CORNER);
-        ball5.setPlacement(Ball.Placement.FREE);
-        ball6.setPlacement(Ball.Placement.FREE);
-        ball7.setPlacement(Ball.Placement.FREE);
-        ball8.setPlacement(Ball.Placement.FREE);
-        ball9.setPlacement(Ball.Placement.FREE);
-        ball10.setPlacement(Ball.Placement.FREE);
-        ball11.setPlacement(Ball.Placement.FREE);
-
-        ball1.setId(1);
-        ball2.setId(2);
-        ball3.setId(3);
-        ball4.setId(4);
-        ball5.setId(5);
-        ball6.setId(6);
-        ball7.setId(7);
-        ball8.setId(8);
-        ball9.setId(9);
-        ball10.setId(10);
-        ball11.setId(11);
-
-        ArrayList<Ball> ball_list = new ArrayList<>();
-        ball_list.add(ball1);
-        ball_list.add(ball2);
-        ball_list.add(ball3);
-        ball_list.add(ball4);
-        ball_list.add(ball5);
-        ball_list.add(ball6);
-        ball_list.add(ball7);
-        ball_list.add(ball8);
-        ball_list.add(ball9);
-        ball_list.add(ball10);
-        ball_list.add(ball11);
-        ball_list.clear();
-        ball_list.add(new Ball(new Vector2Dv1(432.0,82.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(446.0,287.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(335.0,216.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(295.0,134.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(260.0,278.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(171.0,194.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(163.0,41.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(113.0,31.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(163.0,42.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(278.0,147.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-        ball_list.add(new Ball(new Vector2Dv1(408.0,124.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
-
-        RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
-        ArrayList<Ball> best_route = new ArrayList<>();
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
         GuiImage image = new GuiImage(tImage);
-        hg.setImage(image);
-        hg.getHeats();
-        best_route = hg.ballsHeat1;/*
-        System.out.println("-----------------" + "\n Heat 1 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(1).size());
-        double scoreEnd = 0;
-        int i = 1;
-        for (Ball b: best_route) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
-            if(i < best_route.size()){
-                for (Route r: b.getRoutes()) {
-                    if(r.getEnd() == best_route.get(i)){
-                        scoreEnd += r.getScore();
-                        break;
-                    }
-                }
-            } else {
-                scoreEnd += b.getGoalRoute().getScore();
-            }
-            i++;
-        }
-        System.out.println("\n Score: " + scoreEnd);
-        scoreEnd = 0;
-        i = 1;
-        best_route = hg.ballsHeat2;
-        System.out.println("\n -----------------" + "\n Heat 2 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(2).size());
-        for (Ball b: best_route) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
-            if(i < best_route.size()){
-                for (Route r: b.getRoutes()) {
-                    if(r.getEnd() == best_route.get(i)){
-                        scoreEnd += r.getScore();
-                        break;
-                    }
-                }
-            } else {
-                scoreEnd += b.getGoalRoute().getScore();
-            }
-            i++;
-        }
-        System.out.println("\n Score: " + scoreEnd);
-        scoreEnd = 0;
-        i = 1;
-        scoreEnd = 0;
-        best_route = hg.ballsHeat3;
-        System.out.println("-----------------" + "\n Heat 3 \n" + "\n robotRoutes i.e total balls left: " + simulationRobot.getRoutes(3).size());
-        for (Ball b: best_route) {
-            System.out.println("\n Ball: " + b.getId() +  " Pos: (x:"+b.getxPos()+" y:"+b.getyPos() + ") Color: " + (b.getColor() == BallClassifierPhaseTwo.ORANGE ? "ORANGE" : "WHITE") + " TYPE: " + b.getPlacement());
-            if(i < best_route.size()){
-                for (Route r: b.getRoutes()) {
-                    if(r.getEnd() == best_route.get(i)){
-                        scoreEnd += r.getScore();
-                        break;
-                    }
-                }
-            } else {
-                scoreEnd += b.getGoalRoute().getScore();
-            }
-            i++;
-        }
-        System.out.println("\n Score: " + scoreEnd);
-        scoreEnd = 0;
-        i = 1;*/
-
-
+        hg.setImage(image.getMat());
+        ArrayList<Ball> req = new ArrayList<>();
+        req.add(ball_list.get(1));
+        hg.getHeats(req);
     }
 
     @Test

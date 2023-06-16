@@ -131,18 +131,25 @@ public class RoutExecute {
                 case EDGE:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
+                    checkForHardcodeDone(in);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case CORNER:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot,imgRec, stabilizer, out, in);
+                    checkForHardcodeDone(in);
+                    //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
+                case PAIR:
+                    turnBeforeHardcode(robot,imgRec,out,in,heat.get(j).getPosVector(),stabilizer);
+                    out.println(StandardSettings.COLLECT_PAIR_COMMAND);
+                    checkForHardcodeDone(in);
                 default:
                     out.println("stop -t -d");
-                    wait(500);
+
                     break;
             }
+            wait(500);
             lastBall = heat.get(j);
 
         }
@@ -168,6 +175,7 @@ public class RoutExecute {
         }
         turnBeforeHardcode(robot, imgRec, out, in, boundry.getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
+        checkForHardcodeDone(in);
         //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
     }
 
@@ -313,5 +321,17 @@ public class RoutExecute {
      */
     public double angleBeforeHardcode(Robotv1 robot, Vector2Dv1 target) {
         return robot.getDirection().getAngleBetwen(target.getSubtracted(robot.getPosVector()));
+    }
+
+    public void checkForHardcodeDone(BufferedReader in){
+        try {
+            String input = in.readLine();
+            while (!input.equals("hardcode done")) {
+                input = in.readLine();
+            }
+        }
+        catch(IOException e){
+            throw new RuntimeException();
+            }
     }
 }

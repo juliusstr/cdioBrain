@@ -52,22 +52,29 @@ public class MainClient {
 
         balls = imgRec.captureBalls();
         BallStabilizerPhaseTwo stabilizer = new BallStabilizerPhaseTwo();
+        stabilizer.stabilizeBalls(balls);
+        ArrayList<Ball> realballs = new ArrayList<>();
+        try {
+            realballs = stabilizer.getStabelBalls();
+        } catch (NoDataException e) {
+            throw new RuntimeException(e);
+        }
 
 
         //todo add balls if less then 11 / remove if needed
-        while (balls.size() <= 11){
-            balls.add(new Ball(0,0,StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
+        while (realballs.size() < 11){
+            realballs.add(new Ball(0,0,StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.BALL));
         }
         boolean orangeInBalls = false;
         for (Ball ball :
-                balls) {
-            if(ball.getColor() == BallClassifierPhaseTwo.ORANGE){
+                realballs) {
+            if(ball.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
                 orangeInBalls = true;
                 break;
             }
         }
         if(!orangeInBalls)
-            balls.get(0).setColor(BallClassifierPhaseTwo.ORANGE);
+            realballs.get(0).setColor(BallClassifierPhaseTwo.ORANGE);
 
 
         //vars for GUI
@@ -91,21 +98,21 @@ public class MainClient {
         //find orange ball
         int ballI = 0;
         for (; ballI < 11 ; ballI++) {
-            Ball b = balls.get(ballI);
-            if(b.getColor() == BallClassifierPhaseTwo.ORANGE){
+            Ball b = realballs.get(ballI);
+            if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE)){
                 break;
             }
         }
 
         //orange first in list
-        Ball ballO = balls.get(ballI);
-        Ball ball1 = balls.get(0);
+        Ball ballO = realballs.get(ballI);
+        Ball ball1 = realballs.get(0);
         if(ballO != ball1){
-            balls.set(0, ballO);
-            balls.set(ballI, ball1);
+            realballs.set(0, ballO);
+            realballs.set(ballI, ball1);
         }
         //add position to ballsGUI
-        for (Ball b: balls) {
+        for (Ball b: realballs) {
             ballsGUI.add(b.getPosVector());
         }
 
@@ -121,14 +128,33 @@ public class MainClient {
 
         Ball initBall = new Ball(0,0,0, BallClassifierPhaseTwo.BLACK,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_BACK);
         Ball initBall2 = new Ball(1,1,0,BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
+        try {
+            ArrayList<Ball> roball = stabilizer.getStabelRobotCirce();
+            if(roball.get(0).getType() == Ball.Type.ROBOT_BACK){
+                initBall = roball.get(0);
+                initBall2 = roball.get(1);
+            } else {
+                initBall2 = roball.get(0);
+                initBall = roball.get(1);
+            }
+        } catch (BadDataException e) {
+
+        }
         Robotv1 robotv1 = new Robotv1(0,0,new Vector2Dv1(1,1));
+        robotv1.updatePos(initBall,initBall2);
 
         ArrayList<Vector2Dv1> robotPos = new ArrayList<>();
-        robotPos.add(new Vector2Dv1(1,1));
-        robotPos.add(new Vector2Dv1(1,1));
+        robotPos.add(initBall.getPosVector());
+        robotPos.add(initBall2.getPosVector());
+
+        ArrayList<Vector2Dv1> reqBalls = new ArrayList<>();
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
+        reqBalls.add(new Vector2Dv1(0,0));
 
         //call interface
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos);
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos, reqBalls);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();
@@ -194,13 +220,34 @@ public class MainClient {
 
         System.out.println();
 
-        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, robotv1);
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
-        routePlanerFaseTwo.setImage(new GuiImage(m));
+        routePlanerFaseTwo.setImage(m);
+
+        ArrayList<Ball> req_balls = new ArrayList<>();
+        for (Vector2Dv1 v: GUI_Menu.rBalls) {
+            if(imgRec.imgRecObstacle.boundry.vectorInsideBoundary(v)) {
+                Ball clostest = null;
+                Vector2Dv1 close = null;
+                for (Ball b : routeBalls) {
+                    if (req_balls.contains(b))
+                        continue;
+                    if (close == null) {
+                        clostest = b;
+                        close = v.getSubtracted(b.getPosVector());
+                    } else if (close.x + close.y > v.getSubtracted(b.getPosVector()).x + v.getSubtracted(b.getPosVector()).y) {
+                        clostest = b;
+                        close = v.getSubtracted(b.getPosVector());
+                    }
+                }
+                req_balls.add(clostest);
+            }
+        }
+
         System.out.println(routeBalls);
         System.out.println("Mapping route...");
-        routePlanerFaseTwo.getHeats();
+        routePlanerFaseTwo.getHeats(req_balls);
         System.out.println("Mapping route complete!");
 
         System.out.println();

@@ -24,27 +24,35 @@ import java.util.ArrayList;
 
 public class ImageClick {
     private static GuiImage image;
-    private static GuiImage image2;
+    private static Mat cleanMat;
 
     public ImageClick(GuiImage image){
         this.image = (GuiImage) image.clone();
+        cleanMat = image.getMat();
     }
 
     public void drawBalls(ArrayList<Ball> balls){
         for (Ball b: balls) {
             if(balls.get(balls.size()-1) == b)
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), true);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 8, Color.RED, 3), true);
             else
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 16, Color.RED, 3), false);
+                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 8, Color.RED, 3), false);
         }
+    }
+    public void drawBallsVec(ArrayList<Vector2Dv1> balls){
+        for (Vector2Dv1 v: balls) {
+                image.Draw(new GuiImage.GuiCircle(v, 8, Color.RED, 3), false);
+        }
+        image.update();
     }
 
     public static void drawPoint(int x, int y){
-        image.Draw(new GuiImage.GuiCircle(new Vector2Dv1(x,y), 2, Color.BLUE, 2), true);
+        image.Draw(new GuiImage.GuiCircle(new Vector2Dv1(x,y), 1, Color.BLUE, 2), true);
     }
 
     public void setImage(GuiImage image){
-        this.image = image;
+        this.image = (GuiImage) image.clone();
+        cleanMat = image.getMat();
     }
     private static int amount;
     private static String title;
@@ -53,7 +61,6 @@ public class ImageClick {
     private static boolean colorbool;
     private static JTable jt = null;
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, JTable jt, boolean colorbool) {
-        image2 = (GuiImage) image.clone();
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -62,8 +69,18 @@ public class ImageClick {
         this.colorbool = colorbool;
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
+    public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool, ArrayList<Vector2Dv1> balls) {
+        jt=null;
+        this.title = title;
+        this.amount = amount;
+        this.pos = pos;
+        this.color = color;
+        this.colorbool = colorbool;
+        drawBallsVec(balls);
+        SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
+    }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool) {
-        image2 = (GuiImage) image.clone();
+        jt=null;
         this.title = title;
         this.amount = amount;
         this.pos = pos;
@@ -109,7 +126,7 @@ public class ImageClick {
                             i++;
                         }
                     }
-                    image = (GuiImage) image2.clone();
+                    image = new GuiImage(cleanMat);
                     frame.dispose();
                 }
             }

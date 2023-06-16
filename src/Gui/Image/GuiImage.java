@@ -2,10 +2,7 @@ package Gui.Image;
 
 import misc.Boundry;
 import misc.Vector2Dv1;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -17,9 +14,11 @@ import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
+
 public class GuiImage implements Cloneable{
 
-    private final int HEIGHT = 740;
+    private final int HEIGHT = 720;
     private final int WIDTH = 1280;
     private static final int ADJUST = 2;
 
@@ -31,13 +30,21 @@ public class GuiImage implements Cloneable{
 
     public GuiImage(ImageIcon icon){
         update(icon);
+        setSize();
     }
 
     public GuiImage(BufferedImage bufferedImage){
         update(bufferedImage);
+        setSize();
     }
     public GuiImage(Mat mat){
         update(mat);
+        setSize();
+    }
+
+    private void setSize(){
+        Imgproc.resize(mat,mat, new Size(WIDTH, HEIGHT), 0, 0, INTER_CUBIC);
+        update();
     }
 
     private Mat getMat(ImageIcon icon){
@@ -131,7 +138,7 @@ public class GuiImage implements Cloneable{
 
         public GuiCircle(Vector2Dv1 v, int radius , Color color, int size){
             this.size = size;
-            this.radius = radius;
+            this.radius = radius * ADJUST;
             pos = new org.opencv.core.Point((int)v.x*ADJUST, (int)v.y*ADJUST);
             this.color = new Scalar(color.getBlue(), color.getGreen(), color.getRed());
         }
@@ -200,11 +207,7 @@ public class GuiImage implements Cloneable{
         y /= 2;
         return new GuiPixel(x,y, c);
     }
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+    public GuiImage clone() {
+        return new GuiImage(mat);
     }
 }
