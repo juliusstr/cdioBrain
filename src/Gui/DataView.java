@@ -42,7 +42,7 @@ public class DataView {
     private static Boundry boundry = null;
 
     private GuiImage image;
-    private GuiImage cleanImage;
+    private Mat cleanImage;
 
     private JFrame imageFrame = null;
 
@@ -55,7 +55,7 @@ public class DataView {
         boundry = b;
         this.balls = balls;
         image = new GuiImage(m);
-        cleanImage = (GuiImage) image.clone();
+        cleanImage = m;
         imageFrame = new JFrame("Image");
         imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Load an image
@@ -74,7 +74,7 @@ public class DataView {
     }
 
     private void updateImage(){
-        image = (GuiImage) cleanImage.clone();
+        image = new GuiImage(cleanImage);
         if(ballOn){
             for (Ball b: balls) {
                 image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 6, Color.GREEN, 3), false);
