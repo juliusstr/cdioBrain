@@ -131,6 +131,7 @@ public class RoutePlanerFaseTwo {
         for (Ball b: ballsHeat3) {
             balls.remove(b);
         }
+        ballsAllRun = new ArrayList<>();
         ballsAllRun.addAll(ballsHeat1);
         ballsAllRun.addAll(ballsHeat2);
         ballsAllRun.addAll(ballsHeat3);
