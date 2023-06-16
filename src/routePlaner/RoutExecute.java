@@ -208,8 +208,7 @@ public class RoutExecute {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
         }
-
-        wait(100);
+        wait(200);
     }
     /**
      * Reverse if too close to a line after pickup
@@ -230,6 +229,7 @@ public class RoutExecute {
         }
         for (Line line: lines) {
             if(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
+                // todo lav så den bakker indtil vi er ude..
                 out.println("reverse -s5 -m500");
                 wait(400);
                 out.println("stop -d -t");
@@ -238,6 +238,7 @@ public class RoutExecute {
         }
         for (Line line: lines2) {
             if (line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN) {
+                // todo lav så den bakker indtil vi er ude..
                 out.println("reverse -s5 -m500");
                 wait(400);
                 out.println("stop -d -t");
@@ -276,10 +277,10 @@ public class RoutExecute {
             } else {
                 command += "r";
             }
-            double turnSpeed = Math.abs(angleToTarget / 5);
+            double turnSpeed = Math.abs(angleToTarget / 3);
             if (turnSpeed > 0.2) {turnSpeed = 0.2;
-            } else if (turnSpeed < 0.02) {
-                turnSpeed = 0.02;
+            } else if (turnSpeed < 0.05) {
+                turnSpeed = 0.05;
             }
 
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
