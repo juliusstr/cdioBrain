@@ -207,11 +207,7 @@ public class GuiImage implements Cloneable{
         y /= 2;
         return new GuiPixel(x,y, c);
     }
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+    public GuiImage clone() {
+        return new GuiImage(mat);
     }
 }

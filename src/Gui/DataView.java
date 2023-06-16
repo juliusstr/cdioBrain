@@ -1,12 +1,14 @@
 package Gui;
 
+import Client.StandardSettings;
 import Gui.Image.GuiImage;
+import exceptions.NoWaypointException;
 import misc.*;
 import misc.ball.Ball;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
+import misc.ball.BallClassifierPhaseTwo;
+import misc.ball.PrimitiveBall;
+import org.opencv.core.*;
 import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -41,14 +43,65 @@ public class DataView {
 
     private static Boundry boundry = null;
 
-    private GuiImage image;
-    private Mat cleanImage;
+    private static GuiImage image;
+    private static Mat cleanImage;
 
-    private JFrame imageFrame = null;
+    private static JFrame imageFrame = null;
 
-    private  JLabel imageLabel = null;
+    private static JLabel imageLabel = null;
 
-    public boolean running = true;
+    public static boolean running = true;
+
+    public static void main(String[] args) {
+
+        ArrayList<Vector2Dv1> boundryList = new ArrayList<>();
+        ArrayList<Ball> ball_list = new ArrayList<>();
+
+
+        //SET TEST DATA
+        cross = new Cross(new Vector2Dv1(301.0,205.0), new Vector2Dv1(306.0,180.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        boundryList.add(new Vector2Dv1(516.0,56.0));
+        ball_list.add(new Ball(new Vector2Dv1(128.0,91.0), StandardSettings.BALL_RADIUS_PX, BallClassifierPhaseTwo.ORANGE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(155.0,37.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(174.0,99.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(212.0,224.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(200.0,272.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(87.0,318.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(421.0,108.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(494.0,134.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(510.0,104.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(454.0,336.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+        ball_list.add(new Ball(new Vector2Dv1(294.0,187.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
+
+
+        boundry = new Boundry(boundryList);
+
+        try {
+            BallClassifierPhaseTwo.ballSetPlacement(ball_list, boundry, cross);
+        } catch (NoWaypointException e) {
+            throw new RuntimeException(e);
+        }
+        balls = ball_list;
+
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
+        image = new GuiImage(tImage);
+        cleanImage = image.getMat().clone();
+        imageFrame = new JFrame("Image");
+        imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Load an image
+        imageLabel = new JLabel(image.getIcon());
+        // Add the image label to the frame
+        imageFrame.getContentPane().add(imageLabel);
+        //frame.add(imageLabel);
+        imageFrame.pack();
+        imageFrame.setVisible(true);
+        updateImage();
+        setupMenu();
+    }
 
     public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c){
         cross = c;
@@ -73,7 +126,7 @@ public class DataView {
         imageLabel.setIcon(icon);
     }
 
-    private void updateImage(){
+    private static void updateImage(){
         image = new GuiImage(cleanImage);
         if(ballOn){
             for (Ball b: balls) {
@@ -133,7 +186,7 @@ public class DataView {
         imageLabel.setIcon(image.getIcon());
     }
 
-    private void setupMenu(){
+    private static void setupMenu(){
         JFrame frame = new JFrame("Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
