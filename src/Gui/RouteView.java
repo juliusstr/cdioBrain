@@ -3,6 +3,7 @@ package Gui;
 import Gui.Image.GuiImage;
 import misc.Vector2Dv1;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import nav.WaypointGenerator;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -15,6 +16,8 @@ import routePlaner.Route;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,6 +52,18 @@ public class RouteView {
         imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Load an image
         JLabel imageLabel = new JLabel(image.getIcon());
+
+        // Create a custom mouse adapter to handle mouse click events
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                imageFrame.dispose();
+            }
+        };
+
+        // Add the mouse adapter to the image label
+        imageLabel.addMouseListener(mouseAdapter);
+
         // Add the image label to the frame
         imageFrame.getContentPane().add(imageLabel);
         //frame.add(imageLabel);
