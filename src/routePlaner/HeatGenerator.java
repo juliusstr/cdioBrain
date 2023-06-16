@@ -267,6 +267,7 @@ public class HeatGenerator {
 
         private int bestScoreO = -1;
 
+        private int count = 0;
         private generate() {
             bestScore = -1;
             bestScoreO = -1;
@@ -303,6 +304,8 @@ public class HeatGenerator {
         }
 
         private void findNextBall(Ball start, ArrayList<Ball> bta) {
+            count++;
+            int countInner = count;
             if(curBalls.size()+1 > amount)
                 return;
             if (curScore >= bestScore && bestScore > 0)
@@ -394,9 +397,15 @@ public class HeatGenerator {
                         Route route = getRoute(start.getPickUpPoint(), b, bta);
                         if (route == null)
                             continue;
+                        //System.out.println("Count: " + countInner + " score: " + (int)route.getScore());
+                        //System.out.println("current score after: " + curScore);
                         curScore += (int) route.getScore();
+                        //System.out.println("current score after: " + curScore);
                         findNextBall(b, bta);
+                        //System.out.println("Count: " + countInner + " score: " + (int)route.getScore());
+                        //System.out.println("current score after: " + curScore);
                         curScore -= (int) route.getScore();
+                        //System.out.println("current score after: " + curScore);
                         bta.add(b);
                     }
                 }
