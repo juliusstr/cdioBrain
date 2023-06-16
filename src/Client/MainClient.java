@@ -125,8 +125,14 @@ public class MainClient {
         robotPos.add(new Vector2Dv1(1,1));
         robotPos.add(new Vector2Dv1(1,1));
 
+        ArrayList<Vector2Dv1> reqBalls = new ArrayList<>();
+        robotPos.add(new Vector2Dv1(0,0));
+        robotPos.add(new Vector2Dv1(0,0));
+        robotPos.add(new Vector2Dv1(0,0));
+        robotPos.add(new Vector2Dv1(0,0));
+
         //call interface
-        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos);
+        new GUI_Menu(m, robotColorsGUI, boundryConorsGUI, crossPosGUI, ballsGUI, caliGUI, robotPos, reqBalls);
         System.out.println("Press enter to end config!");
         Scanner inputWaitConfig = new Scanner(System.in);
         inputWaitConfig.nextLine();

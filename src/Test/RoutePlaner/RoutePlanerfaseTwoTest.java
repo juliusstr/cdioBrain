@@ -180,9 +180,7 @@ public class RoutePlanerfaseTwoTest {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
         GuiImage image = new GuiImage(tImage);
-        Mat m = image.getMat();
-        Imgproc.resize(m,m, new Size(1280, 720), 0, 0, INTER_CUBIC);
-        hg.setImage(m);
+        hg.setImage(image.getMat());
         hg.getHeats();
     }
 

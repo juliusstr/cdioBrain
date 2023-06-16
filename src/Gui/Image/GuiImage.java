@@ -2,10 +2,7 @@ package Gui.Image;
 
 import misc.Boundry;
 import misc.Vector2Dv1;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -16,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
+import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 
 public class GuiImage implements Cloneable{
 
@@ -31,13 +30,21 @@ public class GuiImage implements Cloneable{
 
     public GuiImage(ImageIcon icon){
         update(icon);
+        setSize();
     }
 
     public GuiImage(BufferedImage bufferedImage){
         update(bufferedImage);
+        setSize();
     }
     public GuiImage(Mat mat){
         update(mat);
+        setSize();
+    }
+
+    private void setSize(){
+        Imgproc.resize(mat,mat, new Size(WIDTH, HEIGHT), 0, 0, INTER_CUBIC);
+        update();
     }
 
     private Mat getMat(ImageIcon icon){
