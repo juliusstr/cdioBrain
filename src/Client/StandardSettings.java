@@ -60,7 +60,7 @@ public class StandardSettings {
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
     public static final double FINAL_WAYPOINT_DISTANCE_ERROR = 4;
 
-    public static final double MIN_TURN_SPEED = 0.12;
+    public static final double MIN_TURN_SPEED = 0.11;//0.11 on rechargeable bat-pack
 
     public static final String COLLECT_COMMAND = "collect";
     public static final String DROP_OFF_COMMAND = "drop";

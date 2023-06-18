@@ -273,37 +273,41 @@ public class MainClient {
 
         //#############################  FINAL ROUND  ############################################
         while(true){
-            ArrayList<Ball> heat_list = new ArrayList<>();
-            balls.clear();
-            balls = imgRec.captureBalls();
             try {
-                stabilizer.stabilizeBalls(balls);
-            } catch (TypeException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
-                robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
-            } catch (BadDataException e) {
-                System.err.println("no robot found");
-            }
-            routeBalls = new ArrayList<>();
-            try {
-                ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
-                System.out.println("balls1 = " + balls1);
-                for (Ball ball : balls1) {
-                    BallClassifierPhaseTwo.ballSetPlacement(routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
-                    System.out.println(ball.toString());
-                    routeBalls.add(ball);
+                ArrayList<Ball> heat_list = new ArrayList<>();
+                balls.clear();
+                balls = imgRec.captureBalls();
+                try {
+                    stabilizer.stabilizeBalls(balls);
+                } catch (TypeException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (NoDataException e) {
-                throw new RuntimeException(e);
-            } catch (NoWaypointException e) {
-                e.printStackTrace();
+                try {
+                    ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
+                    robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
+                } catch (BadDataException e) {
+                    System.err.println("no robot found");
+                }
+                routeBalls = new ArrayList<>();
+                try {
+                    ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
+                    System.out.println("balls1 = " + balls1);
+                    for (Ball ball : balls1) {
+                        BallClassifierPhaseTwo.ballSetPlacement(routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+                        System.out.println(ball.toString());
+                        routeBalls.add(ball);
+                    }
+                } catch (NoDataException e) {
+                    throw new RuntimeException(e);
+                } catch (NoWaypointException e) {
+                    e.printStackTrace();
+                }
+                heat_list = new HeatGenerator(routeBalls, robotv1, robotv1.getPosVector(), imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, routePlanerFaseTwo.goalFakeBall, 4, new Mat()).getHeat();
+                RoutExecute routExecuter = new RoutExecute(out, in, robotv1, imgRec.imgRecObstacle.cross, imgRec.imgRecObstacle.boundry);
+                routExecuter.heatRunner(heat_list, 4, imgRec, stabilizer, routeBalls);
+            } catch (Exception j){
+
             }
-            heat_list = new HeatGenerator(routeBalls, robotv1, robotv1.getPosVector(), imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, routePlanerFaseTwo.goalFakeBall, 4, new Mat()).getHeat();
-            RoutExecute routExecuter = new RoutExecute(out, in, robotv1, imgRec.imgRecObstacle.cross, imgRec.imgRecObstacle.boundry);
-            routExecuter.heatRunner(heat_list, 4, imgRec, stabilizer, routeBalls);
         }
     }
 }

@@ -138,6 +138,7 @@ public class RoutExecute {
                     routToBall.clear();
                 } else {
                     out.println(command);
+                    wait(20);
                 }
             }
             //collect

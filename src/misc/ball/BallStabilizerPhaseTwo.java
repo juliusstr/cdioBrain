@@ -154,9 +154,10 @@ public class BallStabilizerPhaseTwo {
             ballsToReturn.add(balls.get(i));
         }
 
-        if (ballsToReturn.size() != 2)
+        if (ballsToReturn.size() != 2) {
+            System.err.println("no robot in frame");
             throw new BadDataException("No stable robot balls. Balls to return size: " + ballsToReturn.size() + "   Number of balls in list: " + balls.size());
-
+        }
         return ballsToReturn;
     }
 }
