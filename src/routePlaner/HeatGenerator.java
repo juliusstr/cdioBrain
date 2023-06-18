@@ -186,7 +186,9 @@ public class HeatGenerator {
             }
             i++;
         }
-        RouteView rw = new RouteView(vv_list, image.getMat());
+        RouteView rw;
+        if(heatNum != 4)
+            rw = new RouteView(vv_list, image.getMat());
     }
 
     /**
