@@ -285,7 +285,7 @@ public class MainClient {
                 ArrayList<Ball> robotBalls = stabilizer.getStabelRobotCirce();
                 robotv1.updatePos(robotBalls.get(0), robotBalls.get(1));
             } catch (BadDataException e) {
-                throw new RuntimeException(e);
+                System.err.println("no robot found");
             }
             routeBalls = new ArrayList<>();
             try {
