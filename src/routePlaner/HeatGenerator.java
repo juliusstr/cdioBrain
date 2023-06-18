@@ -90,7 +90,8 @@ public class HeatGenerator {
      * @param m       The Mat object.
      */
     public HeatGenerator(ArrayList<Ball> balls, Robotv1 r, Vector2Dv1 robotPos, Boundry b, Cross c, Ball g, int heatNum, Mat m){
-        image = new GuiImage(m);
+        if(heatNum != 4)
+            image = new GuiImage(m);
         this.balls = balls;
         this.goal = g;
         this.boundry = b;
