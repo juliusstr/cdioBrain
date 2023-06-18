@@ -279,7 +279,7 @@ public class RoutExecute {
             while(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
                 updateRobotFromImgRec(imgRec, robot, stabilizer);
             }
-            out.println("stop"); // todo make "stop -d -t"
+            out.println("stop -d -t");
             return true;
         }
         return false;
