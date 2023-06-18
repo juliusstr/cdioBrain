@@ -80,7 +80,6 @@ public class HeatGenerator {
         diffBalls = new ArrayList<>();
         freeBalls = new ArrayList<>();
         pairBalls = new ArrayList<>();
-        reqBalls = new ArrayList<>();
         run();
     }
 
