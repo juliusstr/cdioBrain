@@ -209,7 +209,7 @@ public class BallClassifierPhaseTwo {
             if(zone.posInsideZone(waypoint))
                 return true;
         }
-        if(!boundry.vectorInsideBoundary(waypoint))
+        if(!boundry.waypointSafeDistFromBoundary(waypoint))
             return true;
 
         return false;

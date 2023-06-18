@@ -1,9 +1,12 @@
 package misc;
 
 import Client.StandardSettings;
+import org.opencv.core.Mat;
 
 import java.awt.*;
 import java.util.ArrayList;
+
+import static Client.StandardSettings.BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY;
 
 public class Boundry {
 
@@ -167,6 +170,28 @@ public class Boundry {
         }
 
         return true;
+    }
+
+    public boolean waypointSafeDistFromBoundary(Vector2Dv1 waypoint){
+        Vector2Dv1 a = new Vector2Dv1(points.get(0));
+        Vector2Dv1 b = new Vector2Dv1(points.get(1));
+        Vector2Dv1 c = new Vector2Dv1(points.get(2));
+        Vector2Dv1 d = new Vector2Dv1(points.get(3));
+        Vector2Dv1 ac = c.getSubtracted(a).getNormalized().getMultiplied(BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY);
+        Vector2Dv1 bd = d.getSubtracted(b).getNormalized().getMultiplied(BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY);
+        a.add(ac);
+        ac.rotateBy(Math.PI);
+        c.add(ac);
+        b.add(bd);
+        bd.rotateBy(Math.PI);
+        d.add(bd);
+        ArrayList<Vector2Dv1> list = new ArrayList<>();
+        list.add(a);
+        list.add(b);
+        list.add(c);
+        list.add(d);
+        Boundry tempBoundery = new Boundry(list);
+        return tempBoundery.vectorInsideBoundary(waypoint);
     }
 
 }

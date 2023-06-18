@@ -67,5 +67,9 @@ public class StandardSettings {
     public static final String COLLECT_CORNER_COMMAND = "corner";
     public static final String COLLECT_PAIR_COMMAND = "corner";
 
+    /**
+     * Boundery
+     */
+    public static final double BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY = 40;
 
 }
