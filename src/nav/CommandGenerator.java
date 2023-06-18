@@ -55,7 +55,7 @@ public class CommandGenerator {
             System.err.printf("On ball\n");
             return "On ball\n";
         }
-        if(!isTargetBall && distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
+        if(!isTargetBall && distDelta < FINAL_WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On waypoint\n");
             return "On waypoint\n";

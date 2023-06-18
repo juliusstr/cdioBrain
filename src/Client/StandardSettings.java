@@ -58,6 +58,7 @@ public class StandardSettings {
     public static final double ANGLE_ERROR = Math.PI/180*1;
     public static final double TARGET_DISTANCE_ERROR = 45;
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
+    public static final double FINAL_WAYPOINT_DISTANCE_ERROR = 4;
 
     public static final double MIN_TURN_SPEED = 0.11;
 
