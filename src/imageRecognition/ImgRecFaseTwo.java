@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
+import static org.opencv.videoio.Videoio.CAP_DSHOW;
 
 public class ImgRecFaseTwo {
 
@@ -38,7 +39,7 @@ public class ImgRecFaseTwo {
         // Create a new VideoCapture object to get frames from the webcam
         if(!StandardSettings.SPEED_BOOT) {
             System.err.println("loading webcam");
-            capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
+            capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX, CAP_DSHOW);
             System.err.println("changing frame size for GUI clicker");
             capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 1280);
             capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 720);
@@ -47,7 +48,7 @@ public class ImgRecFaseTwo {
             capture.release();
         }
         System.err.println("loading webcam");
-        capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
+        capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX, CAP_DSHOW);
         System.err.println("changing frame size");
         capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 640);
         capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 360);
