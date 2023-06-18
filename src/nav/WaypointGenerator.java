@@ -260,7 +260,7 @@ public class WaypointGenerator {
                     return;
             }
         } while (waypoint == null);
-        if(!boundry.vectorInsideBoundary(waypoint))
+        if(!boundry.waypointSafeDistFromBoundary(waypoint))
                 return;
 
         //todo check if rout form pos to waypoint hits critical-zone closer to robot.

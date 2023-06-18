@@ -1,6 +1,7 @@
 package misc.ball;
 import Client.StandardSettings;
 import exceptions.NoWaypointException;
+import imageRecognition.RGBtoHSVConverter;
 import misc.*;
 
 import java.awt.*;
@@ -10,10 +11,10 @@ import java.util.List;
 
 public class BallClassifierPhaseTwo {
 
-    public static Color BLACK = new Color(81, 83, 82);
-    public static Color GREEN = new Color(61, 143, 100);
-    public static final Color WHITE = new Color(240, 237, 213);
-    public static final Color ORANGE = new Color(246, 162, 93);
+    public static Color BLACK = new Color(72, 63, 49);
+    public static Color GREEN = new Color(32, 113, 76);
+    public static final Color WHITE = new Color(234, 219, 191);
+    public static final Color ORANGE = new Color(242, 114, 46);
     public static final Color[] COLOR_LIST = {BLACK, GREEN, WHITE, ORANGE};
 
     public static void UpdateColor(ArrayList<Color> colors){
@@ -60,10 +61,12 @@ public class BallClassifierPhaseTwo {
         double dist = Double.MAX_VALUE;
         Color closestColer = null;
         for (int i = 0; i < COLOR_LIST.length; i++){
-            double r = Math.pow(COLOR_LIST[i].getRed()-color.getRed(),2);
-            double g = Math.pow(COLOR_LIST[i].getGreen()-color.getGreen(),2);
-            double b = Math.pow(COLOR_LIST[i].getBlue()-color.getBlue(),2);
-            double temp = Math.sqrt(r+g+b);
+            float hsvColor[] = RGBtoHSVConverter.convertRGBtoHSV(color);
+            float hsvStaticColor[] = RGBtoHSVConverter.convertRGBtoHSV(COLOR_LIST[i]);
+            double hue = Math.pow(Math.min(Math.abs(hsvStaticColor[0]-hsvColor[0]),360-Math.abs(hsvStaticColor[0]-hsvColor[0]))/180,2);
+            double sat = Math.pow(Math.abs(hsvStaticColor[1]-hsvColor[1]),2);
+            double bri = Math.pow(Math.abs(hsvStaticColor[2]-hsvColor[2]),2);
+            double temp = Math.sqrt(hue+sat+bri);
             if(dist > temp){
                 dist = temp;
                 closestColer = COLOR_LIST[i];
@@ -156,22 +159,35 @@ public class BallClassifierPhaseTwo {
                     ball.setPlacement(Ball.Placement.PAIR);
                     Vector2Dv1 dir = balls.get(i).getPosVector().getSubtracted(ball.getPosVector());
                     dir.normalize();
+                    dir.rotateBy(Math.PI);
                     dir.multiply(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL);
                     Vector2Dv1 waypoint = ball.getPosVector().getAdded(dir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
                         ball.setPickUpWaypoint(dir);
                         break;
                     }
-                    dir.rotateBy(Math.PI/2);
-                    waypoint = ball.getPosVector().getAdded(dir);
+                    Vector2Dv1 tempDir = dir.getRotatedBy(Math.PI/2);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
-                        ball.setPickUpWaypoint(dir);
+                        ball.setPickUpWaypoint(tempDir);
                         break;
                     }
-                    dir.rotateBy(Math.PI);
-                    waypoint = ball.getPosVector().getAdded(dir);
+                    tempDir = dir.getRotatedBy(Math.PI/2*(-1));
+                    waypoint = ball.getPosVector().getAdded(tempDir);
                     if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
-                        ball.setPickUpWaypoint(dir);
+                        ball.setPickUpWaypoint(tempDir);
+                        break;
+                    }
+                    tempDir = dir.getRotatedBy(Math.PI/4);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
+                    if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
+                        ball.setPickUpWaypoint(tempDir);
+                        break;
+                    }
+                    tempDir = dir.getRotatedBy(Math.PI/8);
+                    waypoint = ball.getPosVector().getAdded(tempDir);
+                    if(!waypointInCriticalZone(waypoint,balls,cross,boundry)){
+                        ball.setPickUpWaypoint(tempDir);
                         break;
                     }
                     throw new NoWaypointException("No waypoint was found on pair ball");
@@ -193,7 +209,7 @@ public class BallClassifierPhaseTwo {
             if(zone.posInsideZone(waypoint))
                 return true;
         }
-        if(!boundry.vectorInsideBoundary(waypoint))
+        if(!boundry.waypointSafeDistFromBoundary(waypoint))
             return true;
 
         return false;

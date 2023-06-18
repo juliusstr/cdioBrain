@@ -3,10 +3,12 @@ package routePlaner;
 import Client.StandardSettings;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
+import exceptions.NoWaypointException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
 import misc.*;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
@@ -50,7 +52,14 @@ public class RoutExecute {
         for (int j = 0; j < heat.size(); j++) {
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
-            ballsToAvoid.remove(heat.get(j));
+            try {
+                BallClassifierPhaseTwo.ballSetPlacement(ballsToAvoid,boundry,cross);
+            } catch (NoWaypointException e) {
+                throw new RuntimeException(e);
+            }
+            if(heat.get(j).getPlacement() == Ball.Placement.FREE){
+                ballsToAvoid.remove(heat.get(j));
+            }
             if (heat.size() == checkSize) {
                 for (int i = 0; i < robot.getRoutes(heatNr).size(); i++) {
                     if (heat.get(0) == robot.getRoutes(heatNr).get(i).getEnd()) {
@@ -63,6 +72,9 @@ public class RoutExecute {
                                 targetWaypoint = heat.get(j).getPickUpPoint();
                             }
                             waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
+                            if(heat.get(j).getPlacement() != Ball.Placement.FREE){
+                                ballsToAvoid.remove(heat.get(j));
+                            }
 
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
@@ -70,9 +82,11 @@ public class RoutExecute {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
+                         */
                         break;
                     }
                 }
@@ -94,9 +108,11 @@ public class RoutExecute {
                             throw new RuntimeException(e);
                         }
                         routToBall = waypointGenerator.waypointRoute.getRoute();
+                        /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
                         }
+                         */
                         break;
                     }
                 }
@@ -127,24 +143,25 @@ public class RoutExecute {
                     //check if we have the right angle to the target
                     turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_COMMAND);
-                    reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_COMMAND);
+                    //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case EDGE:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_EDGE_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case CORNER:
                     turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_CORNER_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case PAIR:
                     turnBeforeHardcode(robot,imgRec,out,in,heat.get(j).getPosVector(),stabilizer);
                     out.println(StandardSettings.COLLECT_PAIR_COMMAND);
-                    checkForHardcodeDone(in);
+                    checkForHardcodeDone(in, StandardSettings.COLLECT_PAIR_COMMAND);
                 default:
                     out.println("stop -t -d");
 
@@ -157,14 +174,14 @@ public class RoutExecute {
         //go to goal and do a drop-off
         updateRobotFromImgRec(imgRec,robot,stabilizer);
         try {
-            waypointGenerator = new WaypointGenerator(boundry.goalWaypoint0, robot.getPosVector(), cross, boundry, ballsToAvoid);
+            waypointGenerator = new WaypointGenerator(boundry.goalWaypoint1, robot.getPosVector(), cross, boundry, ballsToAvoid);
         } catch (NoRouteException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
         routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
-        routeToGoal.add(boundry.goalWaypoint1);
+        //routeToGoal.add(boundry.goalWaypoint1);
         commandGenerator = new CommandGenerator(robot, routeToGoal);
         while (routeToGoal.size() != 0) {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
@@ -176,7 +193,7 @@ public class RoutExecute {
         }
         turnBeforeHardcode(robot, imgRec, out, in, boundry.getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);
-        checkForHardcodeDone(in);
+        checkForHardcodeDone(in, StandardSettings.DROP_OFF_COMMAND);
         //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
     }
 
@@ -217,7 +234,7 @@ public class RoutExecute {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
         }
-        wait(300);
+        wait(500);
     }
     /**
      * Reverse if too close to a line after pickup
@@ -263,7 +280,7 @@ public class RoutExecute {
             while(line.findClosestPoint(robot.getPosVector()).getSubtracted(robot.getPosVector()).getLength() < StandardSettings.ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN){
                 updateRobotFromImgRec(imgRec, robot, stabilizer);
             }
-            out.println("stop"); // todo make "stop -d -t"
+            out.println("stop -d -t");
             return true;
         }
         return false;
@@ -300,9 +317,10 @@ public class RoutExecute {
                 command += "r";
             }
             double turnSpeed = Math.abs(angleToTarget / 3);
-            if (turnSpeed > 0.3) {turnSpeed = 0.3;
-            } else if (turnSpeed < 0.05) {
-                turnSpeed = 0.05;
+            if (turnSpeed > 0.5) {
+                turnSpeed = 0.5;
+            } else if (turnSpeed < StandardSettings.MIN_TURN_SPEED) {
+                turnSpeed = StandardSettings.MIN_TURN_SPEED;
             }
 
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
@@ -324,10 +342,10 @@ public class RoutExecute {
         return robot.getDirection().getAngleBetwen(target.getSubtracted(robot.getPosVector()));
     }
 
-    public void checkForHardcodeDone(BufferedReader in){
+    public void checkForHardcodeDone(BufferedReader in, String commandSend){
         try {
             String input = in.readLine();
-            while (!input.equals("hardcode done")) {
+            while(!input.contains(commandSend)){
                 input = in.readLine();
             }
         }
@@ -335,4 +353,5 @@ public class RoutExecute {
             throw new RuntimeException();
             }
     }
+
 }
