@@ -3,10 +3,12 @@ package routePlaner;
 import Client.StandardSettings;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
+import exceptions.NoWaypointException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
 import misc.*;
 import misc.ball.Ball;
+import misc.ball.BallClassifierPhaseTwo;
 import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
@@ -49,6 +51,11 @@ public class RoutExecute {
         for (int j = 0; j < heat.size(); j++) {
             //finde route from robot to ball
             ArrayList<Vector2Dv1> routToBall = new ArrayList<>();
+            try {
+                BallClassifierPhaseTwo.ballSetPlacement(ballsToAvoid,boundry,cross);
+            } catch (NoWaypointException e) {
+                throw new RuntimeException(e);
+            }
             if(heat.get(j).getPlacement() == Ball.Placement.FREE){
                 ballsToAvoid.remove(heat.get(j));
             }
