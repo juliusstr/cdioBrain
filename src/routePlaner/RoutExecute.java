@@ -27,6 +27,7 @@ public class RoutExecute {
     private Robotv1 robot = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
+    private String lastCommand;
 
     public RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
         this.in = in;
@@ -34,6 +35,7 @@ public class RoutExecute {
         this.robot = robot;
         this.cross = cross;
         this.boundry = boundry;
+        lastCommand = "stop -t -d";
     }
 
     public void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
@@ -137,8 +139,9 @@ public class RoutExecute {
                     wait(200);
                     routToBall.clear();
                 } else {
-                    out.println(command);
-                    wait(20);
+                    if(!lastCommand.equals(command))
+                        out.println(command);
+                    lastCommand = command;
                 }
             }
             //collect
@@ -193,7 +196,9 @@ public class RoutExecute {
             if (command.contains("waypoint")) {
                 routeToGoal.clear();
             }
-            out.println(command);
+            if(!lastCommand.equals(command))
+                out.println(command);
+            lastCommand = command;
         }
         turnBeforeHardcode(robot, imgRec, out, in, boundry.getGoalPos(), stabilizer);
         out.println(StandardSettings.DROP_OFF_COMMAND);

@@ -25,9 +25,11 @@ public class CommandGenerator {
 
     private static ThreadPoolExecutor threadPoolExecutor;
 
+
     public CommandGenerator(Robotv1 robot, ArrayList<Vector2Dv1> waypoints){
         this.robot = robot;
         this.waypoints = (ArrayList<Vector2Dv1>) waypoints.clone();
+
     }
 
     public String nextCommand(boolean isTargetBall) {
@@ -55,7 +57,7 @@ public class CommandGenerator {
             System.err.printf("On ball\n");
             return "On ball\n";
         }
-        if(!isTargetBall && distDelta < FINAL_WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
+        if(!isTargetBall && distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On waypoint\n");
             return "On waypoint\n";
@@ -101,7 +103,7 @@ public class CommandGenerator {
             }
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
-            command += ";stop -d;stop -t";
+            command += ";stop -d; stop -t";
         }
         System.out.printf("command = %s\n", command);
         return command;
