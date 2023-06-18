@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class DataView {
-    private static int WIDTH = 200;
+    private static int WIDTH = 400;
     private static int HEIGHT = 500;
 
     private static boolean ballOn = false;
@@ -41,6 +41,7 @@ public class DataView {
     private static boolean robotOn = false;
     private static boolean robotNonScaleOn = false;
     private static ArrayList<Ball> balls = null;
+    private static ArrayList<Ball> rballs = null;
 
     private static Cross cross = null;
 
@@ -89,6 +90,7 @@ public class DataView {
             throw new RuntimeException(e);
         }
         balls = ball_list;
+        rballs = new ArrayList<>();
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
@@ -107,11 +109,12 @@ public class DataView {
         setupMenu();
     }
 
-    public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c, Robotv1 r){
+    public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c, Robotv1 r, ArrayList<Ball> rballs){
         robot = r;
         cross = c;
         boundry = b;
         this.balls = balls;
+        this.rballs = rballs;
         image = new GuiImage(m);
         cleanImage = m;
         imageFrame = new JFrame("Image");
@@ -135,7 +138,12 @@ public class DataView {
         image = new GuiImage(cleanImage);
         if(ballOn){
             for (Ball b: balls) {
-                image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.GREEN, 3), false);
+                if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE))
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.BLUE, 3), false);
+                else if(rballs.contains(b))
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.RED, 3), false);
+                else
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.GREEN, 3), false);
             }
             if(zoneOn){
 
@@ -154,7 +162,7 @@ public class DataView {
             if(lineUpOn){
 
                 for (Ball b: balls) {
-                    image.Draw(new GuiImage.GuiCircle(b.getLineUpPoint(), 2, Color.RED, 2), false);
+                    image.Draw(new GuiImage.GuiCircle(b.getPickUpPoint(), 2, Color.RED, 2), false);
                 }
 
             }
@@ -207,26 +215,44 @@ public class DataView {
         //Panel
         JPanel jPanel = new JPanel();
         jPanel.setSize(WIDTH,HEIGHT);
-        jPanel.setLayout(new GridLayout(7,1));
-        JButton ballBtn = new JButton("Toggle balls");
-        jPanel.add(ballBtn);
-        JButton boundryBtn = new JButton("Toggle boundry");
-        jPanel.add(boundryBtn);
-        JButton crossBtn = new JButton("Toggle cross");
-        jPanel.add(crossBtn);
-        JButton zoneBtn = new JButton("Toggle safety zones");
-        jPanel.add(zoneBtn);
-        JButton dzoneBtn = new JButton("Toggle Critical zones");
-        jPanel.add(dzoneBtn);
-        JButton pointBtn = new JButton("Toggle line up point");
-        jPanel.add(pointBtn);
-        JButton robotBtn = new JButton("Toggle Robot");
-        jPanel.add(robotBtn);
-        JButton robotScaleBtn = new JButton("Toggle robot no scale");
-        jPanel.add(robotScaleBtn);
-        JButton closeBtn = new JButton("Close");
-        jPanel.add(closeBtn);
+        jPanel.setLayout(new BorderLayout());
 
+        JPanel bpanel = new JPanel();
+        bpanel.setSize(WIDTH,(int)(HEIGHT*0.8));
+        bpanel.setLayout(new GridLayout(4,2));
+
+        JButton ballBtn = new JButton("Toggle balls");
+        bpanel.add(ballBtn);
+        JButton boundryBtn = new JButton("Toggle boundry");
+        bpanel.add(boundryBtn);
+        JButton crossBtn = new JButton("Toggle cross");
+        bpanel.add(crossBtn);
+        JButton zoneBtn = new JButton("Toggle safety zones");
+        bpanel.add(zoneBtn);
+        JButton dzoneBtn = new JButton("Toggle Critical zones");
+        bpanel.add(dzoneBtn);
+        JButton pointBtn = new JButton("Toggle line up point");
+        bpanel.add(pointBtn);
+        JButton robotBtn = new JButton("Toggle Robot");
+        bpanel.add(robotBtn);
+        JButton robotScaleBtn = new JButton("Toggle robot no scale");
+        bpanel.add(robotScaleBtn);
+
+        JPanel ipanel = new JPanel();
+        ipanel.setSize(WIDTH,(int)(HEIGHT*0.2));
+        ipanel.setLayout(new GridLayout(5,1));
+
+        JLabel ballColor = new JLabel("balls color: Green");
+        JLabel rballColor = new JLabel("required balls color: Red");
+        JLabel oballColor = new JLabel("orange ball color: Blue");
+
+        JButton closeBtn = new JButton("Close");
+        ipanel.add(ballColor);
+        ipanel.add(rballColor);
+        ipanel.add(oballColor);
+        ipanel.add(closeBtn);
+        jPanel.add(bpanel, BorderLayout.CENTER);
+        jPanel.add(ipanel, BorderLayout.PAGE_END);
 
         ballBtn.addActionListener(new ActionListener() {
             @Override
