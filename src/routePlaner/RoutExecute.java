@@ -242,6 +242,7 @@ public class RoutExecute {
         while(!correctAngleToTarget(robot, target, out)){
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             out.println("stop -d -t");
+            lastCommand = "stop -d -t";
         }
         wait(500);
     }
@@ -316,6 +317,7 @@ public class RoutExecute {
      * @return True if we have the correct angle, false if we dont have the correct angle
      */
     public boolean correctAngleToTarget(Robotv1 robot, Vector2Dv1 target, PrintWriter out) {
+        lastCommand = "stop -t -d";
         double angleToTarget = angleBeforeHardcode(robot, target);
         String command = "";
         if (Math.abs(angleToTarget) > ANGLE_ERROR) {
@@ -334,7 +336,9 @@ public class RoutExecute {
 
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";
             System.out.println("Send command: " + command);
-            out.println(command);
+            if(!lastCommand.equals(command))
+                out.println(command);
+            lastCommand = command;
             return false;
         } else{
             return true;
