@@ -24,7 +24,7 @@ public class StandardSettings {
      * Depth of search in waypoint generator.
      * Above 10 is not needed. Might be able to get away with 5 or 6.
      */
-    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 6;
+    public static final int NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT = 4;
     /**
      * sppeds up nav by 300-400% but does not get best route.
      */
@@ -40,14 +40,14 @@ public class StandardSettings {
      * BallClassifierPhaseTwo
      * -----------------------------
      */
-    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 40;
+    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 43;
 
     /**
      * -----------------------------
      * RoutPlanerPhaseTwo
      * -----------------------------
      */
-    public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 50;
+    public static final int ROUTE_PLANER_GOAL_RUN_UP_DIST = 43;
     public static final int ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP = 30;
 
     public static final int ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN = 40;

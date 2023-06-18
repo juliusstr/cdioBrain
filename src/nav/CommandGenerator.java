@@ -74,8 +74,13 @@ public class CommandGenerator {
                 command += "r";
             }
             double turnSpeed = Math.abs(angleDelta / 2);
-            if (turnSpeed > 1)
+            if (turnSpeed > 1){
                 turnSpeed = 1;
+            } else if (turnSpeed < 0.08) {
+                turnSpeed = 0.08;
+            }
+
+
             command += " -s" + String.format("%.2f", turnSpeed).replace(',','.') + "";
         } else {
             command += "stop -t";
