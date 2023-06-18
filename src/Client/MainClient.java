@@ -303,7 +303,7 @@ public class MainClient {
             }
             heat_list = new HeatGenerator(routeBalls, robotv1, robotv1.getPosVector(), imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, routePlanerFaseTwo.goalFakeBall, 4, new Mat()).getHeat();
             RoutExecute routExecuter = new RoutExecute(out, in, robotv1, imgRec.imgRecObstacle.cross, imgRec.imgRecObstacle.boundry);
-            routExecuter.heatRunner(heat_list, 2, imgRec, stabilizer, routeBalls);
+            routExecuter.heatRunner(heat_list, 4, imgRec, stabilizer, routeBalls);
         }
     }
 }

@@ -1,7 +1,7 @@
 package Client;
 
 public class StandardSettings {
-    public static final int VIDIO_CAPTURE_INDEX = 0;
+    public static final int VIDIO_CAPTURE_INDEX = 1;
 
 
     /**
@@ -32,7 +32,7 @@ public class StandardSettings {
     /**
      * Number of threads to use in search for route in wayPointGen
      */
-    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 4;
+    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 8;
 
 
     /**
@@ -60,7 +60,7 @@ public class StandardSettings {
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
     public static final double FINAL_WAYPOINT_DISTANCE_ERROR = 4;
 
-    public static final double MIN_TURN_SPEED = 0.11;
+    public static final double MIN_TURN_SPEED = 0.12;
 
     public static final String COLLECT_COMMAND = "collect";
     public static final String DROP_OFF_COMMAND = "drop";
