@@ -316,10 +316,10 @@ public class RoutExecute {
                 command += "r";
             }
             double turnSpeed = Math.abs(angleToTarget / 3);
-            if (turnSpeed > 0.3) {
-                turnSpeed = 0.3;
-            } else if (turnSpeed < 0.08) {
-                turnSpeed = 0.08;
+            if (turnSpeed > 0.5) {
+                turnSpeed = 0.5;
+            } else if (turnSpeed < StandardSettings.MIN_TURN_SPEED) {
+                turnSpeed = StandardSettings.MIN_TURN_SPEED;
             }
 
             command += " -s" + String.format("%.2f", turnSpeed).replace(',', '.') + "";

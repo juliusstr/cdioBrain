@@ -59,6 +59,8 @@ public class StandardSettings {
     public static final double TARGET_DISTANCE_ERROR = 45;
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
 
+    public static final double MIN_TURN_SPEED = 0.14;
+
     public static final String COLLECT_COMMAND = "collect";
     public static final String DROP_OFF_COMMAND = "drop";
     public static final String COLLECT_EDGE_COMMAND = "corner";

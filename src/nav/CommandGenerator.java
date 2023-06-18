@@ -1,6 +1,7 @@
 package nav;
 
 
+import Client.StandardSettings;
 import exceptions.*;
 import misc.*;
 import misc.ball.Ball;
@@ -76,8 +77,8 @@ public class CommandGenerator {
             double turnSpeed = Math.abs(angleDelta / 2);
             if (turnSpeed > 1){
                 turnSpeed = 1;
-            } else if (turnSpeed < 0.08) {
-                turnSpeed = 0.08;
+            } else if (turnSpeed < MIN_TURN_SPEED) {
+                turnSpeed = MIN_TURN_SPEED;
             }
 
 
