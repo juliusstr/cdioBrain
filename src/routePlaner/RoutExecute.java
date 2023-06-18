@@ -48,6 +48,9 @@ public class RoutExecute {
         } else {
             checkSize = 4;
         }
+        if(heatNr == 4){
+            checkSize = heat.size();
+        }
 
         for (int j = 0; j < heat.size(); j++) {
             //finde route from robot to ball
