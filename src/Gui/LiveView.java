@@ -5,6 +5,7 @@ import misc.Robotv1;
 import misc.Vector2Dv1;
 import org.opencv.core.Mat;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -13,9 +14,23 @@ public class LiveView {
     private GuiImage image;
     private Robotv1 robot;
     private ArrayList<Vector2Dv1> rout = null;
+
+    private JLabel label = null;
+
     public LiveView(Mat mat, Robotv1 robot){
         image = new GuiImage(mat);
         this.robot = robot;
+        show();
+    }
+
+    private void show(){
+        JFrame frame = new JFrame();
+        label = new JLabel(image.getIcon());
+        // Add the image label to the frame
+        frame.getContentPane().add(label);
+        //frame.add(imageLabel);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     public void setRout(ArrayList<Vector2Dv1> r){
@@ -34,6 +49,9 @@ public class LiveView {
             }
             image.update();
         }
+        label.setIcon(image.getIcon());
     }
+
+
 
 }
