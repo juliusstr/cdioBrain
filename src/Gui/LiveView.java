@@ -44,7 +44,7 @@ public class LiveView extends Thread {
             if(mat != curMat)
                 update(mat);
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -63,6 +63,8 @@ public class LiveView extends Thread {
         image = new GuiImage(mat);
         image.Draw(new GuiImage.GuiCircle(robot.aScale.getPosVector(), 2, Color.BLACK, 3), true);
         image.Draw(new GuiImage.GuiCircle(robot.bScale.getPosVector(), 2, Color.BLUE, 3), true);
+        image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 2, Color.BLACK, 3), true);
+        image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 2, Color.BLUE, 3), true);
         if(rout != null){
             Vector2Dv1 last = robot.getPosVector();
             for (Vector2Dv1 v : rout) {

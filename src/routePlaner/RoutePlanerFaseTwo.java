@@ -171,7 +171,7 @@ public class RoutePlanerFaseTwo {
      * @param imgRec     ImgRecFaseTwo object for capturing ball images.
      * @param stabilizer BallStabilizerPhaseTwo object for stabilizing balls.
      */
-    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer) {
+    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, LiveView lv) {
         System.out.println("heats : " + ballsHeat1);
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
         ballsToAvoid.addAll(ballsHeat1);
@@ -179,7 +179,6 @@ public class RoutePlanerFaseTwo {
         ballsToAvoid.addAll(ballsHeat3);
         WaypointGenerator waypointGenerator;
         Ball lastBall = null;
-        LiveView lv = new LiveView(imgRec.getFrame(), robot);
         routExecuter = new RoutExecute(out, in, robot, cross, boundry);
         routExecuter.setLiveView(lv);
 

@@ -4,6 +4,7 @@ package Client;
 import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.Image.GuiImage;
+import Gui.LiveView;
 import exceptions.BadDataException;
 import exceptions.NoDataException;
 import exceptions.NoWaypointException;
@@ -276,7 +277,9 @@ public class MainClient {
         inputWait.nextLine();
 
         System.out.println("Starting run...");
-        routePlanerFaseTwo.run(out, in, imgRec, stabilizer);
+        LiveView lv = new LiveView(imgRec.getFrame(), robotv1);
+        lv.start();
+        routePlanerFaseTwo.run(out, in, imgRec, stabilizer, lv);
 
         //#############################  FINAL ROUND  ############################################
         while(true){
@@ -311,6 +314,7 @@ public class MainClient {
                 }
                 heat_list = new HeatGenerator(routeBalls, robotv1, robotv1.getPosVector(), imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, routePlanerFaseTwo.goalFakeBall, 4, new Mat()).getHeat();
                 RoutExecute routExecuter = new RoutExecute(out, in, robotv1, imgRec.imgRecObstacle.cross, imgRec.imgRecObstacle.boundry);
+                routExecuter.setLiveView(lv);
                 routExecuter.heatRunner(heat_list, 4, imgRec, stabilizer, routeBalls);
             } catch (Exception j){
 
