@@ -32,6 +32,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 public class MainClient {
 
     private static PrintWriter out;
@@ -222,30 +225,35 @@ public class MainClient {
 
         System.out.println();
 
-        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, robotv1);
-
-        routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
-        routePlanerFaseTwo.setImage(m);
 
         ArrayList<Ball> req_balls = new ArrayList<>();
         for (Vector2Dv1 v: GUI_Menu.rBalls) {
+            System.out.println("req ball: "+ v.x + ", " + v.y);
             if(imgRec.imgRecObstacle.boundry.vectorInsideBoundary(v)) {
                 Ball clostest = null;
-                Vector2Dv1 close = null;
+                double closeDis = 0;
                 for (Ball b : routeBalls) {
                     if (req_balls.contains(b))
                         continue;
-                    if (close == null) {
+                    double curDis = sqrt((pow((v.x - b.getxPos()), 2) + pow((v.y - b.getyPos()), 2)));
+                    if (curDis < 0)
+                        curDis *= -1;
+                    if (clostest == null) {
                         clostest = b;
-                        close = v.getSubtracted(b.getPosVector());
-                    } else if (close.x + close.y > v.getSubtracted(b.getPosVector()).x + v.getSubtracted(b.getPosVector()).y) {
+                        closeDis = curDis;
+                    } else if (closeDis > curDis) {
                         clostest = b;
-                        close = v.getSubtracted(b.getPosVector());
+                        closeDis = curDis;
                     }
                 }
                 req_balls.add(clostest);
+                System.out.println("req ball: "+ clostest.getxPos() + ", " + clostest.getyPos());
             }
         }
+        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, robotv1, req_balls);
+
+        routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
+        routePlanerFaseTwo.setImage(m);
 
         System.out.println(routeBalls);
         System.out.println("Mapping route...");

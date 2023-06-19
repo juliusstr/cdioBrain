@@ -21,6 +21,8 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 import routePlaner.Route;
 import routePlaner.RoutePlanerFaseTwo;
 
@@ -207,7 +209,6 @@ public class RoutePlanerfaseTwoTest {
         ball_list.add(new Ball(new Vector2Dv1(98.0,30.0),StandardSettings.BALL_RADIUS_PX,BallClassifierPhaseTwo.WHITE,true, PrimitiveBall.Status.UNKNOWN,-1, Ball.Type.BALL));
 
         boundry = new Boundry(boundryList);
-
         try {
             BallClassifierPhaseTwo.ballSetPlacement(ball_list, boundry, cross);
         } catch (NoWaypointException e) {
@@ -218,12 +219,24 @@ public class RoutePlanerfaseTwoTest {
         RoutePlanerFaseTwo hg = new RoutePlanerFaseTwo(simulationRobot,ball_list, boundry, cross);
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
+        //ImageIcon tImage = new ImageIcon("test_img/WIN_20230315_10_32_53_Pro.jpg");
+
+        VideoCapture capture = new VideoCapture(StandardSettings.VIDIO_CAPTURE_INDEX);
+        System.err.println("changing frame size for GUI clicker");
+        capture.set(Videoio.CAP_PROP_FRAME_WIDTH, 1280);
+        capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, 720);
+        Mat tImage = new Mat();
+        capture.read(tImage);
+        capture.release();
+
         GuiImage image = new GuiImage(tImage);
         hg.setImage(image.getMat());
         ArrayList<Ball> req = new ArrayList<>();
         req.add(ball_list.get(1));
+        DataView dv = new DataView(image.getMat(), ball_list, boundry, cross, simulationRobot, new ArrayList<>());
+
         hg.getHeats(req);
+        while(true);
     }
 
     @Test
