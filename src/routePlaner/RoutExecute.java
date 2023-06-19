@@ -129,6 +129,8 @@ public class RoutExecute {
             }
             //run to ball
             commandGenerator = new CommandGenerator(robot, routToBall);
+            if(liveView != null)
+                liveView.setRoute(routToBall);
             boolean isBallNotWaypoint;
             if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                 isBallNotWaypoint = true;
@@ -192,6 +194,8 @@ public class RoutExecute {
         routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
         //routeToGoal.add(boundry.goalWaypoint1);
         commandGenerator = new CommandGenerator(robot, routeToGoal);
+        if(liveView != null)
+            liveView.setRoute(routToBall);
         while (routeToGoal.size() != 0) {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             String command = commandGenerator.nextCommand(false);
@@ -214,8 +218,6 @@ public class RoutExecute {
      */
     public void updateRobotFromImgRec(ImgRecFaseTwo imgRec, Robotv1 robot, BallStabilizerPhaseTwo stabilizer){
         ArrayList<Ball> balls = imgRec.captureBalls();
-        if(liveView != null)
-            liveView.update(imgRec.getFrame(), null);
         try {
             stabilizer.stabilizeBalls(balls);
         } catch (TypeException e) {
@@ -227,6 +229,8 @@ public class RoutExecute {
         } catch (BadDataException e) {
             //throw new RuntimeException(e);
         }
+        if(liveView != null)
+            liveView.update(imgRec.getFrame(), null);
     }
 
     /**
