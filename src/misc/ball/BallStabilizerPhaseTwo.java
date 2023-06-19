@@ -26,6 +26,7 @@ public class BallStabilizerPhaseTwo {
 
     public void stabilizeBalls(ArrayList<Ball> balls) throws TypeException {
         this.balls.clear();
+        BallClassifierPhaseTwo.classify(balls);
         for (Ball ball :
                 balls) {
             stabilizeBall(ball);
@@ -51,7 +52,6 @@ public class BallStabilizerPhaseTwo {
     }
 
     private void stabilizeBall(Ball ball) throws TypeException {
-        BallClassifierPhaseTwo.classify(ball);
         //if(ball.status == PrimitiveBall.Status.ROBOT){
             //ballPrecision.CompensateRobot(ball);
         //}

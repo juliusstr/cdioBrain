@@ -176,24 +176,20 @@ public class MainClient {
         //imgRec.imgRecObstacle.cross = new Cross()
 
 
-        stabilizer.stabilizeBalls(balls);
+        //stabilizer.stabilizeBalls(balls);
         try {
             BallClassifierPhaseTwo.ballSetPlacement(balls, imgRec.imgRecObstacle.boundry,imgRec.imgRecObstacle.cross);
         } catch (NoWaypointException e) {
             throw new RuntimeException(e);
         }
         ArrayList<Ball> routeBalls = new ArrayList<>();
-        try {
-            ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
-            System.out.println("balls1 = " + balls1);
-            for (Ball ball : balls1) {
-                System.out.println(ball.toString());
-                routeBalls.add(ball);
-            }
-            //robotBalls = stabilizer.getStabelRobotCirce();
-        } catch (NoDataException e) {
-            throw new RuntimeException(e);
+        ArrayList<Ball> balls1 = balls;
+        System.out.println("balls1 = " + balls1);
+        for (Ball ball : balls1) {
+            System.out.println(ball.toString());
+            routeBalls.add(ball);
         }
+        //robotBalls = stabilizer.getStabelRobotCirce();
 
 
         Ball greenBall = new Ball((int) GUI_Menu.robotPos.get(1).x, (int) GUI_Menu.robotPos.get(1).y,0, BallClassifierPhaseTwo.GREEN,true, PrimitiveBall.Status.UNKNOWN, -1, Ball.Type.ROBOT_FRONT);
@@ -298,7 +294,7 @@ public class MainClient {
                 }
                 routeBalls = new ArrayList<>();
                 try {
-                    ArrayList<Ball> balls1 = stabilizer.getStabelBalls();
+                    balls1 = stabilizer.getStabelBalls();
                     System.out.println("balls1 = " + balls1);
                     for (Ball ball : balls1) {
                         BallClassifierPhaseTwo.ballSetPlacement(routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);

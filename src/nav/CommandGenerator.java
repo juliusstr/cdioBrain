@@ -25,10 +25,13 @@ public class CommandGenerator {
 
     private static ThreadPoolExecutor threadPoolExecutor;
 
+    private double maxSpeed = 0.5;
+
 
     public CommandGenerator(Robotv1 robot, ArrayList<Vector2Dv1> waypoints){
         this.robot = robot;
         this.waypoints = (ArrayList<Vector2Dv1>) waypoints.clone();
+        maxSpeed = 0.5;
 
     }
 
@@ -36,6 +39,7 @@ public class CommandGenerator {
 
         String command = "";
         if(waypoints.size() == 0){
+            maxSpeed = 0.5;
             return "stop -d -t";
         }
         Vector2Dv1 dir = waypoints.get(0).getSubtracted(robot.getPosVector());
@@ -50,16 +54,19 @@ public class CommandGenerator {
         if(distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() > 1){
             System.err.println("On waypoint");
             waypoints.remove(0);
+            maxSpeed = 0.5;
             return "stop -t -d";
         }
         if(isTargetBall && distDelta < TARGET_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On ball\n");
+            maxSpeed = 0.5;
             return "On ball\n";
         }
         if(!isTargetBall && distDelta < WAYPOINT_DISTANCE_ERROR && waypoints.size() == 1){
             waypoints.remove(0);
             System.err.printf("On waypoint\n");
+            maxSpeed = 0.5;
             return "On waypoint\n";
         }
 
@@ -92,6 +99,7 @@ public class CommandGenerator {
         //***drive***
         if(Math.abs(angleDelta) > ANGLE_ERROR*6){
             System.out.printf("command = %s\n", command);
+            maxSpeed = 0.5;
             return command + ";stop -d";
         }
         if(distDelta > WAYPOINT_DISTANCE_ERROR){
@@ -101,6 +109,9 @@ public class CommandGenerator {
             } else if(speed < 1){
                 speed = 1;
             }
+            if(speed > maxSpeed)
+                speed = maxSpeed;
+            maxSpeed += 0.5;
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
             command += ";stop -d; stop -t";

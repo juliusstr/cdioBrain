@@ -31,14 +31,14 @@ public class BallClassifierPhaseTwo {
     }
 
 
-    public static void classify(List<Ball> balls){
+    public static void classify(ArrayList<Ball> balls){
+        colorCorection(balls);
         for (Ball ball : balls) {
             classify(ball);
         }
     }
 
     public static void classify(Ball ball){
-        ball.setColor(colorCorection(ball.getColor()));
         if(ball.getColor().equals(WHITE) || ball.getColor().equals(ORANGE)){
             ball.setType(Ball.Type.BALL);
         } else if (ball.getColor().equals(GREEN)) {
@@ -52,27 +52,27 @@ public class BallClassifierPhaseTwo {
         }
     }
 
-    private static Color colorCorection(Color color){
-        /*if (color.getRed() < 100 && color.getBlue() < 100 && color.getGreen() < 100){
-            return BLACK;
+    private static void colorCorection(ArrayList<Ball> balls) {
+        if(balls.size() == 0)
+            return;
+        Ball black = balls.get(0), green = balls.get(0);
+        for (Ball ball : balls) {
+            if(RGBtoHSVConverter.convertRGBtoHSV(ball.getColor())[0] > RGBtoHSVConverter.convertRGBtoHSV(green.getColor())[0])
+                green = ball;
+            if(RGBtoHSVConverter.convertRGBtoHSV(ball.getColor())[2] < RGBtoHSVConverter.convertRGBtoHSV(black.getColor())[2])
+                black = ball;
         }
-
-         */
-        double dist = Double.MAX_VALUE;
-        Color closestColer = null;
-        for (int i = 0; i < COLOR_LIST.length; i++){
-            float hsvColor[] = RGBtoHSVConverter.convertRGBtoHSV(color);
-            float hsvStaticColor[] = RGBtoHSVConverter.convertRGBtoHSV(COLOR_LIST[i]);
-            double hue = Math.pow(Math.min(Math.abs(hsvStaticColor[0]-hsvColor[0]),360-Math.abs(hsvStaticColor[0]-hsvColor[0]))/180,2);
-            double sat = Math.pow(Math.abs(hsvStaticColor[1]-hsvColor[1]),2);
-            double bri = Math.pow(Math.abs(hsvStaticColor[2]-hsvColor[2]),2);
-            double temp = Math.sqrt(hue+sat+bri);
-            if(dist > temp){
-                dist = temp;
-                closestColer = COLOR_LIST[i];
+        for (Ball ball : balls) {
+            if(ball.getColor().equals(BallClassifierPhaseTwo.ORANGE))
+                continue;
+            if(ball == black) {
+                ball.setColor(BallClassifierPhaseTwo.BLACK);
+            } else if(ball == green){
+                ball.setColor(BallClassifierPhaseTwo.GREEN);
+            } else {
+                ball.setColor(BallClassifierPhaseTwo.WHITE);
             }
         }
-        return closestColer;
     }
 
     /**

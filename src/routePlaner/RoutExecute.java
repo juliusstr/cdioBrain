@@ -254,7 +254,7 @@ public class RoutExecute {
         while(!correctAngleToTarget(robot, target, out)){
             updateRobotFromImgRec(imgRec, robot, stabilizer);
         }
-        out.println("stop -d -t");
+        out.println("stop -t -d");
         lastCommand = "stop -d -t";
         wait(500);
     }
