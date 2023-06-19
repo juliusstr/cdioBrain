@@ -30,6 +30,8 @@ public class WaypointGenerator {
 
     private ArrayList<WaypointRoute> routes = null;
 
+    public static int callCount = 0;
+
     public class WaypointRoute{
         protected ArrayList<Vector2Dv1> route = null;
 
@@ -143,6 +145,7 @@ public class WaypointGenerator {
      * See options to modify algorithm in StandardSettings.
      */
     public WaypointGenerator(Vector2Dv1 target, Vector2Dv1 start, Cross c, Boundry b, ArrayList<Ball> bta) throws NoRouteException, TimeoutException {
+        callCount++;
         lowestWaypointCount = StandardSettings.NAV_MAX_SEARCH_TREE_DEPTH_WAYPOINT;
         routes = new ArrayList<>();
         ArrayList<Vector2Dv1> waypoints = new ArrayList<>();
