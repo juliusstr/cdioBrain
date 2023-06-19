@@ -130,7 +130,7 @@ public class RoutExecute {
             //run to ball
             commandGenerator = new CommandGenerator(robot, routToBall);
             if(liveView != null)
-                liveView.setRoute(routToBall);
+                liveView.setRout(routToBall);
             boolean isBallNotWaypoint;
             if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                 isBallNotWaypoint = true;
@@ -195,7 +195,7 @@ public class RoutExecute {
         //routeToGoal.add(boundry.goalWaypoint1);
         commandGenerator = new CommandGenerator(robot, routeToGoal);
         if(liveView != null)
-            liveView.setRoute(routToBall);
+            liveView.setRout(routeToGoal);
         while (routeToGoal.size() != 0) {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             String command = commandGenerator.nextCommand(false);
@@ -230,7 +230,7 @@ public class RoutExecute {
             //throw new RuntimeException(e);
         }
         if(liveView != null)
-            liveView.update(imgRec.getFrame(), null);
+            liveView.update(imgRec.getFrame());
     }
 
     /**
