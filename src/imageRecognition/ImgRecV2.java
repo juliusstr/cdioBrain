@@ -69,31 +69,30 @@ public class ImgRecV2 {
             //List of balls
             List<Ball> balls = new ArrayList<>();
             //For each on the keypoints
+            ArrayList<KeyPoint> ballsToRemove = new ArrayList<>();
             for(KeyPoint keypoint : keypointList){
+                if(ballsToRemove.contains(keypoint))
+                    continue;
+                for (KeyPoint keypoint2 : keypointList) {
+                    if(keypoint == keypoint2)
+                        continue;
+                    if(ballsToRemove.contains(keypoint2))
+                        continue;
+                    double dis = sqrt((pow((keypoint.pt.x - keypoint2.pt.x), 2) + pow((keypoint.pt.y - keypoint2.pt.y), 2)));
+                    if(dis < 0)
+                        dis*=-1;
+                    if(dis < 5)
+                        ballsToRemove.add(keypoint2);
+                }
+            }
+            for(KeyPoint keypoint : keypointList){
+                if(ballsToRemove.contains(keypoint))
+                    continue;
                 double[] colorDoubleArray = frame.get((int) keypoint.pt.y, (int) keypoint.pt.x);
                 int b = (int) colorDoubleArray[0]; // blue value
                 int g = (int) colorDoubleArray[1]; // green value
                 int r = (int) colorDoubleArray[2]; // red value
                 balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UNKNOWN));
-            }
-            ArrayList<Ball> ballsToRemove =new ArrayList<>();
-            for (Ball b1: balls) {
-                if(ballsToRemove.contains(b1))
-                    continue;
-                for (Ball b2: balls) {
-                    if(b1 == b2)
-                        continue;
-                    if(ballsToRemove.contains(b2))
-                        continue;
-                    double dis = sqrt((pow((b1.getxPos() - b2.getxPos()), 2) + pow((b1.getyPos() - b2.getyPos()), 2)));
-                    if(dis < 0)
-                        dis*=-1;
-                    if(dis < 5)
-                        ballsToRemove.add(b2);
-                }
-            }
-            for (Ball b: ballsToRemove) {
-                balls.remove(b);
             }
             // Display the current frame on the screen
             drawKeypoints(frame, keypoints, frame, colorRed, 1);
