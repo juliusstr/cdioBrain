@@ -69,6 +69,17 @@ public class ImageClick {
         this.colorbool = colorbool;
         SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
     }
+
+    public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, JTable jt, boolean colorbool, ArrayList<Vector2Dv1> balls) {
+        this.title = title;
+        this.amount = amount;
+        this.pos = pos;
+        this.color = color;
+        this.jt = jt;
+        this.colorbool = colorbool;
+        drawBallsVec(balls);
+        SwingUtilities.invokeLater(ImageClick::createAndShowGUI);
+    }
     public void run(String title, int amount, ArrayList<Vector2Dv1> pos, ArrayList<Color> color, boolean colorbool, ArrayList<Vector2Dv1> balls) {
         jt=null;
         this.title = title;
