@@ -14,16 +14,13 @@ public class LiveView extends Thread {
     private GuiImage image;
     private Robotv1 robot;
     private static ArrayList<Vector2Dv1> rout = null;
-    private static Mat mat = null;
-
-    private Mat curMat;
+    private Mat mat = null;
 
     private JLabel label = null;
 
     public LiveView(Mat mat, Robotv1 robot){
         image = new GuiImage(mat);
         this.mat = mat;
-        this.curMat = mat;
         this.robot = robot;
         show();
     }
@@ -41,13 +38,12 @@ public class LiveView extends Thread {
     public void run(){
         show();
         while(true){
-            if(mat != curMat)
-                update(mat);
-            try {
+            update();
+            /*try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }
+            }*/
         }
     }
 
@@ -58,8 +54,7 @@ public class LiveView extends Thread {
     public void setMat(Mat m){
         mat = m;
     }
-    public void update(Mat mat){
-        curMat = mat;
+    public void update(){
         ArrayList<Vector2Dv1> rList = new ArrayList<>();
         rList.add(robot.aScale.getPosVector());
         rList.add(robot.bScale.getPosVector());
@@ -68,10 +63,10 @@ public class LiveView extends Thread {
         ArrayList<Vector2Dv1> savedRout = rout;
         Vector2Dv1 last = robot.getPosVector();
         image = new GuiImage(mat);
-        image.Draw(new GuiImage.GuiCircle(rList.get(0), 2, Color.BLACK, 3), true);
-        image.Draw(new GuiImage.GuiCircle(rList.get(1), 2, Color.BLUE, 3), true);
-        image.Draw(new GuiImage.GuiCircle(rList.get(2), 2, Color.BLACK, 3), true);
-        image.Draw(new GuiImage.GuiCircle(rList.get(3), 2, Color.BLUE, 3), true);
+        image.Draw(new GuiImage.GuiCircle(rList.get(0), 2, Color.BLACK, 3), false);
+        image.Draw(new GuiImage.GuiCircle(rList.get(1), 2, Color.BLUE, 3), false);
+        image.Draw(new GuiImage.GuiCircle(rList.get(2), 2, Color.BLACK, 3), false);
+        image.Draw(new GuiImage.GuiCircle(rList.get(3), 2, Color.BLUE, 3), false);
         if(savedRout != null){
             for (Vector2Dv1 v : savedRout) {
                 image.Draw(new GuiImage.GuiLine(last, v, Color.GREEN, 2), false);
