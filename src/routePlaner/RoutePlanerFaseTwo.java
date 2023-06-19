@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.DataView;
 import Gui.Image.GuiImage;
 import Gui.ImageClick;
 import Gui.LiveView;
@@ -171,7 +172,7 @@ public class RoutePlanerFaseTwo {
      * @param imgRec     ImgRecFaseTwo object for capturing ball images.
      * @param stabilizer BallStabilizerPhaseTwo object for stabilizing balls.
      */
-    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, LiveView lv) {
+    public void run(PrintWriter out, BufferedReader in, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, DataView lv) {
         System.out.println("heats : " + ballsHeat1);
         ArrayList<Ball> ballsToAvoid = new ArrayList<>();
         ballsToAvoid.addAll(ballsHeat1);

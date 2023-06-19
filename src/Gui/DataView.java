@@ -2,10 +2,13 @@ package Gui;
 
 import Client.StandardSettings;
 import Gui.Image.GuiImage;
+import exceptions.NoDataException;
 import exceptions.NoWaypointException;
+import imageRecognition.ImgRecFaseTwo;
 import misc.*;
 import misc.ball.Ball;
 import misc.ball.BallClassifierPhaseTwo;
+import misc.ball.BallStabilizerPhaseTwo;
 import misc.ball.PrimitiveBall;
 import org.opencv.core.*;
 import org.opencv.core.Point;
@@ -22,11 +25,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class DataView {
+public class DataView extends Thread {
     private static int WIDTH = 400;
     private static int HEIGHT = 500;
 
     private static boolean ballOn = false;
+    private static boolean ballLiveOn = false;
+    private static boolean liveRouteOn = false;
 
     private static boolean crossOn = false;
 
@@ -41,7 +46,9 @@ public class DataView {
     private static boolean robotOn = false;
     private static boolean robotNonScaleOn = false;
     private static ArrayList<Ball> balls = null;
+    private static ArrayList<Ball> liveBalls = null;
     private static ArrayList<Ball> rballs = null;
+    private static ArrayList<Vector2Dv1> liveRout = new ArrayList<>();
 
     private static Cross cross = null;
 
@@ -53,6 +60,9 @@ public class DataView {
     private static JFrame imageFrame = null;
 
     private static JLabel imageLabel = null;
+
+    private static ImgRecFaseTwo imgRec = null;
+    private static BallStabilizerPhaseTwo stabilizer = null;
 
     public static boolean running = true;
 
@@ -109,14 +119,20 @@ public class DataView {
         setupMenu();
     }
 
-    public DataView(Mat m, ArrayList<Ball> balls, Boundry b, Cross c, Robotv1 r, ArrayList<Ball> rballs){
+    public DataView(ImgRecFaseTwo imgRec, ArrayList<Ball> balls, Robotv1 r, ArrayList<Ball> rballs, BallStabilizerPhaseTwo stabilizer){
         robot = r;
-        cross = c;
-        boundry = b;
+        cross = imgRec.imgRecObstacle.cross;
+        boundry = imgRec.imgRecObstacle.boundry;
         this.balls = balls;
         this.rballs = rballs;
-        image = new GuiImage(m);
-        cleanImage = m;
+        try {
+            this.liveBalls = stabilizer.getStabelBalls();
+        } catch (NoDataException e) {
+        }
+        this.stabilizer = stabilizer;
+        this.imgRec = imgRec;
+        image = new GuiImage(imgRec.getFrame());
+        cleanImage = image.getMat();
         imageFrame = new JFrame("Image");
         imageFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Load an image
@@ -130,12 +146,32 @@ public class DataView {
         setupMenu();
     }
 
+    public void run(){
+        while(true){
+            updateImage();/*
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }*/
+        }
+    }
+
+    public void setRout(ArrayList<Vector2Dv1> rout){
+        this.liveRout = rout;
+    }
+
     private void showImage(ImageIcon icon){
         imageLabel.setIcon(icon);
     }
 
     private static void updateImage(){
-        image = new GuiImage(cleanImage);
+        image = new GuiImage(imgRec.getFrame());
+        try {
+            liveBalls = stabilizer.getStabelBalls();
+        } catch (NoDataException e) {
+        }
+        ArrayList<Vector2Dv1> savedRout = (ArrayList<Vector2Dv1>) liveRout.clone();
         if(ballOn){
             for (Ball b: balls) {
                 if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE))
@@ -165,6 +201,45 @@ public class DataView {
                     image.Draw(new GuiImage.GuiCircle(b.getPickUpPoint(), 2, Color.RED, 2), false);
                 }
 
+            }
+        }
+        if(ballLiveOn){
+            for (Ball b: liveBalls) {
+                if(b.getColor().equals(BallClassifierPhaseTwo.ORANGE))
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.BLUE, 3), false);
+                else if(rballs.contains(b))
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.RED, 3), false);
+                else
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), 3, Color.GREEN, 3), false);
+            }
+            if(zoneOn){
+
+                for (Ball b: liveBalls) {
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), (int)b.getSafetyZone().radius, Color.BLUE, 3), false);
+                }
+
+            }
+            if(dangerZoneOn){
+
+                for (Ball b: liveBalls) {
+                    image.Draw(new GuiImage.GuiCircle(b.getPosVector(), (int)b.getCriticalZone().radius, Color.RED, 3), false);
+                }
+
+            }
+            if(lineUpOn){
+
+                for (Ball b: liveBalls) {
+                    image.Draw(new GuiImage.GuiCircle(b.getPickUpPoint(), 2, Color.RED, 2), false);
+                }
+
+            }
+        }
+        if(liveRouteOn){
+            Vector2Dv1 last = robot.getPosVector();
+            for (Vector2Dv1 v : savedRout) {
+                image.Draw(new GuiImage.GuiLine(last, v, Color.GREEN, 2), false);
+                image.Draw(new GuiImage.GuiCircle(v, 3, Color.RED, 3), false);
+                last = v;
             }
         }
         if(boundryOn){
@@ -218,8 +293,8 @@ public class DataView {
         jPanel.setLayout(new BorderLayout());
 
         JPanel bpanel = new JPanel();
-        bpanel.setSize(WIDTH,(int)(HEIGHT*0.8));
-        bpanel.setLayout(new GridLayout(4,2));
+        bpanel.setSize(WIDTH,(int)(HEIGHT*0.85));
+        bpanel.setLayout(new GridLayout(5,2));
 
         JButton ballBtn = new JButton("Toggle balls");
         bpanel.add(ballBtn);
@@ -237,10 +312,14 @@ public class DataView {
         bpanel.add(robotBtn);
         JButton robotScaleBtn = new JButton("Toggle robot no scale");
         bpanel.add(robotScaleBtn);
+        JButton liveBallsBtn = new JButton("Toggle live balls");
+        bpanel.add(liveBallsBtn);
+        JButton liveRoutBtn = new JButton("Toggle live route");
+        bpanel.add(liveRoutBtn);
 
         JPanel ipanel = new JPanel();
-        ipanel.setSize(WIDTH,(int)(HEIGHT*0.2));
-        ipanel.setLayout(new GridLayout(5,1));
+        ipanel.setSize(WIDTH,(int)(HEIGHT*0.15));
+        ipanel.setLayout(new GridLayout(4,1));
 
         JLabel ballColor = new JLabel("balls color: Green");
         JLabel rballColor = new JLabel("required balls color: Red");
@@ -261,6 +340,26 @@ public class DataView {
                     ballOn = false;
                 else
                     ballOn = true;
+                updateImage();
+            }
+        });
+        liveBallsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(ballLiveOn)
+                    ballLiveOn = false;
+                else
+                    ballLiveOn = true;
+                updateImage();
+            }
+        });
+        liveRoutBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(liveRouteOn)
+                    liveRouteOn = false;
+                else
+                    liveRouteOn = true;
                 updateImage();
             }
         });

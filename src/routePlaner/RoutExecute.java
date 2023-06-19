@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.DataView;
 import Gui.LiveView;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
@@ -14,6 +15,7 @@ import misc.ball.BallStabilizerPhaseTwo;
 import nav.CommandGenerator;
 import nav.WaypointGenerator;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +30,7 @@ public class RoutExecute {
     private Robotv1 robot = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
-    private LiveView liveView = null;
+    private DataView liveView = null;
     private String lastCommand;
 
     public RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
@@ -40,7 +42,7 @@ public class RoutExecute {
         lastCommand = "stop -t -d";
     }
 
-    public void setLiveView(LiveView lv){
+    public void setLiveView(DataView lv){
         liveView = lv;
     }
 

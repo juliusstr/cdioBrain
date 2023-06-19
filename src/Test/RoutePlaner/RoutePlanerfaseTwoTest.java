@@ -233,7 +233,7 @@ public class RoutePlanerfaseTwoTest {
         hg.setImage(image.getMat());
         ArrayList<Ball> req = new ArrayList<>();
         req.add(ball_list.get(1));
-        DataView dv = new DataView(image.getMat(), ball_list, boundry, cross, simulationRobot, new ArrayList<>());
+        //DataView dv = new DataView(image.getMat(), ball_list, boundry, cross, simulationRobot, new ArrayList<>());
 
         hg.getHeats(req);
         while(true);

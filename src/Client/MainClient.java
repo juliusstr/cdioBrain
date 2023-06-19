@@ -10,6 +10,7 @@ import exceptions.NoDataException;
 import exceptions.NoWaypointException;
 import exceptions.TypeException;
 import imageRecognition.ImgRecFaseTwo;
+import imageRecognition.ImgRecV2;
 import misc.Boundry;
 import misc.Cross;
 import misc.Robotv1;
@@ -250,7 +251,8 @@ public class MainClient {
                 System.out.println("req ball: "+ clostest.getxPos() + ", " + clostest.getyPos());
             }
         }
-        new DataView(m.clone(), routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross, robotv1, req_balls);
+        DataView lv = new DataView(imgRec, routeBalls, robotv1, req_balls, stabilizer);
+        lv.start();
 
         routePlanerFaseTwo = new RoutePlanerFaseTwo(robotv1, routeBalls, imgRec.imgRecObstacle.boundry, imgRec.imgRecObstacle.cross);
         routePlanerFaseTwo.setImage(m);
@@ -277,8 +279,6 @@ public class MainClient {
         inputWait.nextLine();
 
         System.out.println("Starting run...");
-        LiveView lv = new LiveView(imgRec.getFrame(), robotv1);
-        lv.start();
         routePlanerFaseTwo.run(out, in, imgRec, stabilizer, lv);
 
         //#############################  FINAL ROUND  ############################################
