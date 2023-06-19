@@ -1,7 +1,7 @@
 package Client;
 
 public class StandardSettings {
-    public static final int VIDIO_CAPTURE_INDEX = 1;
+    public static final int VIDIO_CAPTURE_INDEX = 2;
 
 
     /**
@@ -32,7 +32,7 @@ public class StandardSettings {
     /**
      * Number of threads to use in search for route in wayPointGen
      */
-    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 8;
+    public static final int NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS = 4;
 
 
     /**
