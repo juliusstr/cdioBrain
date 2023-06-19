@@ -151,7 +151,7 @@ public class Line {
 
     public Vector2Dv1 getClosestLineEndPointToPos(Vector2Dv1 pos){
         Vector2Dv1 closestPoint = findClosestPoint(pos);
-        if(closestPoint.distance(p1) > closestPoint.distance(p2)){
+        if(closestPoint.distance(p1) >= closestPoint.distance(p2)){
             this.closestLineEndPointToPos = p2;
             this.furthestLineEndPointToPos = p1;
             return p2;
