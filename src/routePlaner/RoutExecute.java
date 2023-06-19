@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.LiveView;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
 import exceptions.NoWaypointException;
@@ -27,6 +28,7 @@ public class RoutExecute {
     private Robotv1 robot = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
+    private LiveView liveView = null;
 
     public RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
         this.in = in;
@@ -34,6 +36,10 @@ public class RoutExecute {
         this.robot = robot;
         this.cross = cross;
         this.boundry = boundry;
+    }
+
+    public void setLiveView(LiveView lv){
+        liveView = lv;
     }
 
     public void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
@@ -208,6 +214,8 @@ public class RoutExecute {
      */
     public void updateRobotFromImgRec(ImgRecFaseTwo imgRec, Robotv1 robot, BallStabilizerPhaseTwo stabilizer){
         ArrayList<Ball> balls = imgRec.captureBalls();
+        if(liveView != null)
+            liveView.update(imgRec.getFrame(), null);
         try {
             stabilizer.stabilizeBalls(balls);
         } catch (TypeException e) {
