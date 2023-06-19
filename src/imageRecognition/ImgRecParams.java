@@ -1,5 +1,6 @@
 package imageRecognition;
 
+import misc.ball.BallClassifierPhaseTwo;
 import org.opencv.features2d.SimpleBlobDetector_Params;
 
 public class ImgRecParams {
