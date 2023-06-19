@@ -107,6 +107,7 @@ public class BallClassifierPhaseTwo {
             int edgeCloseenughCount = 0;
             ArrayList<LineDist> lineDists = new ArrayList<>();
             LineDist lineDist = new LineDist(null, Double.MAX_VALUE);
+            Line countOneLine = null;
             for (Line line : boundry.bound) {
                 lineDists.add(new LineDist(line, line.findDistanceToPoint(ball.getPosVector())));
                 if (lineDists.get(lineDists.size() - 1).distToline < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS) {
@@ -114,8 +115,25 @@ public class BallClassifierPhaseTwo {
                     if (lineDist.distToline > lineDists.get(lineDists.size() - 1).distToline) {
                         lineDist = lineDists.get(lineDists.size() - 1);
                     }
+                    countOneLine = line;
+                    break;
                 }
             }
+            if(edgeCloseenughCount == 1){
+                for (Line line : boundry.bound) {
+                    if(line == countOneLine)
+                        continue;
+                    lineDists.add(new LineDist(line, line.findDistanceToPoint(ball.getPosVector())));
+                    if (lineDists.get(lineDists.size() - 1).distToline < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS*2) {
+                        edgeCloseenughCount++;
+                        if (lineDist.distToline > lineDists.get(lineDists.size() - 1).distToline) {
+                            lineDist = lineDists.get(lineDists.size() - 1);
+                        }
+                        break;
+                    }
+                }
+            }
+
             if (edgeCloseenughCount == 2) {
                 boolean breakBool = false;
                 ball.setPlacement(Ball.Placement.CORNER);
@@ -125,7 +143,7 @@ public class BallClassifierPhaseTwo {
                             continue;
                         Vector2Dv1 endPoint1 = boundry.bound.get(i).getClosestLineEndPointToPos(ball.getPosVector());
                         Vector2Dv1 endPoint2 = boundry.bound.get(j).getClosestLineEndPointToPos(ball.getPosVector());
-                        if (endPoint1.samePos(endPoint2) && endPoint1.distance(ball.getPosVector()) < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS) {
+                        if (endPoint1.samePos(endPoint2) && endPoint1.distance(ball.getPosVector()) < StandardSettings.BALL_RADIUS_PX + Zone.CRITICAL_ZONE_RADIUS*2) {
                             Vector2Dv1 dir1 = boundry.bound.get(i).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(i).closestLineEndPointToPos).getNormalized();
                             Vector2Dv1 dir2 = boundry.bound.get(j).furthestLineEndPointToPos.getSubtracted(boundry.bound.get(j).closestLineEndPointToPos).getNormalized();
                             Vector2Dv1 dir = dir1.getMidVector(dir2);

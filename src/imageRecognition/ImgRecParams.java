@@ -13,10 +13,10 @@ public class ImgRecParams {
         params.set_minDistBetweenBlobs(10);
         params.set_minConvexity(0.9F);
         params.set_maxConvexity(1F);
-        params.set_minThreshold(1);
+        params.set_minThreshold(100);
         //params.set_maxThreshold(255);
         params.set_collectContours(false);
-        params.set_minCircularity(0.999F);
+        params.set_minCircularity(0.998F);
         params.set_minInertiaRatio(0.6F);
     }
 

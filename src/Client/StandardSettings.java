@@ -40,7 +40,7 @@ public class StandardSettings {
      * BallClassifierPhaseTwo
      * -----------------------------
      */
-    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 42;
+    public static final int CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL = 41;
 
     /**
      * -----------------------------
@@ -51,6 +51,8 @@ public class StandardSettings {
     public static final int ROUTE_PLANER_GOAL_CASTER_WEEL_LINE_UP = 30;
 
     public static final int ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN = 40;
+
+    public static final int DRIVE_AND_LINEUP_WAIT_MS = 200;
 
     /**
      * CommandGenerator

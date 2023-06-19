@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 import static Client.StandardSettings.ANGLE_ERROR;
+import static Client.StandardSettings.DRIVE_AND_LINEUP_WAIT_MS;
 
 public class RoutExecute {
     private Boundry boundry = null;
@@ -158,27 +159,31 @@ public class RoutExecute {
             switch (heat.get(j).getPlacement()) {
                 case FREE:
                     //check if we have the right angle to the target
-                    turnBeforeHardcode(robot, imgRec, out,in, heat.get(j).getPosVector(), stabilizer);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_COMMAND);
                     checkForHardcodeDone(in, StandardSettings.COLLECT_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case EDGE:
-                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
+                    driveAndLineUp(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_EDGE_COMMAND);
                     checkForHardcodeDone(in, StandardSettings.COLLECT_EDGE_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case CORNER:
-                    turnBeforeHardcode(robot, imgRec, out, in, heat.get(j).getPosVector(), stabilizer);
+                    turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
+                    driveAndLineUp(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_CORNER_COMMAND);
                     checkForHardcodeDone(in, StandardSettings.COLLECT_CORNER_COMMAND);
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case PAIR:
-                    turnBeforeHardcode(robot,imgRec,out,in,heat.get(j).getPosVector(),stabilizer);
+                    turnBeforeHardcode(robot,imgRec,out,heat.get(j).getPosVector(),stabilizer);
+                    driveAndLineUp(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     out.println(StandardSettings.COLLECT_PAIR_COMMAND);
                     checkForHardcodeDone(in, StandardSettings.COLLECT_PAIR_COMMAND);
+                    break;
                 default:
                     out.println("stop -t -d");
 
@@ -212,9 +217,12 @@ public class RoutExecute {
                 out.println(command);
             lastCommand = command;
         }
-        turnBeforeHardcode(robot, imgRec, out, in, boundry.getGoalPos(), stabilizer);
+        turnBeforeHardcode(robot, imgRec, out, boundry.getGoalPos(), stabilizer);
+        out.println("stop -t -d");
+        wait(200);
         out.println(StandardSettings.DROP_OFF_COMMAND);
         checkForHardcodeDone(in, StandardSettings.DROP_OFF_COMMAND);
+
         //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
     }
 
@@ -247,7 +255,7 @@ public class RoutExecute {
      * @param target        The target to have minimal angle to
      * @param stabilizer    The stabilizer for the balls
      */
-    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, BufferedReader in, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
+    public void turnBeforeHardcode(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
         out.println("stop -d -t");
         wait(100);
         //check if we have the right angle to the target
@@ -258,6 +266,14 @@ public class RoutExecute {
         lastCommand = "stop -d -t";
         wait(500);
     }
+
+    public void driveAndLineUp(Robotv1 robot, ImgRecFaseTwo imgRec, PrintWriter out, Vector2Dv1 target, BallStabilizerPhaseTwo stabilizer){
+        out.println("drive -s1.00");
+        wait(DRIVE_AND_LINEUP_WAIT_MS);
+        out.println("stop -d");
+        turnBeforeHardcode(robot, imgRec,out, target ,stabilizer);
+    }
+
     /**
      * Reverse if too close to a line after pickup
      * @param lines The ArrayList of lines to check for
