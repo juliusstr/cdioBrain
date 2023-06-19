@@ -181,6 +181,7 @@ public class RoutePlanerFaseTwo {
         Ball lastBall = null;
         LiveView lv = new LiveView(imgRec.getFrame(), robot);
         routExecuter = new RoutExecute(out, in, robot, cross, boundry);
+        routExecuter.setLiveView(lv);
 
         routExecuter.heatRunner(ballsHeat1, 1, imgRec, stabilizer, ballsToAvoid);
         routExecuter.heatRunner(ballsHeat2, 2, imgRec, stabilizer, ballsToAvoid);
