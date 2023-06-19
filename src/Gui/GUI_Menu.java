@@ -209,8 +209,9 @@ public class GUI_Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
+                ArrayList<Vector2Dv1> balls2 = (ArrayList<Vector2Dv1>) balls.clone();
                 balls.clear();
-                clicker.run("Calibrate balls(orange first)", 11, balls, c, tableBalls, false, balls);
+                clicker.run("Calibrate balls(orange first)", 11, balls, c, tableBalls, false, balls2);
             }
         });
         buttonRobot.addActionListener(new ActionListener() {
