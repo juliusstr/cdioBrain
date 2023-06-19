@@ -114,7 +114,7 @@ public class BallStabilizerPhaseTwo {
 
     //gets only stabel balls
     public ArrayList<Ball> getStabelBalls() throws NoDataException {
-        System.out.println(balls);
+        //System.out.println(balls);
         ArrayList<Ball> ballsToReturn = new ArrayList<>();
 
         for (int i = 0; i < balls.size(); i++) {

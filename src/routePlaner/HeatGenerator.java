@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
+import Gui.DataView;
 import Gui.GUI_Menu;
 import Gui.Image.GuiImage;
 import Gui.ImageClick;
@@ -207,8 +208,9 @@ public class HeatGenerator {
             }
             i++;
         }
+        DataView.heats.set(heatNum-1, (ArrayList<ArrayList<Vector2Dv1>>) vv_list.clone());
         RouteView rw;
-        if(heatNum != 4)
+        if(heatNum > 4)
             rw = new RouteView(vv_list, image.getMat());
     }
 

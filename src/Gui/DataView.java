@@ -27,9 +27,13 @@ import java.util.ArrayList;
 
 public class DataView extends Thread {
     private static int WIDTH = 400;
-    private static int HEIGHT = 500;
+    private static int HEIGHT = 600;
 
     private static boolean ballOn = false;
+    private static boolean heat1On = false;
+    private static boolean heat2On = false;
+    private static boolean heat3On = false;
+    private static boolean heat4On = false;
     private static boolean ballLiveOn = false;
     private static boolean liveRouteOn = false;
 
@@ -49,6 +53,7 @@ public class DataView extends Thread {
     private static ArrayList<Ball> liveBalls = null;
     private static ArrayList<Ball> rballs = null;
     private static ArrayList<Vector2Dv1> liveRout = new ArrayList<>();
+    public static ArrayList<ArrayList<ArrayList<Vector2Dv1>>> heats = new ArrayList<>();
 
     private static Cross cross = null;
 
@@ -125,6 +130,13 @@ public class DataView extends Thread {
         boundry = imgRec.imgRecObstacle.boundry;
         this.balls = balls;
         this.rballs = rballs;
+        ArrayList<Vector2Dv1> emp = new ArrayList<>();
+        ArrayList<ArrayList<Vector2Dv1>> empList = new ArrayList<>();
+        empList.add(emp);
+        heats.add((ArrayList<ArrayList<Vector2Dv1>>) empList.clone());
+        heats.add((ArrayList<ArrayList<Vector2Dv1>>) empList.clone());
+        heats.add((ArrayList<ArrayList<Vector2Dv1>>) empList.clone());
+        heats.add((ArrayList<ArrayList<Vector2Dv1>>) empList.clone());
         try {
             this.liveBalls = stabilizer.getStabelBalls();
         } catch (NoDataException e) {
@@ -278,6 +290,81 @@ public class DataView extends Thread {
             image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 1, Color.GREEN, 10), false);
             image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 1, Color.BLACK, 10), false);
         }
+        if(heat1On){
+            ArrayList<ArrayList<Vector2Dv1>> routes = heats.get(0);
+            int i = 1;
+            for (ArrayList<Vector2Dv1> route: routes) {
+                int j = 1;
+                if(routes.size() > i){
+                    image.Draw(new GuiImage.GuiLine(route.get(route.size()-1), routes.get(i).get(0), Color.RED, 3), false);
+                }
+                for (Vector2Dv1 waypoint: route) {
+                    if(route.size() > j){
+                        image.Draw(new GuiImage.GuiLine(waypoint, route.get(j), Color.GREEN, 2), false);
+                    }
+                    image.Draw(new GuiImage.GuiCircle(waypoint, 3, Color.GREEN, 3), false);
+                    j++;
+                }
+                i++;
+            }
+        }
+        if(heat2On){
+            ArrayList<ArrayList<Vector2Dv1>> routes = heats.get(1);
+            int i = 1;
+            for (ArrayList<Vector2Dv1> route: routes) {
+                int j = 1;
+                if(routes.size() > i){
+                    image.Draw(new GuiImage.GuiLine(route.get(route.size()-1), routes.get(i).get(0), Color.RED, 3), false);
+                }
+                for (Vector2Dv1 waypoint: route) {
+                    if(route.size() > j){
+                        image.Draw(new GuiImage.GuiLine(waypoint, route.get(j), Color.GREEN, 2), false);
+                    }
+                    image.Draw(new GuiImage.GuiCircle(waypoint, 3, Color.GREEN, 3), false);
+                    j++;
+                }
+                i++;
+            }
+
+        }
+        if(heat3On){
+            ArrayList<ArrayList<Vector2Dv1>> routes = heats.get(2);
+            int i = 1;
+            for (ArrayList<Vector2Dv1> route: routes) {
+                int j = 1;
+                if(routes.size() > i){
+                    image.Draw(new GuiImage.GuiLine(route.get(route.size()-1), routes.get(i).get(0), Color.RED, 3), false);
+                }
+                for (Vector2Dv1 waypoint: route) {
+                    if(route.size() > j){
+                        image.Draw(new GuiImage.GuiLine(waypoint, route.get(j), Color.GREEN, 2), false);
+                    }
+                    image.Draw(new GuiImage.GuiCircle(waypoint, 3, Color.GREEN, 3), false);
+                    j++;
+                }
+                i++;
+            }
+
+        }
+        if(heat4On){
+            ArrayList<ArrayList<Vector2Dv1>> routes = heats.get(3);
+            int i = 1;
+            for (ArrayList<Vector2Dv1> route: routes) {
+                int j = 1;
+                if(routes.size() > i){
+                    image.Draw(new GuiImage.GuiLine(route.get(route.size()-1), routes.get(i).get(0), Color.RED, 3), false);
+                }
+                for (Vector2Dv1 waypoint: route) {
+                    if(route.size() > j){
+                        image.Draw(new GuiImage.GuiLine(waypoint, route.get(j), Color.GREEN, 2), false);
+                    }
+                    image.Draw(new GuiImage.GuiCircle(waypoint, 3, Color.GREEN, 3), false);
+                    j++;
+                }
+                i++;
+            }
+
+        }
         image.update();
         imageLabel.setIcon(image.getIcon());
     }
@@ -293,8 +380,8 @@ public class DataView extends Thread {
         jPanel.setLayout(new BorderLayout());
 
         JPanel bpanel = new JPanel();
-        bpanel.setSize(WIDTH,(int)(HEIGHT*0.85));
-        bpanel.setLayout(new GridLayout(5,2));
+        bpanel.setSize(WIDTH,(int)(HEIGHT*0.9));
+        bpanel.setLayout(new GridLayout(7,2));
 
         JButton ballBtn = new JButton("Toggle balls");
         bpanel.add(ballBtn);
@@ -316,9 +403,17 @@ public class DataView extends Thread {
         bpanel.add(liveBallsBtn);
         JButton liveRoutBtn = new JButton("Toggle live route");
         bpanel.add(liveRoutBtn);
+        JButton heat1Btn = new JButton("Toggle heat 1");
+        bpanel.add(heat1Btn);
+        JButton heat2Btn = new JButton("Toggle heat 2");
+        bpanel.add(heat2Btn);
+        JButton heat3Btn = new JButton("Toggle heat 3");
+        bpanel.add(heat3Btn);
+        JButton heat4Btn = new JButton("Toggle heat live");
+        bpanel.add(heat4Btn);
 
         JPanel ipanel = new JPanel();
-        ipanel.setSize(WIDTH,(int)(HEIGHT*0.15));
+        ipanel.setSize(WIDTH,(int)(HEIGHT*0.1));
         ipanel.setLayout(new GridLayout(4,1));
 
         JLabel ballColor = new JLabel("balls color: Green");
@@ -340,6 +435,46 @@ public class DataView extends Thread {
                     ballOn = false;
                 else
                     ballOn = true;
+                updateImage();
+            }
+        });
+        heat1Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(heat1On)
+                    heat1On = false;
+                else
+                    heat1On = true;
+                updateImage();
+            }
+        });
+        heat2Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(heat2On)
+                    heat2On = false;
+                else
+                    heat2On = true;
+                updateImage();
+            }
+        });
+        heat3Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(heat3On)
+                    heat3On = false;
+                else
+                    heat3On = true;
+                updateImage();
+            }
+        });
+        heat4Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(heat4On)
+                    heat4On = false;
+                else
+                    heat4On = true;
                 updateImage();
             }
         });
