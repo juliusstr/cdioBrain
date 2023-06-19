@@ -60,14 +60,20 @@ public class LiveView extends Thread {
     }
     public void update(Mat mat){
         curMat = mat;
+        ArrayList<Vector2Dv1> rList = new ArrayList<>();
+        rList.add(robot.aScale.getPosVector());
+        rList.add(robot.bScale.getPosVector());
+        rList.add(robot.aUnScale.getPosVector());
+        rList.add(robot.bUnScale.getPosVector());
+        ArrayList<Vector2Dv1> savedRout = rout;
+        Vector2Dv1 last = robot.getPosVector();
         image = new GuiImage(mat);
-        image.Draw(new GuiImage.GuiCircle(robot.aScale.getPosVector(), 2, Color.BLACK, 3), true);
-        image.Draw(new GuiImage.GuiCircle(robot.bScale.getPosVector(), 2, Color.BLUE, 3), true);
-        image.Draw(new GuiImage.GuiCircle(robot.aUnScale.getPosVector(), 2, Color.BLACK, 3), true);
-        image.Draw(new GuiImage.GuiCircle(robot.bUnScale.getPosVector(), 2, Color.BLUE, 3), true);
-        if(rout != null){
-            Vector2Dv1 last = robot.getPosVector();
-            for (Vector2Dv1 v : rout) {
+        image.Draw(new GuiImage.GuiCircle(rList.get(0), 2, Color.BLACK, 3), true);
+        image.Draw(new GuiImage.GuiCircle(rList.get(1), 2, Color.BLUE, 3), true);
+        image.Draw(new GuiImage.GuiCircle(rList.get(2), 2, Color.BLACK, 3), true);
+        image.Draw(new GuiImage.GuiCircle(rList.get(3), 2, Color.BLUE, 3), true);
+        if(savedRout != null){
+            for (Vector2Dv1 v : savedRout) {
                 image.Draw(new GuiImage.GuiLine(last, v, Color.GREEN, 2), false);
                 image.Draw(new GuiImage.GuiCircle(v, 3, Color.RED, 3), false);
                 last = v;
