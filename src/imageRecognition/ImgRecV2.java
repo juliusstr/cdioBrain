@@ -59,12 +59,18 @@ public class ImgRecV2 {
             Core.split(frame, channels);
             List<KeyPoint> combinedKeypoints = new ArrayList<>();
             //Detect the balls, and but them into MatOfKeyPoints keypoints
-            blobDetec.detect(frame, keypoints);
+            /*blobDetec.detect(frame, keypoints);
+            if(keypoints.get(0,0) != null)
+                combinedKeypoints.addAll(keypoints.toList());*/
+            blobDetec.detect(channels.get(0), keypoints);
+            if(keypoints.get(0,0) != null)
+                combinedKeypoints.addAll(keypoints.toList());/*
+            blobDetec.detect(channels.get(1), keypoints);
             if(keypoints.get(0,0) != null)
                 combinedKeypoints.addAll(keypoints.toList());
-            blobDetec.detect(channels.get(2), keypoints);
+            blobDetec.detect(channels.get(0), keypoints);
             if(keypoints.get(0,0) != null)
-                combinedKeypoints.addAll(keypoints.toList());
+                combinedKeypoints.addAll(keypoints.toList());*/
             keypoints.fromList(combinedKeypoints);
             //List of balls
             List<Ball> balls = new ArrayList<>();
@@ -81,7 +87,7 @@ public class ImgRecV2 {
                     double dis = sqrt((pow((keypoint.pt.x - keypoint2.pt.x), 2) + pow((keypoint.pt.y - keypoint2.pt.y), 2)));
                     if(dis < 0)
                         dis*=-1;
-                    if(dis < 5)
+                    if(dis < StandardSettings.BALL_RADIUS_PX)
                         ballsToRemove.add(keypoint2);
                 }
             }

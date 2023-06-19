@@ -4,10 +4,7 @@ import Client.StandardSettings;
 import exceptions.BadDataException;
 import misc.ball.Ball;
 import misc.ball.PrimitiveBall;
-import org.opencv.core.KeyPoint;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfKeyPoint;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.features2d.SimpleBlobDetector_Params;
 import org.opencv.imgproc.Imgproc;
@@ -91,8 +88,11 @@ public class ImgRecFaseTwo {
         // Apply some image processing to the frame (optional)
         //Imgproc.resize(frame, frame, new Size(1280, 960));
 
+        ArrayList<Mat> channels = new ArrayList<>();
+        Core.split(frame, channels);
+
         //Detect the balls, and but them into MatOfKeyPoints keypoints
-        blobDetec.detect(frame, keypoints);
+        blobDetec.detect(channels.get(0), keypoints);
         //List of balls
         ArrayList<Ball> balls = new ArrayList<>();
         List<KeyPoint> keypointList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class ImgRecFaseTwo {
                 int b = (int) colorDoubleArray[0]; // blue value
                 int g = (int) colorDoubleArray[1]; // green value
                 int r = (int) colorDoubleArray[2]; // red value
-                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, 0, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UNKNOWN));
+                balls.add(new Ball((int) keypoint.pt.x, (int) keypoint.pt.y, StandardSettings.BALL_RADIUS_PX, new Color(r, g, b), true, PrimitiveBall.Status.UNKNOWN,0, Ball.Type.UNKNOWN));
             }
         }
 
