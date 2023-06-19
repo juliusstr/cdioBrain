@@ -42,6 +42,7 @@ public class RoutExecute {
 
     public void setLiveView(LiveView lv){
         liveView = lv;
+        lv.start();
     }
 
     public void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
@@ -236,7 +237,7 @@ public class RoutExecute {
             //throw new RuntimeException(e);
         }
         if(liveView != null)
-            liveView.update(imgRec.getFrame());
+            liveView.setMat(imgRec.getFrame());
     }
 
     /**
