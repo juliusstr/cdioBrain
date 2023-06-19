@@ -235,8 +235,6 @@ public class RoutExecute {
         } catch (BadDataException e) {
             //throw new RuntimeException(e);
         }
-        if(liveView != null)
-            liveView.setMat(imgRec.getFrame());
     }
 
     /**
