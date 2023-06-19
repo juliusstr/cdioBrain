@@ -105,10 +105,10 @@ public class GUI_Menu {
         cornerPanel.setSize(WIDTH,HEIGHT/6);
         cornerPanel.setLayout(new BorderLayout());
 
-        JLabel labelCorner = new JLabel("Corner set to", SwingConstants.LEFT);
+        JLabel labelCorner = new JLabel("Calibrate boundary corners:", SwingConstants.LEFT);
         JTable tableConer = new JTable(getCornerInfo() , new String[] {"Corner","X position","Y position"});
         JScrollPane spConrner = new JScrollPane(tableConer);
-        JButton buttonCorner = new JButton("Set corners");
+        JButton buttonCorner = new JButton("Calibrate corners");
         // TODO add height and width
         cornerPanel.add(labelCorner, BorderLayout.PAGE_START);
         cornerPanel.add(spConrner, BorderLayout.CENTER);
@@ -120,10 +120,10 @@ public class GUI_Menu {
         crossPanel.setSize(WIDTH,HEIGHT/6);
         crossPanel.setLayout(new BorderLayout());
 
-        JLabel labelCross = new JLabel("Cross set to", SwingConstants.LEFT);
+        JLabel labelCross = new JLabel("Calibrate Cross: ", SwingConstants.LEFT);
         JTable tableCross = new JTable(getCrossInfo() , new String[] {"Point","X position","Y position"});
         JScrollPane spCross = new JScrollPane(tableCross);
-        JButton buttonCross = new JButton("Set Cross");
+        JButton buttonCross = new JButton("Calibrate Cross");
         // TODO add height and width
         crossPanel.add(labelCross, BorderLayout.PAGE_START);
         crossPanel.add(spCross, BorderLayout.CENTER);
@@ -135,10 +135,10 @@ public class GUI_Menu {
         ballsPanel.setSize(WIDTH,HEIGHT/6);
         ballsPanel.setLayout(new BorderLayout());
 
-        JLabel labelBalls = new JLabel("Balls set to", SwingConstants.LEFT);
+        JLabel labelBalls = new JLabel("Calibrate Balls: ", SwingConstants.LEFT);
         JTable tableBalls = new JTable(getBallsInfo() , new String[] {"Ball","X position","Y position"});
         JScrollPane spBalls = new JScrollPane(tableBalls);
-        JButton buttonBalls = new JButton("Set Balls");
+        JButton buttonBalls = new JButton("Calibrate Balls");
         ballsPanel.add(labelBalls, BorderLayout.PAGE_START);
         ballsPanel.add(spBalls, BorderLayout.CENTER);
         ballsPanel.add(buttonBalls, BorderLayout.LINE_END);
@@ -149,10 +149,10 @@ public class GUI_Menu {
         robotPanel.setSize(WIDTH,HEIGHT/6);
         robotPanel.setLayout(new BorderLayout());
 
-        JLabel labelRobot = new JLabel("Robot set to", SwingConstants.LEFT);
+        JLabel labelRobot = new JLabel("Calibrate Robot:", SwingConstants.LEFT);
         JTable tableRobot = new JTable(getRobotInfo() , new String[] {"Ball vector","X position","Y position"});
         JScrollPane spRobot = new JScrollPane(tableRobot);
-        JButton buttonRobot = new JButton("Set Robot");
+        JButton buttonRobot = new JButton("Calibrate Robot");
         robotPanel.add(labelRobot, BorderLayout.PAGE_START);
         robotPanel.add(spRobot, BorderLayout.CENTER);
         robotPanel.add(buttonRobot, BorderLayout.LINE_END);
@@ -194,7 +194,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 boundryPos.clear();
-                clicker.run("Set boundry corners", 4, boundryPos, c, tableConer, false);
+                clicker.run("Calibrate boundary corners", 4, boundryPos, c, tableConer, false);
             }
         });
         buttonCross.addActionListener(new ActionListener() {
@@ -202,15 +202,16 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 crossPos.clear();
-                clicker.run("Set Cross", 4, crossPos, c, tableCross, false);
+                clicker.run("Calibrate Cross", 4, crossPos, c, tableCross, false);
             }
         });
         buttonBalls.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
+                ArrayList<Vector2Dv1> balls2 = (ArrayList<Vector2Dv1>) balls.clone();
                 balls.clear();
-                clicker.run("Set balls(orange first)", 11, balls, c, tableBalls, false);
+                clicker.run("Calibrate balls(orange first)", 11, balls, c, tableBalls, false, balls2);
             }
         });
         buttonRobot.addActionListener(new ActionListener() {
@@ -218,7 +219,7 @@ public class GUI_Menu {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Color> c = new ArrayList<>();
                 robotPos.clear();
-                clicker.run("Choose robot", 2, robotPos, c, tableRobot, false);
+                clicker.run("Calibrate robot", 2, robotPos, c, tableRobot, false);
             }
         });
         buttonCompleted.addActionListener(new ActionListener() {
