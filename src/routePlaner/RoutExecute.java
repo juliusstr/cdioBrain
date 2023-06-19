@@ -1,6 +1,7 @@
 package routePlaner;
 
 import Client.StandardSettings;
+import Gui.LiveView;
 import exceptions.BadDataException;
 import exceptions.NoRouteException;
 import exceptions.NoWaypointException;
@@ -27,6 +28,7 @@ public class RoutExecute {
     private Robotv1 robot = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
+    private LiveView liveView = null;
     private String lastCommand;
 
     public RoutExecute(PrintWriter out, BufferedReader in, Robotv1 robot, Cross cross, Boundry boundry){
@@ -36,6 +38,10 @@ public class RoutExecute {
         this.cross = cross;
         this.boundry = boundry;
         lastCommand = "stop -t -d";
+    }
+
+    public void setLiveView(LiveView lv){
+        liveView = lv;
     }
 
     public void heatRunner(ArrayList<Ball> heat, int heatNr, ImgRecFaseTwo imgRec, BallStabilizerPhaseTwo stabilizer, ArrayList<Ball> ballsToAvoid) {
@@ -125,6 +131,8 @@ public class RoutExecute {
             }
             //run to ball
             commandGenerator = new CommandGenerator(robot, routToBall);
+            if(liveView != null)
+                liveView.setRout(routToBall);
             boolean isBallNotWaypoint;
             if (heat.get(j).getPlacement() == Ball.Placement.FREE) {
                 isBallNotWaypoint = true;
@@ -190,6 +198,8 @@ public class RoutExecute {
         routeToGoal = waypointGenerator.waypointRoute.getRoute();//lastBall.getGoalRoute().getWaypoints();
         //routeToGoal.add(boundry.goalWaypoint1);
         commandGenerator = new CommandGenerator(robot, routeToGoal);
+        if(liveView != null)
+            liveView.setRout(routeToGoal);
         while (routeToGoal.size() != 0) {
             updateRobotFromImgRec(imgRec, robot, stabilizer);
             String command = commandGenerator.nextCommand(false);
@@ -225,6 +235,8 @@ public class RoutExecute {
         } catch (BadDataException e) {
             //throw new RuntimeException(e);
         }
+        if(liveView != null)
+            liveView.update(imgRec.getFrame());
     }
 
     /**
