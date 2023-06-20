@@ -23,8 +23,6 @@ public class CommandGenerator {
 
     public static int lowestWaypointCount;
 
-    private static ThreadPoolExecutor threadPoolExecutor;
-
     private double maxSpeed = 0.5;
 
 
