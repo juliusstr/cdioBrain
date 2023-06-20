@@ -116,6 +116,9 @@ public class RoutExecute {
                                 targetWaypoint = heat.get(j).getPickUpPoint();
                             }
                             waypointGenerator = new WaypointGenerator(targetWaypoint, robot.getPosVector(), cross, boundry, ballsToAvoid);
+                            if(heat.get(j).getPlacement() != Ball.Placement.FREE){
+                                ballsToAvoid.remove(heat.get(j));
+                            }
                         } catch (NoRouteException e) {
                             throw new RuntimeException(e);
                         } catch (TimeoutException e) {
