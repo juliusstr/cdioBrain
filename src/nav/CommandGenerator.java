@@ -81,7 +81,7 @@ public class CommandGenerator {
             } else {
                 command += "r";
             }
-            double turnSpeed = Math.abs(angleDelta / 2);
+            double turnSpeed = Math.abs(angleDelta / 1.9);
             if (turnSpeed > 1){
                 turnSpeed = 1;
             } else if (turnSpeed < MIN_TURN_SPEED) {
@@ -101,15 +101,15 @@ public class CommandGenerator {
             return command + ";stop -d";
         }
         if(distDelta > WAYPOINT_DISTANCE_ERROR){
-            double speed = distDelta/12;
-            if (speed > 15) {
-                speed = 15;
+            double speed = distDelta/15;
+            if (speed > 16) {
+                speed = 16;
             } else if(speed < 1){
                 speed = 1;
             }
             if(speed > maxSpeed)
                 speed = maxSpeed;
-            maxSpeed += 0.5;
+            maxSpeed += 0.4;
             command += ";drive -s" + String.format("%.2f", speed).replace(',','.');
         } else {
             command += ";stop -d; stop -t";

@@ -41,6 +41,8 @@ public class Ball extends PrimitiveBall{
     private ArrayList<Route> routes = new ArrayList<>();
     private Route goalRoute = null;
 
+    public boolean crossBall = false;
+
 
     public ArrayList<Route> getRoutes() {
         return routes;

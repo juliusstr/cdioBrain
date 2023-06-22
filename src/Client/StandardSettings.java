@@ -52,7 +52,7 @@ public class StandardSettings {
 
     public static final int ROUTE_PLANER_DISTANCE_FROM_LINE_BEFORE_TURN = 40;
 
-    public static final int DRIVE_AND_LINEUP_WAIT_MS = 200;
+    public static final int DRIVE_AND_LINEUP_WAIT_MS = 250;
 
     /**
      * CommandGenerator
@@ -62,17 +62,18 @@ public class StandardSettings {
     public static final double WAYPOINT_DISTANCE_ERROR = 5;
     public static final double FINAL_WAYPOINT_DISTANCE_ERROR = 4;
 
-    public static final double MIN_TURN_SPEED = 0.11;//0.11 on rechargeable bat-pack
+    public static final double MIN_TURN_SPEED = 0.10;//0.11 on rechargeable bat-pack
 
     public static final String COLLECT_COMMAND = "collect";
     public static final String DROP_OFF_COMMAND = "drop";
     public static final String COLLECT_EDGE_COMMAND = "corner";
     public static final String COLLECT_CORNER_COMMAND = "corner";
     public static final String COLLECT_PAIR_COMMAND = "corner";
+    public static final String COLLECT_CROSS_COMMAND = "cross";
 
     /**
      * Boundery
      */
-    public static final double BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY = 40;
+    public static final double BOUNDERY_WAYPOINT_DISTANCE_FROM_BOUNDERY = 20;
 
 }

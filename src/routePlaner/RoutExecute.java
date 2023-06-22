@@ -89,13 +89,14 @@ public class RoutExecute {
                             if(heat.get(j).getPlacement() != Ball.Placement.FREE){
                                 ballsToAvoid.remove(heat.get(j));
                             }
-
+                            routToBall = waypointGenerator.waypointRoute.getRoute();
                         } catch (NoRouteException e) {
-                            throw new RuntimeException(e);
+                            routToBall = new ArrayList<>();
+                            routToBall.add(heat.get(j).getPickUpPoint());
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
-                        routToBall = waypointGenerator.waypointRoute.getRoute();
+
                         /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
@@ -119,12 +120,14 @@ public class RoutExecute {
                             if(heat.get(j).getPlacement() != Ball.Placement.FREE){
                                 ballsToAvoid.remove(heat.get(j));
                             }
+                            routToBall = waypointGenerator.waypointRoute.getRoute();
                         } catch (NoRouteException e) {
-                            throw new RuntimeException(e);
+                            routToBall = new ArrayList<>();
+                            routToBall.add(heat.get(j).getPickUpPoint());
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
-                        routToBall = waypointGenerator.waypointRoute.getRoute();
+
                         /*
                         if (heat.get(j).getPlacement() != Ball.Placement.FREE) {
                             routToBall.add(heat.get(j).getLineUpPoint());
@@ -177,8 +180,14 @@ public class RoutExecute {
                 case CORNER:
                     turnBeforeHardcode(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
                     driveAndLineUp(robot, imgRec, out, heat.get(j).getPosVector(), stabilizer);
-                    out.println(StandardSettings.COLLECT_CORNER_COMMAND);
-                    checkForHardcodeDone(in, StandardSettings.COLLECT_CORNER_COMMAND);
+                    if(heat.get(j).crossBall) {
+                        out.println(StandardSettings.COLLECT_CROSS_COMMAND);
+                        checkForHardcodeDone(in, StandardSettings.COLLECT_CROSS_COMMAND);
+                    } else {
+                        out.println(StandardSettings.COLLECT_CORNER_COMMAND);
+                        checkForHardcodeDone(in, StandardSettings.COLLECT_CORNER_COMMAND);
+                    }
+
                     //reverseIfCloseToBoundary(boundry.bound, cross.crossLines, robot, imgRec, stabilizer, out, in);
                     break;
                 case PAIR:

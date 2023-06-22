@@ -91,6 +91,7 @@ public class BallClassifierPhaseTwo {
             for (Zone zone : zones) {
                 if (zone.posInsideZone(ball.getPosVector())) {
                     ball.setPlacement(Ball.Placement.CORNER);
+                    ball.crossBall = true;
                     Vector2Dv1 dir = ball.getPosVector().getSubtracted(cross.pos);
                     dir.normalize();
                     ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
@@ -145,6 +146,7 @@ public class BallClassifierPhaseTwo {
                     Vector2Dv1 dir = dir1.getMidVector(dir2);
                     dir.normalize();
                     ball.setPickUpWaypoint(dir.getMultiplied(StandardSettings.CLASSIFIER_VIRTUAL_WAYPOINT_DISTANCE_FROM_BALL));
+                    ball.crossBall = false;
                 }
             }
             if (edgeCloseenughCount == 1) {

@@ -164,7 +164,11 @@ public class HeatGenerator {
         for (Ball ball: heat) {
             System.out.println("Ball: (" + ball.getxPos() + ", " + ball.getyPos() + ") Color: " + (ball.getColor().equals(BallClassifierPhaseTwo.ORANGE) ? "ORANGE" : "WHITE") + " TYPE: " + ball.getPlacement());
         }
-        System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getRoutes().get(heat.get(heat.size()-1).getRoutes().size()-1).getScore());
+        if(heat.get(heat.size()-1).getGoalRoute() == null) {
+            heat.get(heat.size() - 1).setGoalRoute(new Route(heat.get(heat.size() - 1).getPosVector()));
+            heat.get(heat.size()-1).getGoalRoute().setScore(0);
+        }
+        System.out.println("\nHEAT cost: " + heat.get(heat.size()-1).getGoalRoute().getScore());
         if(heat.get(heat.size()-1).getGoalRoute().getScore() < 0)
             return;
         ArrayList bta = (ArrayList) balls.clone();

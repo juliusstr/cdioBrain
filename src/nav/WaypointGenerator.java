@@ -19,7 +19,7 @@ public class WaypointGenerator {
     private Cross cross;
     private Boundry boundry;
     private ArrayList<Ball> ballsToAvoid;
-    private static ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(StandardSettings.NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS);
+    private static ThreadPoolExecutor threadPoolExecutor;
 
     private enum RotateDirection {clockwise, nothing, counterClockwise}
     private static int lowestWaypointCount = 0;
@@ -33,7 +33,7 @@ public class WaypointGenerator {
     public static int callCount = 0;
 
     public class WaypointRoute{
-        protected ArrayList<Vector2Dv1> route = null;
+        public ArrayList<Vector2Dv1> route = null;
 
         protected double cost = -1;
 
@@ -164,7 +164,7 @@ public class WaypointGenerator {
             waypointRoute.cost = getRouteCost(waypointRoute.route);
             return;
         }
-
+        threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(StandardSettings.NAV_WAYPOINT_GENERATOR_NUMBER_OF_THREADS);
         ArrayList<Vector2Dv1> route = new ArrayList<>();
         threadPoolExecutor.submit(() -> {
             try {
